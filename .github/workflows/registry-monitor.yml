@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -37,8 +38,16 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/registry-checks.json data/registry-candidates.json
-          if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'Update registry checks and discovered addresses'
-          git pull --rebase origin main
-          git push origin HEAD:main
+          cp data/registry-checks.json "$RUNNER_TEMP/registry-checks.json"
+          cp data/registry-candidates.json "$RUNNER_TEMP/registry-candidates.json"
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git checkout -B registry-monitor-save origin/main
+            python scripts/registry_merge.py "$RUNNER_TEMP/registry-checks.json" "$RUNNER_TEMP/registry-candidates.json"
+            git add data/registry-checks.json data/registry-candidates.json
+            if git diff --cached --quiet; then exit 0; fi
+            git commit -m 'Update registry checks and discovered addresses'
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo 'Could not save report after concurrent updates' >&2
+          exit 1

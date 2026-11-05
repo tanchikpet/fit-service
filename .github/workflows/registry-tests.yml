@@ -4,7 +4,7 @@ on:
     paths:
       - 'registry.*'
       - 'fit-requests/**'
-      - 'scripts/registry_monitor.py'
+      - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/registry-tests.yml'
   workflow_dispatch:
