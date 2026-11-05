@@ -52,7 +52,7 @@ def main():
         page.route("https://api.github.com/**", api)
         page.route("https://fonts.googleapis.com/**", lambda r: r.abort())
         page.goto(origin + "/registry.html")
-        page.wait_for_selector(".row")
+        page.wait_for_selector(".row", state="attached")
         assert page.locator(".row").count() == 108
         page.select_option("#scope", "archive")
         assert page.locator(".row").count() == 178
