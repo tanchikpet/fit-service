@@ -30,7 +30,7 @@ def get_chat(token, previous):
     binding = previous.get("telegram-binding")
     if binding:
         try:
-            return json.loads(box.decrypt(binding.encode()))["chat_id"], previous
+            return confirm_chat(token, json.loads(box.decrypt(binding.encode()))["chat_id"], dict(previous))
         except (InvalidToken, ValueError, KeyError):
             raise RuntimeError("Привязка Telegram не подходит к текущему токену. Нужна повторная привязка.") from None
     config = json.loads((ROOT / "data/telegram-setup.json").read_text())
@@ -53,7 +53,14 @@ def get_chat(token, previous):
     chat_id = chats.pop()
     result = dict(previous)
     result["telegram-binding"] = box.encrypt(json.dumps({"chat_id": chat_id}).encode()).decode()
-    return chat_id, result
+    return confirm_chat(token, chat_id, result)
+
+
+def confirm_chat(token, chat_id, state):
+    if not state.get("telegram-confirmed"):
+        api(token, "sendMessage", {"chat_id": chat_id, "text": "✅ Реестр FIT SERVICE подключен. Здесь будут приходить напоминания за 7, 3, 1 день и в день окончания акции.\n\nОткрыть реестр: https://tanchikpet.github.io/fit-service/registry.html", "link_preview_options": {"is_disabled": True}})
+        state["telegram-confirmed"] = dt.datetime.now(dt.timezone.utc).isoformat()
+    return chat_id, state
 
 
 def reminders(registry, previous, now):
