@@ -1,0 +1,44 @@
+name: Registry monitor
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Registry tests]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: write
+concurrency:
+  group: registry-monitor
+  cancel-in-progress: false
+jobs:
+  monitor:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check URLs, discover pages and send reminders
+        env:
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+        run: python scripts/registry_monitor.py
+      - name: Save reports without overwriting concurrent edits
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/registry-checks.json data/registry-candidates.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Update registry checks and discovered addresses'
+          git pull --rebase origin main
+          git push origin HEAD:main

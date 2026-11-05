@@ -1,0 +1,5412 @@
+{
+  "schemaVersion": 1,
+  "revision": 1,
+  "updatedAt": "2026-11-05T00:00:00Z",
+  "reminderDays": [
+    7,
+    3,
+    1,
+    0
+  ],
+  "entries": [
+    {
+      "id": "page-0001",
+      "ru": "https://fitauto.ru/",
+      "kz": "https://fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0002",
+      "ru": "https://novosibirsk.fitauto.ru/booking/blitz/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Форма быстрой записи",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0003",
+      "ru": "novosibirsk.fitauto.ru/booking/раздел/подраздел/услуга",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Запись на шиномонтаж",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": true,
+      "requestId": ""
+    },
+    {
+      "id": "page-0004",
+      "ru": "https://novosibirsk.fitauto.ru/body-repair-by-photo/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Запись на кузовной",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0005",
+      "ru": "https://fitauto.ru/about/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "О компании",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0006",
+      "ru": "https://fitauto.ru/about/products/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0007",
+      "ru": "https://fitauto.ru/method/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "MethodPay",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0008",
+      "ru": "https://fitauto.ru/osago/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ОСАГО sravni.ru",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0009",
+      "ru": "https://fitauto.ru/vacancy/",
+      "kz": "",
+      "redirectRu": "https://rabota.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Вакансии",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0010",
+      "ru": "https://fitauto.ru/corp/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Корпоративным клиентам",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0011",
+      "ru": "https://fitauto.ru/corp/fleet/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET - посадочная страница",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Основной сайт — fitauto.ru",
+      "groupPath": [
+        "Сайты и проекты",
+        "Основной сайт — fitauto.ru"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0012",
+      "ru": "https://bonus.fitauto.ru/",
+      "kz": "https://bonus.fitavto.kz",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бесплатные услуги, акции, кешбэк",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0013",
+      "ru": "https://reklama.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Ваша реклама в сети FIT SERVICE",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0014",
+      "ru": "https://jobcard.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бонусная программа для сотрудников компаний партнеров, Тильда, Ответственный - ? на аккаунте франчайзи",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0015",
+      "ru": "https://arenda.fitauto.ru/",
+      "kz": "https://arenda.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Предложить помещение под автосервис, Тильда, Ответственный - Петров Никита",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0016",
+      "ru": "https://qr.fitauto.ru/",
+      "kz": "https://qr.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "QR коды на наши приложения, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0017",
+      "ru": "https://taplink.cc/fitservice_official",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Ссылки на акции",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0018",
+      "ru": "https://profi.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://novosibirsk.fitauto.ru/corp/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0019",
+      "ru": "https://erp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ERP",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0020",
+      "ru": "https://megabonus.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Мегабонус",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0021",
+      "ru": "https://promo.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Промо",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Другие сайты и сервисы",
+      "groupPath": [
+        "Сайты и проекты",
+        "Другие сайты и сервисы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0022",
+      "ru": "https://fran.fitauto.ru/",
+      "kz": "https://franch.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Франшиза, Тильда, Ответственный - Петров Никита",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Франшиза FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Франшиза FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0023",
+      "ru": "http://franchblog.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Франшиза FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Франшиза FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0024",
+      "ru": "https://franch.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fran.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Франшиза, Тильда, Ответственный - Петров Никита",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Франшиза FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Франшиза FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0025",
+      "ru": "https://franchise.fitauto.ru/",
+      "kz": "https://franchise.fitavto.kz/",
+      "redirectRu": "https://fran.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Франшиза, Тильда, Ответственный - Петров Никита",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Франшиза FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Франшиза FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0026",
+      "ru": "https://rabota.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Вакансии, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0027",
+      "ru": "https://rabota.fitauto.ru/rf2",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа автоэлетриком-диагностом, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0028",
+      "ru": "https://rabota.fitauto.ru/diagnost",
+      "kz": "",
+      "redirectRu": "https://rabota.fitauto.ru/rf2",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0029",
+      "ru": "https://rabota.fitauto.ru/rf",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа мастером-приемщиком, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0030",
+      "ru": "https://rabota.fitauto.ru/sell",
+      "kz": "",
+      "redirectRu": "https://rabota.fitauto.ru/rf",
+      "redirectKz": "",
+      "description": "Работа мастером-приемщиком, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0031",
+      "ru": "https://rabota.fitauto.ru/manager",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа мастером-приемщиком, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0032",
+      "ru": "https://rabota.fitauto.ru/call-centre",
+      "kz": "",
+      "redirectRu": "https://rabota.fitauto.ru/contact_centr",
+      "redirectKz": "",
+      "description": "Работа оператором контакт-центра, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0033",
+      "ru": "https://rabota.fitauto.ru/selltwo",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа мастером-приемщиком, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0034",
+      "ru": "https://rabota.fitauto.ru/avtomehanikfitservice",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа автомехаником, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0035",
+      "ru": "https://rabota.fitauto.ru/avtomehanik",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0036",
+      "ru": "https://rabota.fitauto.ru/workspec",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0037",
+      "ru": "https://rabota.fitauto.ru/rukovoditel",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа руководителем автосервиса, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0038",
+      "ru": "https://rabota.fitauto.ru/workspec",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа помощником автомеханика, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0039",
+      "ru": "https://rabota.fitauto.ru/office",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Работа в УК, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0040",
+      "ru": "https://rabota.fitauto.ru/consultation",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Карьерная консультация, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0041",
+      "ru": "https://rabota2.fitauto.ru/referal",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Рекомендуй друга в автосервис, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Работа в FIT SERVICE",
+      "groupPath": [
+        "Сайты и проекты",
+        "Работа в FIT SERVICE"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0042",
+      "ru": "https://fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ФИТЛАБ, Тильда, Ответственный - Нестеренко Сергей",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0043",
+      "ru": "",
+      "kz": "https://conf.fitautolab.ru/franch_kz",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ФИТЛАБ, Тильда, Ответственный - Нестеренко Сергей",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0044",
+      "ru": "https://boss.fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0045",
+      "ru": "https://conf.fitautolab.ru/2025",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ФИТЛАБ conf, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0046",
+      "ru": "https://conf.fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "https://conf.fitautolab.ru/2025",
+      "redirectKz": "",
+      "description": "ФИТЛАБ, Тильда, Ответственный - Нестеренко Сергей",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0047",
+      "ru": "https://conf.fitautolab.ru/analyz",
+      "kz": "",
+      "redirectRu": "https://conf.fitautolab.ru/2025",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0048",
+      "ru": "https://conf.fitautolab.ru/conder",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бесплатная диагностика кондиционера для автопарков",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0049",
+      "ru": "https://conf.fitautolab.ru/dod_msk",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0050",
+      "ru": "https://conf.fitautolab.ru/kadry",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0051",
+      "ru": "https://conf.fitautolab.ru/sh",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0052",
+      "ru": "https://battle.fitautolab.ru/rozygrysh#menu",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0053",
+      "ru": "https://blog.fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ФИТЛАБ блог, Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0054",
+      "ru": "https://event.fitautolab.ru/liquid",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "ФИТЛАБ",
+      "groupPath": [
+        "Сайты и проекты",
+        "ФИТЛАБ"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0055",
+      "ru": "https://franchshop.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FranchShop, Битрикс",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FranchShop",
+      "groupPath": [
+        "Сайты и проекты",
+        "FranchShop"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0056",
+      "ru": "https://fs.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FranchShop",
+      "groupPath": [
+        "Сайты и проекты",
+        "FranchShop"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0057",
+      "ru": "https://shop.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FranchShop, Тильда, не работает",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FranchShop",
+      "groupPath": [
+        "Сайты и проекты",
+        "FranchShop"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0058",
+      "ru": "https://fleet.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET, Ответственный - Красильникова Ольга",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0059",
+      "ru": "https://approve.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0060",
+      "ru": "https://autopark.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0061",
+      "ru": "https://clean.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0062",
+      "ru": "https://contract.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0063",
+      "ru": "https://doc.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0064",
+      "ru": "https://fullservice.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "FIT FLEET",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "FIT FLEET",
+      "groupPath": [
+        "Сайты и проекты",
+        "FIT FLEET"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0065",
+      "ru": "https://maslofree.fitauto.ru/",
+      "kz": "https://maslofree.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бесплатная замене масла при покупке масла",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0066",
+      "ru": "https://free.fitauto.ru/",
+      "kz": "https://free.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "БДХЧ + 15% скидка на ТО",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0067",
+      "ru": "https://check.fitauto.ru/",
+      "kz": "https://check.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Полная проверка авто",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0068",
+      "ru": "https://zamena.fitauto.ru/",
+      "kz": "https://zamena.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Басплатная замена запчастей при покупке запасных частей бренда LYNXauto",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0069",
+      "ru": "https://combo.fitauto.ru/",
+      "kz": "https://combo.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бесплатная замена масла и скидка 40% на шиномонтаж",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0070",
+      "ru": "https://to.fitauto.ru/",
+      "kz": "https://to.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "ТО со скидкой 10%",
+      "expires": "2026-02-28",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Федеральные акции",
+      "groupPath": [
+        "Федеральные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0071",
+      "ru": "https://spec-sh.fitauto.ru/",
+      "kz": "https://spec-sh.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://spec-sh.fitavto.kz/",
+      "description": "Шиномонтаж пакет, актуальный партнерский лендинг (редирект с 01.06 по 31.08 и с 30.11 по 28.02)",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Сезонные акции",
+      "groupPath": [
+        "Сезонные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0072",
+      "ru": "https://maslo.fitauto.ru/",
+      "kz": "https://maslo.fitavto.kz/",
+      "redirectRu": "https://maslofree.fitauto.ru/",
+      "redirectKz": "https://maslofree.fitavto.kz/",
+      "description": "Пакетные скидки по замене масла и фильтров",
+      "expires": "2026-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Сезонные акции",
+      "groupPath": [
+        "Сезонные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0073",
+      "ru": "https://conder.fitauto.ru/",
+      "kz": "https://conder.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Кондер, пакетное предложение по заправке и обслуживанию автокондиционеров",
+      "expires": "2026-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Сезонные акции",
+      "groupPath": [
+        "Сезонные акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0074",
+      "ru": "https://hb.fitauto.ru/",
+      "kz": "https://hb.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Лендинг ко Дню Рождения сети",
+      "expires": "2025-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Флеш акции",
+      "groupPath": [
+        "Флеш акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0075",
+      "ru": "https://autoday.fitauto.ru/",
+      "kz": "https://autoday.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Лендинг ко дню Автомобилиста",
+      "expires": "2025-11-06",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Флеш акции",
+      "groupPath": [
+        "Флеш акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0076",
+      "ru": "https://one.fitauto.ru/",
+      "kz": "https://one.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Лендинг Колесо фортуны",
+      "expires": "2026-05-12",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Флеш акции",
+      "groupPath": [
+        "Флеш акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0077",
+      "ru": "https://bday.fitauto.ru/",
+      "kz": "https://bday.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Лендинг на ДР фита рекламный",
+      "expires": "2026-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Флеш акции",
+      "groupPath": [
+        "Флеш акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0078",
+      "ru": "https://bday.fitauto.ru/play/?phone=79136788888",
+      "kz": "https://bday.fitavto.kz/play/?phone=79136788888",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Лендинг на ДР фита с заданиями",
+      "expires": "2026-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Флеш акции",
+      "groupPath": [
+        "Флеш акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0079",
+      "ru": "https://friend.fitauto.ru/",
+      "kz": "https://friend.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Бесплатная ДХЧ, рефералка",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0080",
+      "ru": "https://oil.fitauto.ru/",
+      "kz": "https://oil.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Халява, наклейка, Клиент навсегда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0081",
+      "ru": "https://rekpp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Восстановленные АКПП",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0082",
+      "ru": "https://grm.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "ГРМ",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0083",
+      "ru": "",
+      "kz": "https://avtofranchise.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Какая-то форма обратной связи, сделали B2B маркетинг. Ответственный - Петров Никита",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0084",
+      "ru": "https://fit-msk.tilda.ws/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Кузовной в Москве, Тильда, Ответственный - ?",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции",
+      "groupPath": [
+        "Акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0085",
+      "ru": "https://new.fitauto.ru/",
+      "kz": "https://new.fitavto.kz/",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании для новые СТО",
+      "expires": "",
+      "expiryNote": "?",
+      "owner": "",
+      "project": "Акции СРК",
+      "groupPath": [
+        "Акции СРК"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0086",
+      "ru": "https://autoday-new.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании для новые СТО (сейчас БДХЧ + 1500 баллов) СРК",
+      "expires": "",
+      "expiryNote": "?",
+      "owner": "",
+      "project": "Акции СРК",
+      "groupPath": [
+        "Акции СРК"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0087",
+      "ru": "https://ff.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании для новые СТО (сейчас БДХЧ -15%) для СРК",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции СРК",
+      "groupPath": [
+        "Акции СРК"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0088",
+      "ru": "https://autoday3000-new.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "БДХЧ + 3000бб для партнера Москва, Шереметьевская, 26",
+      "expires": "2026-08-17",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции ИЛР",
+      "groupPath": [
+        "Акции ИЛР"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0089",
+      "ru": "https://autoday7000-new.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "БДХЧ + 7000бб для партнера Москва, Дворникова 7",
+      "expires": "2026-12-20",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Акции ИЛР",
+      "groupPath": [
+        "Акции ИЛР"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0090",
+      "ru": "https://sh-fix.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Актуальный партнерский лендинг ШМ по фикс.цене (сезонность: весна и осень) только РФ",
+      "expires": "2026-11-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Партнерские акции",
+      "groupPath": [
+        "Партнерские акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0091",
+      "ru": "https://leto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Актуальный партнерский лендинг бесплатная диагностика кондера, (сезонность: лето) только по РФ",
+      "expires": "2026-08-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Партнерские акции",
+      "groupPath": [
+        "Партнерские акции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0092",
+      "ru": "https://cross.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "БДХЧ, бонусная карта в статусе «Серебро» и 1 000 бонусных баллов, актуальный партнерский лендинг",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0093",
+      "ru": "https://cross.fitauto.ru/beeline",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Билайн",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0094",
+      "ru": "https://cross.fitauto.ru/2gis",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "2GIS",
+      "expires": "2025-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0095",
+      "ru": "https://cross.fitauto.ru/avtokod",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Автокод",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0096",
+      "ru": "https://cross.fitauto.ru/gazp",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Газпром",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0097",
+      "ru": "https://cross.fitauto.ru/halva",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Халва 1000бб",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0098",
+      "ru": "https://cross.fitauto.ru/halva1500",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Халва 1500бб",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0099",
+      "ru": "https://cross.fitauto.ru/happy",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Флоктори",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0100",
+      "ru": "https://cross.fitauto.ru/t2",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Теле2",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "cross.fitauto.ru — партнёрские страницы",
+      "groupPath": [
+        "Партнерские акции",
+        "cross.fitauto.ru — партнёрские страницы"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0101",
+      "ru": "https://avtocod.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Интеграция автокод",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0102",
+      "ru": "https://tbank.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Интеграция Т-Банк пример: http://tbank.fitauto.ru/?name=%D0%A2%D0%B5%D1%81%D1%82&phone=9000000000&plate=00%D0%B0%D0%B0%D0%B00&station=cc:91346&job=%D0%94%D0%B8%D0%B0%D0%B3%D0%BD%D0%BE%D1%81%D1%82%D0%B8%D0%BA%D0%B0&mark=BMW",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0103",
+      "ru": "https://x5club.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Интеграция Х5",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0104",
+      "ru": "https://x5club-test.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Тестовый",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0105",
+      "ru": "https://gazprombonus.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Интеграция газпром",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0106",
+      "ru": "https://gazprombonus-test.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Тестовый",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0107",
+      "ru": "https://ingos.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Интеграция ингосстрах",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0108",
+      "ru": "https://www.sravni.ru/promo/fitservice/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Сравни (партнерский виджет)",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Интеграции",
+      "groupPath": [
+        "Интеграции"
+      ],
+      "status": "active",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0109",
+      "ru": "https://sk500.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Семейная команда, старый лендинг для Роснефти",
+      "expires": "2023-05-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0110",
+      "ru": "https://krd.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании (сейчас БДХЧ -15%) (Новая Адыгея, Тургеневское шоссе, 2/3, Краснодар, Алма-Атинская, 2/16, Яблоновский, Дорожная, 1д/6 (Адыгея), Краснодар, Северная, 299)",
+      "expires": "2026-05-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0111",
+      "ru": "https://promotion.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании (сейчас БДХЧ -15%) (Барышиха, вл. 59 (м. Пятницкое шоссе), Северный бульвар, 9а стр. 2 (м. Отрадное), Западная, 1г)",
+      "expires": "2026-04-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0112",
+      "ru": "",
+      "kz": "https://avtoservice.kz/",
+      "redirectRu": "",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "Локальные рекламные компании для КЗ (сейчас БДХЧ) (Шымкент, Сайрамская, 134)",
+      "expires": "2026-06-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0113",
+      "ru": "https://auto-to.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Партнерский старый лендинг с акцией ТО Авто.ру",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0114",
+      "ru": "https://cross.fitauto.ru/auto",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Авто.ру (Гараж)",
+      "expires": "2026-06-30",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0115",
+      "ru": "https://cross.fitauto.ru/sk",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Семейная команда, лендинг для Роснефти",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0116",
+      "ru": "https://cross.fitauto.ru/paveleckaya",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Павелецкая",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0117",
+      "ru": "https://cross.fitauto.ru/primezone",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "PRIME ZONE",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0118",
+      "ru": "https://cross.fitauto.ru/tbank",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Ленд для ТБанка со входом по промокоду",
+      "expires": "2026-12-31",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0119",
+      "ru": "https://vesna.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0120",
+      "ru": "https://zima.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0121",
+      "ru": "https://osen.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0122",
+      "ru": "https://hod.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://friend.fitauto.ru/",
+      "redirectKz": "https://friend.fitavto.kz/",
+      "description": "Бесплатная ДХЧ, рефералка",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0123",
+      "ru": "https://fit.fitauto.ru/",
+      "kz": "https://fit.fitavto.kz/",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "https://free.fitavto.kz/",
+      "description": "ДХЧ 360",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0124",
+      "ru": "https://fit.fitauto.ru/pay2u",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Не знаю что это за страница",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0125",
+      "ru": "https://karso.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Партнерский c Карсо, акция закончилась",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0126",
+      "ru": "https://cross.fitauto.ru/tele2",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0127",
+      "ru": "https://cross.fitauto.ru/adventhappy",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0128",
+      "ru": "https://cross.fitauto.ru/home",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0129",
+      "ru": "https://cross.fitauto.ru/insapp",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0130",
+      "ru": "https://cross.fitauto.ru/insappkasko",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0131",
+      "ru": "https://cross.fitauto.ru/newyear",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0132",
+      "ru": "https://cross.fitauto.ru/sravnibonus",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0133",
+      "ru": "https://msk.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "ДХЧ 360 для станции Москвы и ближайшего Подномосковья",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0134",
+      "ru": "https://msko.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Локальные рекламные компании",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0135",
+      "ru": "https://fit10.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Бесплатная ДХЧ и скидка 10% на рекомендованный ремонт",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0136",
+      "ru": "https://remont.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://free.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Ремонт автомобилей",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0137",
+      "ru": "https://scanfree.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Диагностика ScanFIT",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0138",
+      "ru": "https://auto-sh.fitauto.ru",
+      "kz": "",
+      "redirectRu": "https://sh-fix.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0139",
+      "ru": "https://sravni.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://cross.fitauto.ru/",
+      "redirectKz": "",
+      "description": "старый лендинг для сравни.ру",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0140",
+      "ru": "https://avito.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0141",
+      "ru": "https://franchblog.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0142",
+      "ru": "https://safe.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0143",
+      "ru": "https://webasto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0144",
+      "ru": "https://event.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0145",
+      "ru": "https://sk15.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "с доменом SK для Роснефти, лендинг на ДР нашей компании 15 лет",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0146",
+      "ru": "https://kpp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0147",
+      "ru": "https://dtp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Проект закрылся",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0148",
+      "ru": "http://fitauto.ru/dtp/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0149",
+      "ru": "https://sr.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0150",
+      "ru": "https://zima.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0151",
+      "ru": "https://auto-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Работал в 2022-2023 году несколько услуг",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0152",
+      "ru": "https://ad.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0153",
+      "ru": "https://sh-fast.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://spec-sh.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0154",
+      "ru": "https://sh.fitauto.ru/",
+      "kz": "https://sh.fitavto.kz/",
+      "redirectRu": "https://fit.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0155",
+      "ru": "https://ac.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://conder.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0156",
+      "ru": "https://sk-conder.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://conder.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0157",
+      "ru": "https://avito-to.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://to.fitauto.ru/",
+      "redirectKz": "",
+      "description": "партнерский старый лендинг с акцией ТО с Авито",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0158",
+      "ru": "https://auto-dec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Гараж Авто.ру запись на диагностики со скидкой с 1.12.2021 по 31.01.2022",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0159",
+      "ru": "https://scanfit.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://check.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0160",
+      "ru": "http://taxi.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0161",
+      "ru": "https://taxivezet-0ad3ba822d.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0162",
+      "ru": "https://taxi-35e768d304.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0163",
+      "ru": "https://taxi-49aadc78ef.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0164",
+      "ru": "https://yataxi-f5ebf84a1a.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0165",
+      "ru": "https://yataxi-b0b6f6ba33.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0166",
+      "ru": "https://2020.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0167",
+      "ru": "https://2021.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0168",
+      "ru": "https://adpromo.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0169",
+      "ru": "https://auto-lynx.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0170",
+      "ru": "https://auto-osen.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0171",
+      "ru": "https://auto-sh.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://anapa.fitauto.ru/booking/shinomontazh/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0172",
+      "ru": "https://fitauto.ru/appointments",
+      "kz": "",
+      "redirectRu": "https://anapa.fitauto.ru/booking/shinomontazh/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0173",
+      "ru": "https://auto10.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0174",
+      "ru": "https://autocheck.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0175",
+      "ru": "https://avarkom.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0176",
+      "ru": "https://avito-sh.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0177",
+      "ru": "https://avito-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0178",
+      "ru": "https://avito-to.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0179",
+      "ru": "https://avito.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0180",
+      "ru": "https://avito15.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0181",
+      "ru": "https://avito20.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0182",
+      "ru": "https://avito-booking.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0183",
+      "ru": "https://bcs-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0184",
+      "ru": "https://bonus-rubin-yat.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0185",
+      "ru": "https://dh.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0186",
+      "ru": "https://diagnost.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0187",
+      "ru": "https://engine.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0188",
+      "ru": "https://evak.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0189",
+      "ru": "https://federal-gp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0190",
+      "ru": "https://federal-ya.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0191",
+      "ru": "https://federal.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0192",
+      "ru": "https://fit-halva.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0193",
+      "ru": "https://law.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0194",
+      "ru": "https://gates.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0195",
+      "ru": "https://gpn-hod.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0196",
+      "ru": "https://gpn-osen.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0197",
+      "ru": "https://gpn-sh.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0198",
+      "ru": "https://gpn-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0199",
+      "ru": "https://gpn1199.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0200",
+      "ru": "https://gpn15.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0201",
+      "ru": "https://hodovka.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0202",
+      "ru": "https://hello.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0203",
+      "ru": "https://ku.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0204",
+      "ru": "https://kyb2021.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0205",
+      "ru": "https://lady.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0206",
+      "ru": "https://liquids.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0207",
+      "ru": "https://lukoil.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0208",
+      "ru": "https://lynx.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0209",
+      "ru": "https://maslo20.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0210",
+      "ru": "https://mineev.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0211",
+      "ru": "https://mo.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0212",
+      "ru": "https://oilfree.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0213",
+      "ru": "https://osen-halva.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0214",
+      "ru": "http://osen2021.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0215",
+      "ru": "http://osen21.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0216",
+      "ru": "http://present.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0217",
+      "ru": "https://proleto11.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0218",
+      "ru": "https://quiz.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0219",
+      "ru": "https://rosneft.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0220",
+      "ru": "https://service.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0221",
+      "ru": "https://sh-brn.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0222",
+      "ru": "https://sh-halva.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0223",
+      "ru": "https://shmsk.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0224",
+      "ru": "https://shspb.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0225",
+      "ru": "https://spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0226",
+      "ru": "https://sravni-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0227",
+      "ru": "https://tyres.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0228",
+      "ru": "https://ufo.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0229",
+      "ru": "https://vesna2021.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0230",
+      "ru": "https://vesna21.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0231",
+      "ru": "https://vlasov.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0232",
+      "ru": "https://xxx.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0233",
+      "ru": "https://yaauto-8fa4222a34.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0234",
+      "ru": "https://yanavigator.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0235",
+      "ru": "https://yapro.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0236",
+      "ru": "https://yataxi-69u4809359u.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0237",
+      "ru": "https://yataxi-f5ebf84a1a.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0238",
+      "ru": "https://zabit.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0239",
+      "ru": "https://order.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0240",
+      "ru": "https://gpn21.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0241",
+      "ru": "https://gpn21.fitauto.ru/tirefitting/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0242",
+      "ru": "https://novosibirsk.fitauto.ru/personal/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0243",
+      "ru": "https://bigcar.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0244",
+      "ru": "https://sh-m.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0245",
+      "ru": "https://cashvoucher.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://fitauto.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0246",
+      "ru": "http://taplink.cc/fitservice_kz",
+      "kz": "",
+      "redirectRu": "https://taplink.ru/",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не актуально",
+      "groupPath": [
+        "Архив",
+        "Не актуально"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0247",
+      "ru": "https://tinkoff.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Не работает",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0248",
+      "ru": "https://1khabib.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0249",
+      "ru": "https://khabib.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0250",
+      "ru": "https://ac.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0251",
+      "ru": "https://ad-conder.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "https://conder.fitauto.ru/",
+      "redirectKz": "",
+      "description": "Бесплатная диагностика кондера с 5.05.2023 по 31.07.2023",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0252",
+      "ru": "https://ad.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0253",
+      "ru": "https://auto-spec.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0254",
+      "ru": "https://auto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Гараж Авто.ру БДХЧ с 15.10.2021 по 31.12.2021",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0255",
+      "ru": "https://autoconf.org/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0256",
+      "ru": "https://checkreport.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0257",
+      "ru": "https://conf.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0258",
+      "ru": "https://metrika.yandex.ru/overview?id=57526852",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0259",
+      "ru": "https://dtp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0260",
+      "ru": "https://event.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0261",
+      "ru": "https://fitfranchise.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0262",
+      "ru": "https://fitjob-1.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0263",
+      "ru": "https://gpn-leto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0264",
+      "ru": "https://gpn.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0265",
+      "ru": "https://taplink-ccsugarpresset.site/p/ac39b9/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0266",
+      "ru": "https://kpp.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0267",
+      "ru": "https://kyb.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0268",
+      "ru": "https://master.fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0269",
+      "ru": "https://travel.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Тильда",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0270",
+      "ru": "https://motorfit.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0271",
+      "ru": "https://proleto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0272",
+      "ru": "https://safe.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0273",
+      "ru": "https://sh-fast.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0274",
+      "ru": "https://sh.fitauto.kz/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0275",
+      "ru": "https://sk15.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0276",
+      "ru": "https://smotra.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0277",
+      "ru": "https://sr.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0278",
+      "ru": "https://teplo.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0279",
+      "ru": "https://webasto.fitauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0280",
+      "ru": "https://fitauto.ru/avarkom/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0281",
+      "ru": "https://fitauto.ru/halva/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0282",
+      "ru": "https://franchise.fitavto.kz/dod_astana",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0283",
+      "ru": "https://stona100.fitautolab.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0284",
+      "ru": "https://rgs-fleet.fiauto.ru/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Описание не указано",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0285",
+      "ru": "https://fitauto.ru/tech-inspect/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Техосмотр",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    },
+    {
+      "id": "page-0286",
+      "ru": "https://fitauto.ru/evak/",
+      "kz": "",
+      "redirectRu": "",
+      "redirectKz": "",
+      "description": "Эвакуаторы",
+      "expires": "",
+      "expiryNote": "",
+      "owner": "",
+      "project": "Не работают",
+      "groupPath": [
+        "Архив",
+        "Не работают"
+      ],
+      "status": "archive",
+      "isTemplate": false,
+      "requestId": ""
+    }
+  ]
+}
