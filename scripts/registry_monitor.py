@@ -146,6 +146,9 @@ def discover_certificates(domain):
 
 
 def reminders(registry, previous, now):
+    if os.environ.get("NOTIFICATION_CHANNEL") == "telegram":
+        from telegram_notify import reminders as telegram_reminders
+        return telegram_reminders(registry, previous, now)
     config = ["ALERT_EMAIL", "SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD", "SMTP_FROM"]
     if not all(os.environ.get(k) for k in config):
         return previous, "Почта не подключена: настройте ALERT_EMAIL и SMTP_* в GitHub Secrets."
@@ -243,7 +246,7 @@ def main():
     try:
         sent, email_status = reminders(registry, sent, now)
     except Exception as e:
-        email_status = "Ошибка почты: " + str(e)[:200]
+        email_status = "Ошибка уведомлений: " + str(e)[:200]
         errors.append(email_status)
     report.update(checkedAt=now, checks=updated, notifications=sent, discoveryErrors=errors, emailStatus=email_status)
     candidates.update(updatedAt=now, items=items)

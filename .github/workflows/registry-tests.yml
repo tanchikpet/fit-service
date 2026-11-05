@@ -26,6 +26,6 @@ jobs:
           node --check fit-requests/registry-bridge.js
           node --check fit-requests/intake.js
           python -m unittest discover -s tests -p 'test_*.py' -v
-      - run: pip install playwright==1.56.0
+      - run: pip install playwright==1.56.0 cryptography==46.0.3
       - run: python -m playwright install --with-deps chromium
       - run: python tests/browser_registry.py
