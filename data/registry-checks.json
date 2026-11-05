@@ -1,1 +1,2137 @@
-{"checkedAt":null,"checks":{},"notifications":{}}
+{
+  "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+  "checks": {
+    "http://franchblog.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "http://franchblog.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "http://taxi.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "http://taxi.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "http://osen2021.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://osen2021.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "http://fitauto.ru/dtp/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/dtp/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "http://present.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://present.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://2021.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://1khabib.fitauto.ru/": {
+      "status": 402,
+      "finalUrl": "https://1khabib.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://2020.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://2020.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "http://taplink.cc/fitservice_kz": {
+      "status": 200,
+      "finalUrl": "https://taplink.at/en/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://ac.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "http://osen21.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://osen21.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://ad-conder.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://ad.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://adpromo.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://adpromo.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://auto-osen.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://auto-dec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://arenda.fitauto.ru/": {
+      "status": 402,
+      "finalUrl": "https://arenda.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://approve.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://approve.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://auto-lynx.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://auto-lynx.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://arenda.fitavto.kz/": {
+      "status": 402,
+      "finalUrl": "https://arenda.fitavto.kz/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://auto-spec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://auto10.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://auto.fitauto.ru/": {
+      "status": 500,
+      "finalUrl": "https://auto.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://autocheck.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://autocheck.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://auto-sh.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://sh-fix.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://autoday-new.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://autoday-new.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://autoday.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://autoday.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://auto-to.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://free.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://autoday3000-new.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://autoday3000-new.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://autoday7000-new.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://autoday7000-new.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://autoconf.org/": {
+      "status": 404,
+      "finalUrl": "https://autoconf.org/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://avarkom.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://autopark.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://autopark.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://avito-sh.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avito-booking.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://avito-booking.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://autoday.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avito.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avito15.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avito20.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avtocod.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://avtocod.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://bcs-spec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://battle.fitautolab.ru/rozygrysh": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://bday.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://bday.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://avtoservice.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://bday.fitauto.ru/play/?phone=79136788888": {
+      "status": 200,
+      "finalUrl": "https://bday.fitauto.ru/play/?phone=79136788888",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://avito-spec.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://avito-spec.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://avito-to.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://avito-to.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://bigcar.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://blog.fitautolab.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://bonus-rubin-yat.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://bonus-rubin-yat.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://bday.fitavto.kz/play/?phone=79136788888": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://bday.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://bonus.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://bonus.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://bonus.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://check.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://check.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://check.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://clean.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://clean.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://combo.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://combo.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cashvoucher.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://novosibirsk.fitauto.ru/#signin",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://combo.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://checkreport.fitauto.ru/": {
+      "status": 502,
+      "finalUrl": "https://checkreport.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conder.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://conder.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://conf.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://conder.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://boss.fitautolab.ru/": {
+      "status": 402,
+      "finalUrl": "https://boss.fitautolab.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/2025": {
+      "status": 200,
+      "finalUrl": "https://conf.fitautolab.ru/2025",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/analyz": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/analyz",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://conf.fitautolab.ru/franch_kz": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/franch_kz",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/conder": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/conder",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/kadry": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/kadry",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/dod_msk": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/dod_msk",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/": {
+      "status": 200,
+      "finalUrl": "https://conf.fitautolab.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://contract.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://contract.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/adventhappy": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/adventhappy",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/auto": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/auto",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/2gis": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/2gis",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/avtokod": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/avtokod",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://conf.fitautolab.ru/sh": {
+      "status": 404,
+      "finalUrl": "https://conf.fitautolab.ru/sh",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/beeline": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/beeline",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/halva": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/halva",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/gazp": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/gazp",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/happy": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/happy",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/halva1500": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/halva1500",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/home": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/home",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/insapp": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/insapp",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/insappkasko": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/insappkasko",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/newyear": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/newyear",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/paveleckaya": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/paveleckaya",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/primezone": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/primezone",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/sk": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/sk",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://cross.fitauto.ru/t2": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/t2",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/sravnibonus": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/sravnibonus",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://dh.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://diagnost.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://cross.fitauto.ru/tbank": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/tbank",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://cross.fitauto.ru/tele2": {
+      "status": 200,
+      "finalUrl": "https://cross.fitauto.ru/tele2",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://dtp.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://doc.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://doc.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://engine.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://evak.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://event.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://erp.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://erp.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://event.fitautolab.ru/liquid": {
+      "status": 402,
+      "finalUrl": "https://event.fitautolab.ru/liquid",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://federal.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://federal.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://federal-gp.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://federal-gp.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://federal-ya.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://federal-ya.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://fit-halva.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://ff.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://ff.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fit.fitauto.ru/pay2u": {
+      "status": 200,
+      "finalUrl": "https://fit.fitauto.ru/pay2u",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fit.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fit.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://fit.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://fitauto.ru/about/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/about/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fit-msk.tilda.ws/": {
+      "status": 200,
+      "finalUrl": "https://fit-msk.tilda.ws/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fit10.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://free.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/appointments": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/appointments",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://fitauto.ru/about/products/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/about/products/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/avarkom/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/avarkom/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/corp/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/corp/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/corp/fleet/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/corp/fleet/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/evak/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/evak/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/halva/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/halva/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/method/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/method/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/tech-inspect/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/tech-inspect/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/osago/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/osago/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitauto.ru/vacancy/": {
+      "status": 404,
+      "finalUrl": "https://fitauto.ru/vacancy/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://fleet.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fleet.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fitjob-1.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://fitjob-1.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franchblog.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://avtofranchise.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error timed out>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://fitautolab.ru/": {
+      "status": 200,
+      "finalUrl": "https://fitautolab.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fran.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fran.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franchise.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://free.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://free.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franch.fitavto.kz/": {
+      "status": 200,
+      "finalUrl": "https://franch.fitavto.kz/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franch.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fran.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franchise.fitavto.kz/dod_astana": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://fitfranchise.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -3] Temporary failure in name resolution",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://friend.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://friend.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franchise.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fran.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://fullservice.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fullservice.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://gazprombonus-test.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://gazprombonus-test.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://franchshop.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://franchshop.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://gates.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://gates.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://gazprombonus.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://gazprombonus.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://gpn-hod.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn-leto.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn-osen.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn-sh.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn-spec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://free.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn1199.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://fs.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fs.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://gpn15.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://friend.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://gpn21.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://gpn21.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://gpn21.fitauto.ru/tirefitting/": {
+      "status": 404,
+      "finalUrl": "https://gpn21.fitauto.ru/tirefitting/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://hello.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://hb.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://hb.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://hodovka.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://hod.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://hod.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://hb.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://khabib.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://kpp.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://ingos.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://ingos.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://karso.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://karso.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://krd.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://krd.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://ku.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://ku.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://grm.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://grm.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://kyb.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://kyb2021.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://jobcard.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://jobcard.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://law.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://lady.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://lady.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://lukoil.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://leto.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://leto.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://maslo20.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://master.fitautolab.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://maslo.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://maslo.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://liquids.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://liquids.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://lynx.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://lynx.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://maslo.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://maslofree.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://maslofree.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://maslofree.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://mineev.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://megabonus.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://megabonus.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://mo.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://mo.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://msk.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://msk.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://new.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://new.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://new.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://novosibirsk.fitauto.ru/body-repair-by-photo/": {
+      "status": 404,
+      "finalUrl": "https://novosibirsk.fitauto.ru/body-repair-by-photo/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://novosibirsk.fitauto.ru/booking/blitz/": {
+      "status": 404,
+      "finalUrl": "https://novosibirsk.fitauto.ru/booking/blitz/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://novosibirsk.fitauto.ru/personal/": {
+      "status": 404,
+      "finalUrl": "https://novosibirsk.fitauto.ru/personal/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://msko.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://free.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://oil.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://oil.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://oilfree.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://oil.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://metrika.yandex.ru/overview?id=57526852": {
+      "status": 200,
+      "finalUrl": "https://passport.yandex.ru/auth?origin=metrika&retpath=https%3A%2F%2Fmetrika.yandex.ru%2Foverview%3Fid%3D57526852",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://one.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://one.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://one.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://order.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://order.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://osen-halva.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://osen.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://proleto.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://proleto11.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://profi.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://profi.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://motorfit.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -3] Temporary failure in name resolution",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://promotion.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://promotion.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://promo.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://promo.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://rabota.fitauto.ru/avtomehanikfitservice": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://quiz.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://quiz.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://qr.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://qr.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://qr.fitavto.kz/": {
+      "status": 200,
+      "finalUrl": "https://qr.fitavto.kz/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/avtomehanik": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/avtomehanik",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/call-centre": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/call-centre",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://rabota.fitauto.ru/diagnost": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/diagnost",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://rabota.fitauto.ru/consultation": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/consultation",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/manager": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/manager",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/office": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/office",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/rf2": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/rf2",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/rf": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/rf",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/sell": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/sell",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://rabota.fitauto.ru/rukovoditel": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/rukovoditel",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/workspec": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/workspec",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rabota.fitauto.ru/selltwo": {
+      "status": 404,
+      "finalUrl": "https://rabota.fitauto.ru/selltwo",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rgs-fleet.fiauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://reklama.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://reklama.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://rosneft.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://rabota2.fitauto.ru/referal": {
+      "status": 200,
+      "finalUrl": "https://rabota2.fitauto.ru/referal",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://safe.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://service.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sh-brn.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sh-fast.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sh-fix.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://sh-fix.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://remont.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://free.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://sh.fitauto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://scanfree.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://fit.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://sh-halva.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://rekpp.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://rekpp.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://shmsk.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://scanfit.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://scanfit.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://sh-m.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://sh-m.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://sh.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://sh.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://shspb.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sh.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://shop.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://shop.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://sk-conder.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sk15.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://smotra.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://spec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://taplink-ccsugarpresset.site/p/ac39b9/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "[Errno -2] Name or service not known",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://spec-sh.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sk500.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://sk500.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://spec-sh.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://spec-sh.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://sr.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sravni-spec.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://sravni.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://taplink.cc/fitservice_official": {
+      "status": 200,
+      "finalUrl": "https://taplink.cc/fitservice_official",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://taxi-49aadc78ef.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://taxi-49aadc78ef.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://taxi-35e768d304.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://taxi-35e768d304.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://teplo.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://tinkoff.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://taxivezet-0ad3ba822d.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://taxivezet-0ad3ba822d.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://tbank.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://tbank.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://stona100.fitautolab.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: Hostname mismatch, certificate is not valid for 'stona100.fitautolab.ru'. (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://to.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://to.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://ufo.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://vesna.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://vesna2021.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://to.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://travel.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://travel.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://tyres.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://tyres.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://vlasov.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://vesna21.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://vesna21.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://webasto.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://xxx.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://x5club.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://x5club.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://x5club-test.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://x5club-test.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://www.sravni.ru/promo/fitservice/": {
+      "status": 404,
+      "finalUrl": "https://www.sravni.ru/promo/fitservice/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://yaauto-8fa4222a34.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://yaauto-8fa4222a34.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://yapro.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://yapro.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://yataxi-69u4809359u.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://yanavigator.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://yanavigator.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://zabit.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://yataxi-b0b6f6ba33.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://yataxi-b0b6f6ba33.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://zima.fitauto.ru/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    },
+    "https://yataxi-f5ebf84a1a.fitauto.ru/": {
+      "status": 404,
+      "finalUrl": "https://yataxi-f5ebf84a1a.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": true
+    },
+    "https://zamena.fitauto.ru/": {
+      "status": 200,
+      "finalUrl": "https://zamena.fitauto.ru/",
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "changed": false,
+      "previousFinalUrl": null,
+      "expectedMismatch": false
+    },
+    "https://zamena.fitavto.kz/": {
+      "checkedAt": "2026-11-05T06:16:44.929918+00:00",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>",
+      "finalUrl": null,
+      "changed": false
+    }
+  },
+  "notifications": {},
+  "discoveryErrors": [
+    "Сертификаты fitauto.ru: The read operation timed out",
+    "Карта сайта fitavto.kz: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1011)>"
+  ],
+  "emailStatus": "Почта не подключена: настройте ALERT_EMAIL и SMTP_* в GitHub Secrets."
+}
