@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T06:16:44.929918+00:00",
+  "updatedAt": "2026-11-05T06:21:20.518356+00:00",
   "items": [
     {
       "id": "found-9437093cb735ab4c",
@@ -1364,6 +1364,83 @@
       "url": "https://www.master.fitautolab.ru/",
       "source": "Публичные сертификаты fitautolab.ru",
       "foundAt": "2026-11-05T06:16:44.929918+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3c67fab233d9f100",
+      "url": "https://rabota.fitauto.ru/automechanic-expirience",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-588277c77ab36bf8",
+      "url": "https://rabota.fitauto.ru/vacancies-manager",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-73dd0f25f4726614",
+      "url": "https://rabota.fitauto.ru/autoelectric",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f7bc81a9ab2755e1",
+      "url": "https://rabota.fitauto.ru/automechanic-no-expirience",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6a223a1ab38df2b4",
+      "url": "https://rabota.fitauto.ru/rukovoditel-sto",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4669455de2fe45cb",
+      "url": "https://rabota.fitauto.ru/referral",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7c236fcd5e1cbb92",
+      "url": "https://rabota.fitauto.ru/office-n",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-283f3622bb8d45e6",
+      "url": "https://rabota.fitauto.ru/referral-office",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-69b2b1b07e89d528",
+      "url": "https://rabota.fitauto.ru/operator-kontakt-centra",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6b5374a8453130b2",
+      "url": "https://rabota.fitauto.ru/policy",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3cc3e764939c672c",
+      "url": "https://rabota.fitauto.ru/policy_email",
+      "source": "Ссылка со страницы https://rabota.fitauto.ru/",
+      "foundAt": "2026-11-05T06:21:20.518356+00:00",
       "state": "pending"
     }
   ]
