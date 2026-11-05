@@ -21,6 +21,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: pip install cryptography==46.0.3
       - run: |
           node --check registry.js
           node --check fit-requests/registry-bridge.js
