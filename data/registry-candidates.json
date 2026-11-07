@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-06T12:43:48.140855+00:00",
+  "updatedAt": "2026-11-07T11:32:10.444704+00:00",
   "items": [
     {
       "id": "found-9437093cb735ab4c",
@@ -1441,6 +1441,1805 @@
       "url": "https://rabota.fitauto.ru/policy_email",
       "source": "Ссылка со страницы https://rabota.fitauto.ru/",
       "foundAt": "2026-11-05T06:21:20.518356+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f58963a52fdef584",
+      "url": "https://achinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4daee869b704f2b2",
+      "url": "https://angarsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ba7cee77f1b9190a",
+      "url": "https://aramil.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-83abd28957db8399",
+      "url": "https://arkhangelsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-bb5d1c6d3ba49718",
+      "url": "https://azov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-48b78a925eaecf55",
+      "url": "https://balakovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1ccb2e986c8a7ef1",
+      "url": "https://balashikha.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-782dbbc48a54e779",
+      "url": "https://barabinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-72fa06cf260a7b82",
+      "url": "https://barnaul.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3443aef9f6a06f26",
+      "url": "https://belgorod.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-56143a98bc55b8ca",
+      "url": "https://belogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ba9bd3d9bb614137",
+      "url": "https://berdsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-504350dc65a9fadc",
+      "url": "https://birobidzhan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6b03012fb4a0cbe9",
+      "url": "https://biysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-01e74e2a623e8f29",
+      "url": "https://blagoveshchensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9cdfafbaf9fc4f59",
+      "url": "https://bolshoykamen.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-475e73cc246ec9b1",
+      "url": "https://bratsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2257c7512140e57d",
+      "url": "https://bryansk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-793f5823068db8c4",
+      "url": "https://chaykovskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a2fa6a6000dd528b",
+      "url": "https://chelyabinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1ab16ab2632215e0",
+      "url": "https://cheremkhovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a02a0a566da87c6e",
+      "url": "https://chita.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c1583d7559c1717d",
+      "url": "https://dalnerechensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ebf1b7460b307e7b",
+      "url": "https://dzerzhinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f03b30a4bfd2d77c",
+      "url": "https://ekaterinburg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5f2174c55261a97a",
+      "url": "https://fitjob.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7ac4a9c6bfdc71ed",
+      "url": "https://fokino.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-abf5a0e80f9dd7ec",
+      "url": "https://gelendzhik.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a0159178ff046439",
+      "url": "https://gorno-altaysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b5c45c4e020f1f22",
+      "url": "https://irkutsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ff11054c4c7c6d4a",
+      "url": "https://ishim.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-84ce53d9baec581e",
+      "url": "https://iskitim.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1a6039ebf8cd2972",
+      "url": "https://izhevsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a9a96a9ea74ef8f7",
+      "url": "https://job.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0eb2571cd50c6d32",
+      "url": "https://kaluga.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-bcb53ddf74bd4425",
+      "url": "https://kartaly.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-dbd724f316acc874",
+      "url": "https://kazan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-91a2314a1e6d8f3c",
+      "url": "https://kemerovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a737947fa994e693",
+      "url": "https://khabarovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1bc566d90efa7b2f",
+      "url": "https://kirov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b699e01523296a87",
+      "url": "https://korolev.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-17ac91ac0ec31476",
+      "url": "https://kovrov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-03c14adfb1b1594f",
+      "url": "https://krasnodar.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c62adf0608e37937",
+      "url": "https://krasnoyarsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-71ed78fde4c45997",
+      "url": "https://kulebaki.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e12de55609a97b5e",
+      "url": "https://kurgan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a2772a09a08bb337",
+      "url": "https://kuybyshev.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8033d812b9a1d1c1",
+      "url": "https://lipetsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0ec3315963c8f106",
+      "url": "https://lnkz.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-01384e450570e3c8",
+      "url": "https://magnitogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a7f045bb3ab7a17f",
+      "url": "https://makhachkala.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-08a3d610afc662bc",
+      "url": "https://mezhdurechensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b1d2b13084ddeace",
+      "url": "https://moskva.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f53b5a5749c949d7",
+      "url": "https://my.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a292d8aed718be14",
+      "url": "https://myski.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fd2ed9768d5686b6",
+      "url": "https://naberezhnyechelny.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-42c50f78746d69f2",
+      "url": "https://nakhodka.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c188be2982d85c72",
+      "url": "https://nizhneudinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-061877ddf7c576f3",
+      "url": "https://nizhnevartovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-85f837cabc29eb99",
+      "url": "https://nnov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-22fefee35a68d57a",
+      "url": "https://notavailable.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c0f851423237b192",
+      "url": "https://notavailable2.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7676a281b98767de",
+      "url": "https://novokuznetsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b8a517ac576e545b",
+      "url": "https://novorossiysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-274fdc18a41127b5",
+      "url": "https://novosibirsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9d0939a70d650718",
+      "url": "https://ntg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-cdc416bac96c2e72",
+      "url": "https://nur-sultan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8a88fc5c6d73ad37",
+      "url": "https://oktyabrskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9056c0410219eaad",
+      "url": "https://old.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c7cf2b6a647082dd",
+      "url": "https://omsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-08855f3f04672418",
+      "url": "https://ordynskoe.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a0629243ce9a8f33",
+      "url": "https://orel.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a7789c0f767f9380",
+      "url": "https://orenburg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fc87829ae1893bd1",
+      "url": "https://otradnyy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d46877c13863e3f9",
+      "url": "https://pavlodar.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-69e1946b1432f7b2",
+      "url": "https://perm.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a3da0033023eded0",
+      "url": "https://petrozavodsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-339fd4971966d1a5",
+      "url": "https://podolsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-78eee8a3caac698b",
+      "url": "https://prokopevsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-148d722b64762bea",
+      "url": "https://pskov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9802d7c94ba49055",
+      "url": "https://pushkino.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-bbff76cd80320112",
+      "url": "https://pyatigorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0f192d0e452eb03d",
+      "url": "https://qrgram.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f3d374cdfb00425d",
+      "url": "https://rabota2.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-65b725f14a2b33dc",
+      "url": "https://rabota3.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f021139b2453de57",
+      "url": "https://rabota6.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-99dc6338d2895a74",
+      "url": "https://rnd.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-cb5fc269f78b107c",
+      "url": "https://rubtsovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f360f2d6d7e33efe",
+      "url": "https://ryazan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8287a65d00ca0f34",
+      "url": "https://salsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c36c5913fd077dc7",
+      "url": "https://samara.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-686de634c6018c92",
+      "url": "https://saratov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d8d0b88caa2f458b",
+      "url": "https://sbotadmin.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6e6e4ff156da5a9a",
+      "url": "https://sbotapi.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fb5ad08b1ac41163",
+      "url": "https://sevastopol.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-30ee984d449d0d21",
+      "url": "https://seversk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-44cb0df7ef0649a4",
+      "url": "https://shchelkovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-86f965ccbffa41a2",
+      "url": "https://solikamsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ba1ddd79a927a665",
+      "url": "https://sosnovoborsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3fcb3b426c914912",
+      "url": "https://spb.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5631d1ed232c0cba",
+      "url": "https://sps.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b17e6bbe8d50d0d4",
+      "url": "https://stavropol.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-008044b17dc8b873",
+      "url": "https://surgut.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6feb18412f0f9c73",
+      "url": "https://test.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0b08afb0db07fa01",
+      "url": "https://tolyatti.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-901b98e60fb9e7d2",
+      "url": "https://tomsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c053b26d8f7addca",
+      "url": "https://tyumen.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b1f24faeef1d06ff",
+      "url": "https://ufa.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8655c9de6d342f54",
+      "url": "https://ulan-ude.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9318f7c33592e72e",
+      "url": "https://upravlyayushchayakompaniya.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4af10f6dd8d19aaa",
+      "url": "https://ussuriysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1634bffbe060a525",
+      "url": "https://uzlovaya.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ffedbd154b9be35b",
+      "url": "https://vladimir.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-233b235f4c6bf987",
+      "url": "https://vladivostok.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e1b45344f162d24a",
+      "url": "https://volgodonsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-234f52194a175ae1",
+      "url": "https://volgograd.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-468c69c3e7d59c5c",
+      "url": "https://volsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7f277ae9410bd54c",
+      "url": "https://volzhskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-879b05ae2d0ce17d",
+      "url": "https://voronezh.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a2b11c473429823d",
+      "url": "https://votkinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3cacba2824e74be3",
+      "url": "https://wifi.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-37de6092855b7663",
+      "url": "https://www.1khabib.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2b905fc20096500b",
+      "url": "https://www.achinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-57b6f2e584a9d617",
+      "url": "https://www.angarsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-086e4a70b694af2f",
+      "url": "https://www.aramil.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f79813e4fdb7adfd",
+      "url": "https://www.arenda.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d3ddc78a8b3cb979",
+      "url": "https://www.arkhangelsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ee0b9129a14f1e7e",
+      "url": "https://www.azov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-eee7145f44fca294",
+      "url": "https://www.balakovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b269be5e8eafe321",
+      "url": "https://www.balashikha.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3946362ff731ce17",
+      "url": "https://www.barabinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a4a14db294a67443",
+      "url": "https://www.barnaul.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fd3984b6a4d28e0b",
+      "url": "https://www.belgorod.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7659bfe4b051ed16",
+      "url": "https://www.belogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-287953f0cef240ba",
+      "url": "https://www.berdsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-24e45219b176e81b",
+      "url": "https://www.birobidzhan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-14174456c15fea36",
+      "url": "https://www.biysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7062848ca14b2359",
+      "url": "https://www.blagoveshchensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-797a188f049b2475",
+      "url": "https://www.bolshoykamen.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-81005d4fd58eead6",
+      "url": "https://www.bratsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7411680363ad12da",
+      "url": "https://www.bryansk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fc31d7b6425f3b70",
+      "url": "https://www.chaykovskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-14ad97afdb2b99d4",
+      "url": "https://www.chelyabinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5c66b0fd40ea7c69",
+      "url": "https://www.cheremkhovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d94aa6166849553f",
+      "url": "https://www.chita.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9ffbc7c59ace1531",
+      "url": "https://www.dalnerechensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-89e4ff4a0dd0a675",
+      "url": "https://www.dzerzhinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4da39cc1578a2dd9",
+      "url": "https://www.ekaterinburg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d40802b8fbc362aa",
+      "url": "https://www.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4c575b9d91e77e17",
+      "url": "https://www.fokino.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2cac0997015d582a",
+      "url": "https://www.fran.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-dea7fd48794074ce",
+      "url": "https://www.franchise.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e99bc139275d2186",
+      "url": "https://www.gelendzhik.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2e37726ccab10d0c",
+      "url": "https://www.gorno-altaysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-15f41d7e2c8a95f0",
+      "url": "https://www.irkutsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-06cdc95b720bc103",
+      "url": "https://www.ishim.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9c9052c7fd431cda",
+      "url": "https://www.iskitim.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e44a5f8c14951d77",
+      "url": "https://www.izhevsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9eaccb08084b1912",
+      "url": "https://www.jobcard.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a422e9ecd3a4dc59",
+      "url": "https://www.kaluga.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-016e12b37e8b1886",
+      "url": "https://www.kartaly.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b130f4bcaf777f45",
+      "url": "https://www.kazan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-705194ef8fd15241",
+      "url": "https://www.kemerovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1c2e4a2ae52f1175",
+      "url": "https://www.khabarovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f23d2eacb78105cd",
+      "url": "https://www.khabib.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-763f326f2d45659b",
+      "url": "https://www.kirov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-146eb42031e31b5f",
+      "url": "https://www.korolev.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-80af2b953f9675ec",
+      "url": "https://www.kovrov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-be279c85b2346e86",
+      "url": "https://www.krasnodar.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-015efc3cc2f4b95b",
+      "url": "https://www.krasnoyarsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0fe4bc6748d5b60c",
+      "url": "https://www.kulebaki.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-aab894bf79e4b855",
+      "url": "https://www.kurgan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9a6cd5075b7d9049",
+      "url": "https://www.kuybyshev.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-14ac38d09e2c4f21",
+      "url": "https://www.lipetsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c81d7cd5102d039b",
+      "url": "https://www.lnkz.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9a362715d9c1bd2b",
+      "url": "https://www.magnitogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0ccaf1071793bf2d",
+      "url": "https://www.makhachkala.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-094ea6d81f964b7d",
+      "url": "https://www.megabonus.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-cedcb572de14312b",
+      "url": "https://www.mezhdurechensk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-edf43aaa5a2ebf4e",
+      "url": "https://www.moskva.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-6bb76542d8484d92",
+      "url": "https://www.myski.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ecc90e0c97f99350",
+      "url": "https://www.naberezhnyechelny.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c96a5163ad50ea64",
+      "url": "https://www.nakhodka.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7d7dba97a53ecc32",
+      "url": "https://www.nizhneudinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ff7fbcc1270601fd",
+      "url": "https://www.nizhnevartovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-72e432e363358bcd",
+      "url": "https://www.notavailable.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e49a247c351f5be8",
+      "url": "https://www.notavailable2.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-51050ac7e1059e44",
+      "url": "https://www.novokuznetsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2d7334ba856d2633",
+      "url": "https://www.novorossiysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d4652354fdc3dbdc",
+      "url": "https://www.novosibirsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5280db5f75f0c0fa",
+      "url": "https://www.ntg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a2c05175c8e3c9ce",
+      "url": "https://www.nur-sultan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-883b54dd56af2504",
+      "url": "https://www.oktyabrskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-cb9e98e8724e492f",
+      "url": "https://www.omsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a5dde0f7d6ef958e",
+      "url": "https://www.ordynskoe.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5474cacfb735d187",
+      "url": "https://www.orel.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-88522085b2093714",
+      "url": "https://www.orenburg.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-076a290f562a1721",
+      "url": "https://www.otradnyy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d08d88e71a253161",
+      "url": "https://www.pavlodar.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ff2e4a30d377eb76",
+      "url": "https://www.perm.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9cfd2ac85bb7db88",
+      "url": "https://www.petrozavodsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-def2cd7b79762165",
+      "url": "https://www.podolsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-48cc7493a1f4bf95",
+      "url": "https://www.prokopevsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f8022aa0099d7f50",
+      "url": "https://www.pskov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e5e70d5d14bbc5b3",
+      "url": "https://www.pushkino.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-4da7df7ca0072cd6",
+      "url": "https://www.pyatigorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9b430868fba7df96",
+      "url": "https://www.qr.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-fa6548baa5eb0f7a",
+      "url": "https://www.qrgram.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7d37b9fac9af7dfe",
+      "url": "https://www.rabota.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2daf8755017a388d",
+      "url": "https://www.rabota2.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-143d861a9eba6fee",
+      "url": "https://www.rabota3.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-882d0e78365d75f7",
+      "url": "https://www.rabota6.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0fc0c6a0573ee0fb",
+      "url": "https://www.rnd.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e30ac8b435dcd737",
+      "url": "https://www.rubtsovsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-05cb3d89f04e55d0",
+      "url": "https://www.ryazan.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8f5d9fd6d315dd5a",
+      "url": "https://www.salsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-0a76c34e39b24f6b",
+      "url": "https://www.samara.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-aa33a7b5b7922f10",
+      "url": "https://www.saratov.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e2ee2b0a52227ed1",
+      "url": "https://www.sevastopol.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a1a1ad28d9f0c088",
+      "url": "https://www.seversk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-46452f4f45f2bccc",
+      "url": "https://www.shchelkovo.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-2e49e000e892dcdd",
+      "url": "https://www.shop.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1cc6cb719a37416a",
+      "url": "https://www.solikamsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-c81fd683a9ca8f4b",
+      "url": "https://www.sosnovoborsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5117e2fd2b4fa944",
+      "url": "https://www.spb.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-be73886a9276cbfb",
+      "url": "https://www.sps.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-156c0f9bf4d058a1",
+      "url": "https://www.stavropol.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-670edabbc88d207c",
+      "url": "https://www.surgut.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a9cfee258b601c3e",
+      "url": "https://www.tolyatti.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8e96798372202127",
+      "url": "https://www.tomsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-cb3dff0f85c9c305",
+      "url": "https://www.travel.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-b6aa54fc46313785",
+      "url": "https://www.tyumen.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-e6d23fe6fc537f84",
+      "url": "https://www.ufa.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ce4c8769ef3b5cf8",
+      "url": "https://www.ulan-ude.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-9d410a13fee99c0e",
+      "url": "https://www.upravlyayushchayakompaniya.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f40942905c698fcd",
+      "url": "https://www.ussuriysk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ce41094d76257ad7",
+      "url": "https://www.uzlovaya.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-ea5c46f710ad3950",
+      "url": "https://www.vladimir.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-31cedf4b590ef946",
+      "url": "https://www.vladivostok.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-414e1125580e49a2",
+      "url": "https://www.volgodonsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-f03af3980aa45bf4",
+      "url": "https://www.volgograd.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-41ae81fb1b938e8a",
+      "url": "https://www.volsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-edc6c8316e75fba3",
+      "url": "https://www.volzhskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-097c7e61697412d0",
+      "url": "https://www.voronezh.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-d98e81d6a9bed9ed",
+      "url": "https://www.votkinsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-30cc778efb76de26",
+      "url": "https://www.wifi.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-764e3d3ab299d570",
+      "url": "https://www.yablonovskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-936bf091b2841df2",
+      "url": "https://www.yaroslavl.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-8395f4258b29bd22",
+      "url": "https://www.zelenogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-1da59c191a7542b4",
+      "url": "https://www.zheleznogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-5f0cf328352c1754",
+      "url": "https://www.zlatoust.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-7bf305579e8c9407",
+      "url": "https://yablonovskiy.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-adfdf5549304d2e3",
+      "url": "https://yaroslavl.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-a5fcff82a3d83d2c",
+      "url": "https://yataxi.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-3806496ee1949aee",
+      "url": "https://zelenogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-29f8718b35a5ea4d",
+      "url": "https://zheleznogorsk.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
+      "state": "pending"
+    },
+    {
+      "id": "found-348320e1e83eecea",
+      "url": "https://zlatoust.fitauto.ru/",
+      "source": "Публичные сертификаты fitauto.ru",
+      "foundAt": "2026-11-07T11:32:10.444704+00:00",
       "state": "pending"
     }
   ]
