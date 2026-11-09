@@ -61,3 +61,23 @@ npm start
 ## Безопасность
 
 Секретные переменные живут только в защищённых настройках хостинга. Доступные пользователю пути не сообщают идентификаторы карточек без admin Bearer. Сырой payload webhook не записывается в БД. Логируйте только ошибки без чувствительных деталей; задайте политику хранения данных и резервного копирования.
+
+## Закрытый вход через Telegram
+
+В этом PR подготовлен новый защищённый интерфейс на Railway (он не заменяет пока старый прототип GitHub Pages). Адрес: `https://fit-requests-kaiten-api-production.up.railway.app/`.
+
+Требуются переменные Railway:
+- `PUBLIC_ORIGIN=https://fit-requests-kaiten-api-production.up.railway.app` — публичный домен приложения (установлен).
+- `TELEGRAM_CLIENT_ID` — числовой Client ID из раздела Login Widget @BotFather (НЕ bot token).
+- `TELEGRAM_CLIENT_SECRET` — отдельный Client Secret из Login Widget @BotFather; хранить только в Railway.
+- `TELEGRAM_ADMIN_ID` — числовой Telegram user ID единственного первого администратора, не имя `@username`.
+
+**Для пользователя:** создать отдельного бота FIT Requests в @BotFather, выбрать Login Widget и добавить два Allowed URLs: `https://fit-requests-kaiten-api-production.up.railway.app` и `https://fit-requests-kaiten-api-production.up.railway.app/auth/callback`. Client ID и Client Secret вводить в Railway Variables. Для первого доступа укажи свой числовой Telegram ID в `TELEGRAM_ADMIN_ID` в Railway; не передавай секреты в чат.
+
+**Модель доступа:** сервер запрашивает Authorization Code + PKCE, однократно использует серверный `state` с привязкой к HttpOnly/Secure cookie, проверяет подпись Telegram ID Token через JWKS, `issuer`, `audience`, сроки. Администратор назначается только при совпадении проверенного Telegram `sub` с `TELEGRAM_ADMIN_ID`. Другие пользователи получают 403, пока администратор явно не разрешит им вход. Временные токены сессий хранятся в PostgreSQL в виде SHA-256 hash, Cookie — HttpOnly, Secure, SameSite=Lax, сессия на 7 дней. POST действия ограничены same-origin проверкой.
+
+**Эндпоинты:** `GET /` — вход; `GET /auth/start` и `GET /auth/callback` — Telegram OIDC; `GET /app` — защищённая таблица 100 последних Kaiten карточек; `POST /auth/logout`, `POST /auth/invite` — выход и приглашение сотрудника; `GET /api/me` — текущий пользователь. `GET /api/cards` и `GET /api/sync/status` допускают серверную сессию или действующий старый ADMIN Bearer; `POST /api/sync` по-прежнему **только** ADMIN Bearer.
+
+**Ограничения:** Настройки бота и Telegram ID должны быть добавлены владельцем в Railway до работающего входа. Старый интерфейс с `localStorage` остаётся отдельным демонстрационным сайтом — новый защищённый экран пока отображает только Kaiten и базовый механизм приглашения. Не считайте Telegram `@username` подтверждением идентичности. Перед приглашением сотрудников добавьте проверки ролей по проектам, аудит, отзыв доступа, резервный способ входа и согласуйте использование Telegram с IT-политикой компании.
+
+Справка: https://core.telegram.org/bots/telegram-login
