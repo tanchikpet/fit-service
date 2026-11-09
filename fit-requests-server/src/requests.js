@@ -57,8 +57,9 @@ export async function listRequests(pool,user){
  return {items:q.rows.map(toOutput),limit:3000};
 }
 export async function createRequest(pool,user,body){
- const payload=inputPayload(body,user.role,{draft:body.status==="Черновик"});
- if(user.role!=="admin"){payload.status=payload.status==="Черновик"?"Черновик":"Новая"}
+ const isDraft=body.status==="Черновик";
+ const payload=inputPayload(body,user.role,{draft:isDraft});
+ if(user.role!=="admin"){payload.status=isDraft?"Черновик":"Новая"}
  const client=await pool.connect();try{
  await client.query("BEGIN");
  const id="REQ-"+(await client.query("SELECT nextval('fit_request_seq') AS n")).rows[0].n;
@@ -80,7 +81,7 @@ export async function updateRequest(pool,user,id,body){
  if(user.role!=="admin"&&old.created_by!==user.telegram_id){await client.query("ROLLBACK");return {forbidden:true}}
  if(old.revision!==revision){await client.query("ROLLBACK");return {conflict:true,currentRevision:old.revision}}
  if(user.role!=="admin"){for(const f of pmFields){if(old.payload[f]!==undefined)payload[f]=old.payload[f];else delete payload[f]}
- payload.mode=old.payload.mode||"employee";payload.status=old.payload.status==="Черновик"&&payload.status!=="Черновик"?"Новая":old.payload.status}
+ payload.mode=old.payload.mode||"employee";payload.status=old.payload.status==="Черновик"?(body.status==="Черновик"?"Черновик":"Новая"):old.payload.status}
  const merged={...old.payload,...payload,id:undefined};
  delete merged.id;delete merged.revision;delete merged.createdBy;delete merged.kaitenSync;merged.created=old.payload.created;
  const result=await client.query("UPDATE fit_requests SET payload=$2::jsonb,revision=revision+1,updated_at=now(),updated_by=$3,kaiten_card_id=$4 WHERE id=$1 RETURNING *",[id,JSON.stringify(merged),user.telegram_id,extractKaitenId(merged.kaiten)]);
