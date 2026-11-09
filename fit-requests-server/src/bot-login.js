@@ -1,5 +1,4 @@
-import {randomBytes,createHash} from "node:crypto";
-import {setTimeout as sleep} from "node:timers/promises";
+import {randomBytes,createHash,timingSafeEqual} from "node:crypto";
 
 const key=()=>randomBytes(32).toString("base64url");
 const hash=s=>createHash("sha256").update(String(s)).digest("hex");
@@ -15,7 +14,7 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
  const botUsername=String(env.TELEGRAM_BOT_USERNAME||"fit_requests_auth_bot").replace(/^@/,"");
  const botToken=env.TELEGRAM_BOT_TOKEN;
  const configured=()=>/^\d{5,16}:[A-Za-z0-9_-]{30,}$/.test(String(botToken||""))&&/^\d{4,20}$/.test(String(env.TELEGRAM_ADMIN_ID||""))&&/^[A-Za-z0-9_]{5,32}$/.test(botUsername);
- let enabled=false,offset=0;
+
  async function api(method,params={}){const response=await fetcher("https://api.telegram.org/bot"+botToken+"/"+method,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(params),signal:AbortSignal.timeout(20000)});if(!response.ok){let detail="";try{const failed=await response.json();detail=String(failed.description||"").slice(0,150)}catch{}throw Error("Telegram Bot API HTTP "+response.status+" on "+method+(detail?" ("+detail+")":""))}const data=await response.json();if(!data.ok)throw Error("Telegram Bot API rejected "+method+" code "+data.error_code);return data.result}
  async function allowed(id){if(!telegramId(id))return false;if(String(id)===String(env.TELEGRAM_ADMIN_ID))return true;const q=await pool.query("SELECT 1 FROM fit_auth_users WHERE telegram_id=$1 AND active=true LIMIT 1",[String(id)]);return q.rows.length>0}
  async function create(req,res){
@@ -62,35 +61,19 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
    if(approved&&c.message?.chat?.id)await api("sendMessage",{chat_id:c.message.chat.id,text:"Вход в FIT Requests подтвержден. Вернись в браузер и нажми «Продолжить»."});
   }
  }
- async function poll(){
-  if(!configured())return logger.warn("Telegram bot login disabled: missing configuration");
-  const client=await pool.connect();let lock=false;
-  try{
-   const lockCheck=await client.query("SELECT pg_try_advisory_lock($1) AS locked",[91820417]);
-   if(!lockCheck.rows[0]?.locked){logger.warn("Telegram polling skipped: another FIT Requests instance holds the lock");return}
-   lock=true;enabled=true;logger.info("Telegram bot login polling started");
-   try{
-    const info=await api("getMe");
-    logger.info("Telegram bot authenticated",{bot:info?.username===botUsername?"expected":"different",botIdPresent:Boolean(info?.id)});
-    if(info?.username!==botUsername){logger.error("Telegram Bot API token belongs to another bot; polling disabled");return}
-   }catch(err){logger.error("Telegram bot connection check failed:",err.message)}
-   let backoff=3000;
-   while(enabled){
-    try{
-     const updates=await api("getUpdates",{offset,timeout:8,limit:50,allowed_updates:["message","callback_query"]});
-     backoff=3000;
-     for(const update of updates){if(!enabled)break;try{await handle(update)}catch(err){logger.error("Bot login event failed:",err.message)}offset=Math.max(offset,Number(update.update_id)+1)}
-    }catch(err){
-     logger.error("Telegram Bot API polling error:",err.message);
-     await sleep(backoff);
-     backoff=Math.min(30000,backoff*2);
-    }
-   }
-  }finally{
-   enabled=false;
-   if(lock)await client.query("SELECT pg_advisory_unlock($1)",[91820417]).catch(()=>{});
-   client.release();
-  }
+ async function configureWebhook(){
+  if(!configured())return logger.warn("Telegram webhook disabled: missing bot credentials");
+  const origin=String(env.PUBLIC_ORIGIN||"");
+  const secret=String(env.TELEGRAM_WEBHOOK_SECRET||"");
+  if(!/^https:\/\/[^/]+$/.test(origin)||!/^[A-Za-z0-9_-]{32,256}$/.test(secret))return logger.warn("Telegram webhook disabled: missing HTTPS origin or secret");
+  const info=await api("getMe");
+  if(info?.username!==botUsername)throw Error("Telegram Bot API token belongs to unexpected bot");
+  logger.info("Telegram bot authenticated",{bot:"expected",botIdPresent:Boolean(info?.id)});
+  const url=origin+"/webhooks/telegram";
+  await api("setWebhook",{url,secret_token:secret,allowed_updates:["message","callback_query"],max_connections:2,drop_pending_updates:false});
+  logger.info("Telegram webhook configured");
  }
- return {create,wait,poll,stop:()=>{enabled=false},configured,handle};
+ const webhookSecret=String(env.TELEGRAM_WEBHOOK_SECRET||"");
+ const acceptWebhook=(given)=>webhookSecret.length>=32&&given.length===webhookSecret.length&&timingSafeEqual(Buffer.from(given),Buffer.from(webhookSecret));
+ return {create,wait,configureWebhook,acceptWebhook,configured,handle};
 }
