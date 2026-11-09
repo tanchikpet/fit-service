@@ -2,7 +2,7 @@ const PAGE_SIZE=100;
 export const normalizeCard=(c,spaceId)=>{
  if(!Number.isSafeInteger(Number(c?.id)))return null;
  const members=Array.isArray(c.members)?c.members.map(m=>typeof m==="object"?m?.id:m).filter(x=>Number.isSafeInteger(Number(x))).map(Number):[];
- return {id:Number(c.id),spaceId,updated:c.updated||null,title:String(c.title||""),boardId:c.board_id??c.board?.id??null,columnId:c.column_id??c.column?.id??null,laneId:c.lane_id??c.lane?.id??null,status:c.state??null,archived:Boolean(c.archived),assigneeIds:members,ownerId:c.owner_id??null,estimateRaw:c.size??null,estimateUnit:c.size_unit??null,estimateText:c.size_text??null,spentRaw:c.time_spent_sum??null,childrenCount:c.children_count??0,childrenDone:c.children_done??0,raw:c};
+ return {id:Number(c.id),spaceId,updated:c.updated||null,title:String(c.title||""),boardId:c.board_id??c.board?.id??null,columnId:c.column_id??c.column?.id??null,laneId:c.lane_id??c.lane?.id??null,status:c.state===undefined||c.state===null?null:String(c.state),archived:Boolean(c.archived),assigneeIds:members,ownerId:c.owner_id??null,estimateRaw:c.size??null,estimateUnit:c.size_unit??null,estimateText:c.size_text??null,spentRaw:c.time_spent_sum??null,childrenCount:c.children_count??0,childrenDone:c.children_done??0,raw:c};
 };
 export async function listKaitenCards({base,token,spaceId,updatedAfter,fetcher=fetch,maxPages=300}){
  const cards=[];let pages=0;
