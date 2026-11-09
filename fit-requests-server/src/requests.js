@@ -18,7 +18,7 @@ function inputPayload(input,role,{draft=false,legacy=false}={}){
  if(!["employee","pm"].includes(payload.mode))payload.mode="employee";
  if(role!=="admin"){payload.mode="employee";for(const key of pmFields)delete payload[key]}
  if(payload.status&&!statuses.has(payload.status))throw new Error("Неверный статус");
- if(!legacy&&!draft&&(!payload.title||!payload.description||!payload.requester))throw new Error("Для подачи укажи название, описание и инициатора");
+ if(!legacy&&!draft&&(!payload.title||(payload.mode!=="pm"&&(!payload.description||!payload.requester))))throw new Error("Для подачи укажи название, описание и инициатора");
  if(payload.pageAction&&!["new","close"].includes(payload.pageAction))throw new Error("Неверное действие со страницей");
  return payload;
 }
@@ -105,6 +105,7 @@ export async function importRequests(pool,user,body){
  if(q.rowCount){imported++;await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'import',1,$3::jsonb)",[it.id,user.telegram_id,JSON.stringify(it.payload)])}
  else skipped++;
  }
+ await client.query("SELECT setval('fit_request_seq', GREATEST((SELECT last_value FROM fit_request_seq),(SELECT COALESCE(MAX(SUBSTRING(id FROM 5)::bigint),0) FROM fit_requests)),true)");
  await client.query("COMMIT");return {imported,skipped,total:normalized.length};
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
 }
