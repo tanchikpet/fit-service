@@ -34,6 +34,13 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/auth/invite"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}const body=await collect(req,2048);await auth.invite(req,res,new URLSearchParams(body).get("telegram_id"));return}
   if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><h1>F. FIT Requests</h1><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
   if(path==="/app"&&req.method==="GET"){const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}html(res,200,await dashboard(me));return}
+  if(path==="/webhooks/telegram"&&req.method==="POST"){
+   const proof=String(req.headers["x-telegram-bot-api-secret-token"]||"");
+   if(!botLogin.acceptWebhook(proof)){send(res,403,{error:"forbidden"});return}
+   const raw=await collect(req,65536);let update;try{update=JSON.parse(raw)}catch{send(res,400,{error:"invalid_json"});return}
+   if(!update||typeof update!=="object"||Array.isArray(update)||!Number.isSafeInteger(update.update_id)){send(res,400,{error:"invalid_update"});return}
+   await botLogin.handle(update);send(res,200,{ok:true});return
+  }
   if(path.startsWith("/webhooks/kaiten/")&&req.method==="POST"){
    const supplied=path.slice("/webhooks/kaiten/".length);
    if(!safeEqual(supplied,config.webhookSecret)){send(res,404,{error:"not_found"});return}
@@ -70,8 +77,8 @@ server.listen(config.port,"0.0.0.0",()=>{
  console.info("FIT Requests sync server started",{port:config.port,spaceId:config.spaceId});
  // Failures are visible in logs/status; startup does not block serving health endpoint.
  sync.run("startup").catch(()=>{});
- botLogin.poll().catch(err=>console.error("Telegram login polling terminated:",err.message));
+ botLogin.configureWebhook().catch(err=>console.error("Telegram webhook configuration failed:",err.message));
 });
 const timer=setInterval(()=>sync.run("scheduled").catch(()=>{}),config.intervalMs);
-async function shutdown(){clearInterval(timer);botLogin.stop();server.close();await pool.end();process.exit(0)}
+async function shutdown(){clearInterval(timer);server.close();await pool.end();process.exit(0)}
 process.on("SIGTERM",shutdown);process.on("SIGINT",shutdown);
