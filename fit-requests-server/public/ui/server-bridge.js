@@ -66,6 +66,20 @@
   }
   dialog.showModal();
  }
+ const previousRender=render;
+ render=function(){
+  previousRender();
+  if(!detailId)return;
+  const t=data.find(x=>x.id===detailId),k=t?.kaitenSync;
+  if(!k)return;
+  const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");
+  if(!root)return;
+  const escape=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const el=document.createElement("section");el.className="panel";
+  el.innerHTML='<div class="panel-header"><h2>Синхронизация с Kaiten</h2></div><div class="panel-body kv"><p class="sub">Актуальные данные из карточки Kaiten. Статус заявки FIT Requests не изменяется автоматически.</p>'+
+   [["Карточка",k.id],["Название",k.title],["Статус Kaiten",k.state||"—"],["Оценка",k.estimateText||"—"],["Единицы оценки",k.estimateUnit||"—"],["Участники (ID)",Array.isArray(k.memberIds)?k.memberIds.join(", "):"—"]].map(([a,b])=>'<div class="kv-row"><span>'+escape(a)+'</span><b>'+escape(b||"—")+'</b></div>').join("")+'</div>';
+  root.append(el);
+ };
  window.FitRequestPersistence={save,showImport,reload};
  reload().catch(err=>{showError("Не удалось загрузить заявки: "+err.message);notify("Ошибка загрузки с сервера")});
 })();
