@@ -1,14 +1,17 @@
 import http from "node:http";
+import {readFile} from "node:fs/promises";
 import {timingSafeEqual} from "node:crypto";
 import {loadConfig} from "./config.js";
 import {makeDb,setupDb} from "./db.js";
 import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
+import {initRequests,listRequests,createRequest,updateRequest,importRequests} from "./requests.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
 await initBotAuth(pool);
+await initRequests(pool);
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const botLogin=makeBotLogin({pool});
@@ -33,7 +36,22 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/auth/logout"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}await auth.logout(req,res);return}
   if(path==="/auth/invite"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}const body=await collect(req,2048);await auth.invite(req,res,new URLSearchParams(body).get("telegram_id"));return}
   if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><h1>F. FIT Requests</h1><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
-  if(path==="/app"&&req.method==="GET"){const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}html(res,200,await dashboard(me));return}
+  if(path==="/app"&&req.method==="GET"){
+    const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
+    const content=await readFile(new URL("../public/ui/index.html",import.meta.url));
+    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(content);return
+  }
+  if(path==="/app/kaiten"&&req.method==="GET"){
+    const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
+    html(res,200,await dashboard(me));return
+  }
+  if(path.startsWith("/ui/")&&req.method==="GET"){
+    const me=await auth.user(req);if(!me){send(res,401,{error:"unauthorized"});return}
+    const asset=path.slice(4),mime={"app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml"}[asset];
+    if(!mime){send(res,404,{error:"not_found"});return}
+    const content=await readFile(new URL("../public/ui/"+asset,import.meta.url));
+    res.writeHead(200,{"Content-Type":mime,"Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff"});res.end(content);return
+  }
   if(path==="/webhooks/telegram"&&req.method==="POST"){
    const proof=String(req.headers["x-telegram-bot-api-secret-token"]||"");
    if(!botLogin.acceptWebhook(proof)){send(res,403,{error:"forbidden"});return}
@@ -54,6 +72,23 @@ const server=http.createServer(async(req,res)=>{
   const me=await auth.user(req);
   if(!me&&!authorized(req)){send(res,401,{error:"unauthorized"});return}
   if(path==="/api/me"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,{telegramId:me.telegram_id,displayName:me.display_name,role:me.role});return}
+  if(path==="/api/requests"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,await listRequests(pool,me));return}
+  if(path==="/api/requests"&&req.method==="POST"){
+    if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+    const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){send(res,400,{error:err.message})}return
+  }
+  if(path.startsWith("/api/requests/")&&req.method==="PUT"){
+    if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+    const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{const item=await updateRequest(pool,me,id,body);if(item.notFound)send(res,404,{error:"Заявка не найдена"});else if(item.forbidden)send(res,403,{error:"Нет доступа"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
+    catch(err){send(res,400,{error:err.message})}return
+  }
+  if(path==="/api/requests/import"&&req.method==="POST"){
+    if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+    const raw=await collect(req,5242880);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{send(res,200,await importRequests(pool,me,body))}catch(err){send(res,400,{error:err.message})}return
+  }
   if(path==="/api/sync/status"&&req.method==="GET"){
    const {rows}=await pool.query("SELECT space_id,last_success_at,last_started_at,last_error,cards_seen,pages_seen FROM kaiten_sync_state WHERE space_id=$1",[config.spaceId]);
    send(res,200,{spaceId:config.spaceId,state:rows[0]||null});return
