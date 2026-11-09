@@ -4,11 +4,14 @@ import {loadConfig} from "./config.js";
 import {makeDb,setupDb} from "./db.js";
 import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
+import {initBotAuth,makeBotLogin} from "./bot-login.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
+await initBotAuth(pool);
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
+const botLogin=makeBotLogin({pool});
 const safeEqual=(a,b)=>{const x=Buffer.from(String(a||"")),y=Buffer.from(String(b||""));return x.length===y.length&&timingSafeEqual(x,y)};
 function send(res,status,value){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(JSON.stringify(value))}
 function authorized(req){return safeEqual(req.headers.authorization,"Bearer "+config.adminToken)}
@@ -23,11 +26,13 @@ const server=http.createServer(async(req,res)=>{
  const path=url.pathname;
  try{
   if(path==="/healthz"&&req.method==="GET"){send(res,200,{ok:true});return}
-  if(path==="/auth/start"&&req.method==="GET"){await auth.start(req,res);return}
+  if(path==="/auth/start"&&req.method==="GET"){res.writeHead(303,{Location:"/auth/bot/start","Cache-Control":"no-store"});res.end();return}
+  if(path==="/auth/bot/start"&&req.method==="GET"){await botLogin.create(req,res);return}
+  if(path==="/auth/bot/wait"&&req.method==="GET"){await botLogin.wait(req,res);return}
   if(path==="/auth/callback"&&req.method==="GET"){await auth.callback(req,res,url);return}
   if(path==="/auth/logout"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}await auth.logout(req,res);return}
   if(path==="/auth/invite"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}const body=await collect(req,2048);await auth.invite(req,res,new URLSearchParams(body).get("telegram_id"));return}
-  if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><h1>F. FIT Requests</h1><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/start">Войти через Telegram</a></section></main>`));return}
+  if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><h1>F. FIT Requests</h1><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
   if(path==="/app"&&req.method==="GET"){const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}html(res,200,await dashboard(me));return}
   if(path.startsWith("/webhooks/kaiten/")&&req.method==="POST"){
    const supplied=path.slice("/webhooks/kaiten/".length);
@@ -65,7 +70,8 @@ server.listen(config.port,"0.0.0.0",()=>{
  console.info("FIT Requests sync server started",{port:config.port,spaceId:config.spaceId});
  // Failures are visible in logs/status; startup does not block serving health endpoint.
  sync.run("startup").catch(()=>{});
+ botLogin.poll().catch(err=>console.error("Telegram login polling terminated:",err.message));
 });
 const timer=setInterval(()=>sync.run("scheduled").catch(()=>{}),config.intervalMs);
-async function shutdown(){clearInterval(timer);server.close();await pool.end();process.exit(0)}
+async function shutdown(){clearInterval(timer);botLogin.stop();server.close();await pool.end();process.exit(0)}
 process.on("SIGTERM",shutdown);process.on("SIGINT",shutdown);
