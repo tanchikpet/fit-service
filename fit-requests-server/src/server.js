@@ -19,7 +19,7 @@ const server=http.createServer(async(req,res)=>{
    if(!safeEqual(supplied,config.webhookSecret)){send(res,404,{error:"not_found"});return}
    const body=await collect(req);
    let event;try{event=JSON.parse(body)}catch{send(res,400,{error:"invalid_json"});return}
-   if(!event||typeof event.event!=="string"||!event.data){send(res,400,{error:"invalid_event"});return}
+   if(!event||typeof event!=="object"||Array.isArray(event)){send(res,400,{error:"invalid_event"});return}
    // Webhooks only trigger authenticated API reads. Event contents are not trusted or written to DB.
    sync.schedule();send(res,202,{accepted:true});return
   }
