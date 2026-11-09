@@ -18,26 +18,6 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
  let enabled=false,offset=0;
  async function api(method,params={}){const response=await fetcher("https://api.telegram.org/bot"+botToken+"/"+method,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(params),signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error("Telegram Bot API HTTP "+response.status+" on "+method);const data=await response.json();if(!data.ok)throw Error("Telegram Bot API rejected "+method+" code "+data.error_code);return data.result}
  async function allowed(id){if(!telegramId(id))return false;if(String(id)===String(env.TELEGRAM_ADMIN_ID))return true;const q=await pool.query("SELECT 1 FROM fit_auth_users WHERE telegram_id=$1 AND active=true LIMIT 1",[String(id)]);return q.rows.length>0}
- async function start(req,res){
-  if(!configured())return page(res,"<h1>Вход пока не настроен</h1><p class=muted>Свяжитесь с администратором.</p>");
-  const challenge=key(),browser=key();
-  await pool.query("DELETE FROM fit_auth_bot_challenges WHERE expires_at<now()");
-  await pool.query("INSERT INTO fit_auth_bot_challenges(challenge_hash,browser_hash,expires_at) VALUES($1,$2,now()+interval '5 minutes')",[hash(challenge),hash(browser)]);
-  redirect(res,"/auth/bot/wait",{"Set-Cookie":cookie(flowCookie,browser,300)});
-  // Store the challenge only in the server-side flow record; the user needs the deep link.
-  // A separate cookie binds browser session to challenge without showing the token in the URL.
-  // Send to the browser via a short-lived, encrypted? No: add public deep link to the record.
- }
- async function begin(req,res){
-  if(!configured())return page(res,"<h1>Telegram-вход пока недоступен</h1><p class=muted>Проверьте настройки бота.</p>");
-  const challenge=key(),browser=key();
-  await pool.query("DELETE FROM fit_auth_bot_challenges WHERE expires_at<now()");
-  await pool.query("INSERT INTO fit_auth_bot_challenges(challenge_hash,browser_hash,expires_at) VALUES($1,$2,now()+interval '5 minutes')",[hash(challenge),hash(browser)]);
-  const href="https://t.me/"+botUsername+"?start=login_"+challenge;
-  // Render the one-time deep link only to this browser at initial creation.
-  page(res,'<h1>Вход в FIT Requests</h1><p class="muted">1. Нажми кнопку, чтобы открыть Telegram-бота.<br>2. Нажми Start / Запустить и подтверди вход.<br>3. Вернись сюда и нажми «Продолжить».</p><a class="button" href="'+textEscape(href)+'" target="_blank" rel="noopener noreferrer">Открыть @'+textEscape(botUsername)+'</a><p><a href="/auth/bot/wait">Продолжить после подтверждения</a></p><p class="muted">Ссылка действительна 5 минут. Не пересылай её другим людям.</p>',false);
-  // Cookies must be set before response: use a dedicated page helper below instead.
- }
  async function create(req,res){
   if(!configured())return page(res,"<h1>Авторизация не настроена</h1><p class=muted>Сервер ожидает токен бота и ID администратора.</p>");
   const challenge=key(),browser=key();await pool.query("DELETE FROM fit_auth_bot_challenges WHERE expires_at<now()");
