@@ -64,13 +64,32 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
  }
  async function poll(){
   if(!configured())return logger.warn("Telegram bot login disabled: missing configuration");
-  enabled=true;logger.info("Telegram bot login polling started");
-  try {const info=await api("getMe");logger.info("Telegram bot authenticated",{bot:info?.username===botUsername?"expected":"different",botIdPresent:Boolean(info?.id)});if(info?.username!==botUsername){logger.error("Telegram Bot API token belongs to another bot; polling disabled");enabled=false;return}}catch(err){logger.error("Telegram bot connection check failed:",err.message)}
-  while(enabled){
+  const client=await pool.connect();let lock=false;
+  try{
+   const lockCheck=await client.query("SELECT pg_try_advisory_lock($1) AS locked",[91820417]);
+   if(!lockCheck.rows[0]?.locked){logger.warn("Telegram polling skipped: another FIT Requests instance holds the lock");return}
+   lock=true;enabled=true;logger.info("Telegram bot login polling started");
    try{
-    const updates=await api("getUpdates",{offset,timeout:8,limit:50,allowed_updates:["message","callback_query"]});
-    for(const update of updates){if(!enabled)break;try{await handle(update)}catch(err){logger.error("Bot login event failed:",err.message)}offset=Math.max(offset,Number(update.update_id)+1)}
-   }catch(err){logger.error("Telegram Bot API polling error:",err.message);await sleep(5000)}
+    const info=await api("getMe");
+    logger.info("Telegram bot authenticated",{bot:info?.username===botUsername?"expected":"different",botIdPresent:Boolean(info?.id)});
+    if(info?.username!==botUsername){logger.error("Telegram Bot API token belongs to another bot; polling disabled");return}
+   }catch(err){logger.error("Telegram bot connection check failed:",err.message)}
+   let backoff=3000;
+   while(enabled){
+    try{
+     const updates=await api("getUpdates",{offset,timeout:8,limit:50,allowed_updates:["message","callback_query"]});
+     backoff=3000;
+     for(const update of updates){if(!enabled)break;try{await handle(update)}catch(err){logger.error("Bot login event failed:",err.message)}offset=Math.max(offset,Number(update.update_id)+1)}
+    }catch(err){
+     logger.error("Telegram Bot API polling error:",err.message);
+     await sleep(backoff);
+     backoff=Math.min(30000,backoff*2);
+    }
+   }
+  }finally{
+   enabled=false;
+   if(lock)await client.query("SELECT pg_advisory_unlock($1)",[91820417]).catch(()=>{});
+   client.release();
   }
  }
  return {create,wait,poll,stop:()=>{enabled=false},configured,handle};
