@@ -42,7 +42,7 @@ const server=http.createServer(async(req,res)=>{
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(content);return
   }
   if(path==="/app/kaiten"&&req.method==="GET"){
-    const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
+    const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}if(me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
     html(res,200,await dashboard(me));return
   }
   if(path.startsWith("/ui/")&&req.method==="GET"){
@@ -94,6 +94,7 @@ const server=http.createServer(async(req,res)=>{
    send(res,200,{spaceId:config.spaceId,state:rows[0]||null});return
   }
   if(path==="/api/cards"&&req.method==="GET"){
+   if(me?.role!=="admin"&&!authorized(req)){send(res,403,{error:"forbidden"});return}
    const u=new URL(req.url,"http://localhost");const limit=Math.min(100,Math.max(1,Number(u.searchParams.get("limit"))||50)),offset=Math.min(100000,Math.max(0,Number(u.searchParams.get("offset"))||0));
    const result=await pool.query(`SELECT id,title,board_id,column_id,lane_id,state,archived,owner_id,member_ids,estimate_raw,estimate_unit,estimate_text,spent_raw,children_count,children_done,updated_at,synced_at
     FROM kaiten_cards WHERE space_id=$1 ORDER BY updated_at DESC NULLS LAST,id DESC LIMIT $2 OFFSET $3`,[config.spaceId,limit,offset]);
