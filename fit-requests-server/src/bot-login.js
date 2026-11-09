@@ -30,7 +30,7 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
   const browser=cookies(req)[flowCookie];if(!browser||browser.length>200)return redirect(res,"/");
   const q=await pool.query("SELECT challenge_hash,claimant_id,claimant_name,status FROM fit_auth_bot_challenges WHERE browser_hash=$1 AND expires_at>now() ORDER BY created_at DESC LIMIT 1",[hash(browser)]);
   if(!q.rows.length)return page(res,'<h1>Время входа истекло</h1><a class="button" href="/auth/bot/start">Попробовать снова</a>');
-  if(q.rows[0].status!=="approved")return page(res,'<h1>Ожидание подтверждения</h1><p class="muted">Подтверди вход в @'+textEscape(botUsername)+', затем эта страница обновится автоматически.</p><a href="/auth/bot/wait">Обновить</a> · <a href="/auth/bot/start">Новый запрос</a>',true);
+  if(q.rows[0].status!=="approved"){const claimed=q.rows[0].status==="claimed";return page(res,'<h1>'+(claimed?"Подтверди вход в боте":"Ожидание сообщения от бота")+'</h1><p class="muted">'+(claimed?"Telegram уже открыл твой запрос. Нажми кнопку «Подтвердить вход» в чате с ботом.":"Открой бота по кнопке из предыдущего шага и нажми Start. Если ссылка потерялась, создай новый запрос.")+'</p><a href="/auth/bot/wait">Обновить</a> · <a href="/auth/bot/start">Новый запрос</a>',true)}
   const row=await pool.query("DELETE FROM fit_auth_bot_challenges WHERE challenge_hash=$1 AND browser_hash=$2 AND status='approved' AND expires_at>now() RETURNING claimant_id,claimant_name",[q.rows[0].challenge_hash,hash(browser)]);
   if(!row.rows.length)return redirect(res,"/");
   const id=String(row.rows[0].claimant_id);if(!await allowed(id))return page(res,"<h1>Доступ не разрешен</h1>");
@@ -42,10 +42,12 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
   const msg=update.message;
   if(msg?.chat?.type==="private"&&typeof msg.text==="string"&&msg.text.startsWith("/start login_")){
    const challenge=msg.text.slice("/start login_".length).trim(),id=String(msg.from?.id||"");
-   if(!/^[A-Za-z0-9_-]{43}$/.test(challenge)||!await allowed(id)){await api("sendMessage",{chat_id:msg.chat.id,text:"У тебя нет разрешения на вход в FIT Requests либо ссылка недействительна."});return}
+   if(!/^[A-Za-z0-9_-]{43}$/.test(challenge)){logger.warn("Telegram login rejected: malformed deep link");await api("sendMessage",{chat_id:msg.chat.id,text:"Недействительная ссылка входа. Создай новую в FIT Requests."});return}
+   if(!await allowed(id)){logger.warn("Telegram login rejected: account not in allowlist");await api("sendMessage",{chat_id:msg.chat.id,text:"Доступ к FIT Requests не разрешен: Telegram ID этого аккаунта не совпадает с ID администратора. Проверь TELEGRAM_ADMIN_ID в Railway."});return}
    const name=[msg.from?.first_name,msg.from?.last_name].filter(Boolean).join(" ").slice(0,120);
    const q=await pool.query("UPDATE fit_auth_bot_challenges SET claimant_id=$2,claimant_name=$3,status='claimed' WHERE challenge_hash=$1 AND expires_at>now() AND status IN ('pending','claimed') AND (claimant_id IS NULL OR claimant_id=$2) RETURNING challenge_hash",[hash(challenge),id,name]);
-   if(!q.rows.length){await api("sendMessage",{chat_id:msg.chat.id,text:"Запрос уже использован или истек. Создай новый на сайте."});return}
+   if(!q.rows.length){logger.warn("Telegram login rejected: challenge expired or already used");await api("sendMessage",{chat_id:msg.chat.id,text:"Запрос уже использован или истек. Создай новый на сайте."});return}
+   logger.info("Telegram login challenge claimed; confirmation requested");
    await api("sendMessage",{chat_id:msg.chat.id,text:"FIT Requests: подтвердить вход в браузере? Если ты не пыталась войти, ничего не нажимай.",reply_markup:{inline_keyboard:[[{text:"Подтвердить вход",callback_data:"fit:"+challenge}]]}});
    return;
   }
@@ -57,6 +59,7 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
     const q=await pool.query("UPDATE fit_auth_bot_challenges SET status='approved' WHERE challenge_hash=$1 AND claimant_id=$2 AND status='claimed' AND expires_at>now() RETURNING challenge_hash",[hash(challenge),id]);
     approved=q.rows.length>0;
    }
+   logger.info("Telegram login confirmation received",{approved});
    await api("answerCallbackQuery",{callback_query_id:c.id,text:approved?"Вход подтвержден. Вернись в браузер.":"Запрос истек или недействителен.",show_alert:!approved});
    if(approved&&c.message?.chat?.id)await api("sendMessage",{chat_id:c.message.chat.id,text:"Вход в FIT Requests подтвержден. Вернись в браузер и нажми «Продолжить»."});
   }
