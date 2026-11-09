@@ -5,7 +5,7 @@ export async function setupDb(pool){
  CREATE TABLE IF NOT EXISTS kaiten_cards (
   id bigint PRIMARY KEY, space_id bigint NOT NULL, title text NOT NULL,
   updated_at timestamptz, board_id bigint, column_id bigint, lane_id bigint,
-  state integer, archived boolean NOT NULL DEFAULT false,
+  state text, archived boolean NOT NULL DEFAULT false,
   owner_id bigint, member_ids jsonb NOT NULL DEFAULT '[]',
   estimate_raw jsonb, estimate_unit text, estimate_text text, spent_raw jsonb,
   children_count integer, children_done integer, data jsonb NOT NULL,
