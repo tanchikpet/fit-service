@@ -14,7 +14,7 @@ export async function initBotAuth(pool){await pool.query("CREATE TABLE IF NOT EX
 export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}){
  const botUsername=String(env.TELEGRAM_BOT_USERNAME||"fit_requests_auth_bot").replace(/^@/,"");
  const botToken=env.TELEGRAM_BOT_TOKEN;
- const configured=()=>Boolean(botToken)&&/^\d{4,20}$/.test(String(env.TELEGRAM_ADMIN_ID||""))&&/^[A-Za-z0-9_]{5,32}$/.test(botUsername);
+ const configured=()=>/^\d{5,16}:[A-Za-z0-9_-]{30,}$/.test(String(botToken||""))&&/^\d{4,20}$/.test(String(env.TELEGRAM_ADMIN_ID||""))&&/^[A-Za-z0-9_]{5,32}$/.test(botUsername);
  let enabled=false,offset=0;
  async function api(method,params={}){const response=await fetcher("https://api.telegram.org/bot"+botToken+"/"+method,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(params),signal:AbortSignal.timeout(20000)});if(!response.ok)throw Error("Telegram Bot API HTTP "+response.status+" on "+method);const data=await response.json();if(!data.ok)throw Error("Telegram Bot API rejected "+method+" code "+data.error_code);return data.result}
  async function allowed(id){if(!telegramId(id))return false;if(String(id)===String(env.TELEGRAM_ADMIN_ID))return true;const q=await pool.query("SELECT 1 FROM fit_auth_users WHERE telegram_id=$1 AND active=true LIMIT 1",[String(id)]);return q.rows.length>0}
@@ -65,6 +65,7 @@ export function makeBotLogin({pool,env=process.env,fetcher=fetch,logger=console}
  async function poll(){
   if(!configured())return logger.warn("Telegram bot login disabled: missing configuration");
   enabled=true;logger.info("Telegram bot login polling started");
+  try {const info=await api("getMe");logger.info("Telegram bot authenticated",{bot:info?.username===botUsername?"expected":"different",botIdPresent:Boolean(info?.id)});if(info?.username!==botUsername){logger.error("Telegram Bot API token belongs to another bot; polling disabled");enabled=false;return}}catch(err){logger.error("Telegram bot connection check failed:",err.message)}
   while(enabled){
    try{
     const updates=await api("getUpdates",{offset,timeout:8,limit:50,allowed_updates:["message","callback_query"]});
