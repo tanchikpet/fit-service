@@ -29,8 +29,8 @@ function extractKaitenId(link){
 }
 function toOutput(r){
  const v={...r.payload,id:r.id,revision:r.revision,createdBy:r.created_by,created:r.payload.created||r.created_at?.toISOString?.().slice(0,10),updatedAt:r.updated_at};
- v.kaitenCards=[];
- if(r.card_id){v.kaitenSync={id:r.card_id,title:r.card_title,state:r.card_state,updatedAt:r.card_updated_at,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,memberIds:r.member_ids}}
+ v.kaitenParent=null;
+ if(r.card_id){v.kaitenParent={id:String(r.card_id),title:r.card_title,state:r.card_state,updatedAt:r.card_updated_at,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,memberIds:r.member_ids,ownerId:r.owner_id,dueDate:r.card_due_date,plannedStart:r.card_planned_start,plannedEnd:r.card_planned_end,childrenCount:r.children_count,childrenDone:r.children_done}}
  return v;
 }
 export async function initRequests(pool){
@@ -56,31 +56,21 @@ export async function initRequests(pool){
  request_id text NOT NULL,editor_id text NOT NULL,action text NOT NULL,
  revision integer NOT NULL,payload jsonb NOT NULL,occurred_at timestamptz NOT NULL DEFAULT now());
  `);
- // Migrate only resolvable legacy single-card references. Do not copy unverified URLs.
- await pool.query(`INSERT INTO fit_request_kaiten_links(request_id,card_id,linked_by)
- SELECT r.id,r.kaiten_card_id,r.updated_by FROM fit_requests r
- JOIN kaiten_cards k ON k.id=r.kaiten_card_id
- WHERE r.kaiten_card_id IS NOT NULL
- ON CONFLICT(request_id,card_id) DO NOTHING`);
+ // Retain old links for audit. Migrate the earliest valid link only if no parent exists.
+ await pool.query(`WITH ranked AS (
+ SELECT l.request_id,l.card_id,ROW_NUMBER() OVER(PARTITION BY l.request_id ORDER BY l.linked_at,l.card_id) AS n
+ FROM fit_request_kaiten_links l JOIN kaiten_cards k ON k.id=l.card_id)
+ UPDATE fit_requests r SET kaiten_card_id=x.card_id FROM ranked x
+ WHERE r.id=x.request_id AND x.n=1 AND r.kaiten_card_id IS NULL`);
 }
 const select=`SELECT r.id,r.payload,r.created_by,r.updated_by,r.revision,r.created_at,r.updated_at,
- k.id AS card_id,k.title AS card_title,k.state AS card_state,k.updated_at AS card_updated_at,k.estimate_raw,k.estimate_unit,k.estimate_text,k.member_ids
+ k.id AS card_id,k.title AS card_title,k.state AS card_state,k.updated_at AS card_updated_at,k.estimate_raw,k.estimate_unit,k.estimate_text,k.member_ids,k.owner_id,k.children_count,k.children_done,k.data->>'due_date' AS card_due_date,k.data->>'planned_start' AS card_planned_start,k.data->>'planned_end' AS card_planned_end
  FROM fit_requests r LEFT JOIN kaiten_cards k ON k.id=r.kaiten_card_id`;
 const roleFilter=user=>user.role==="admin"?"": " WHERE r.created_by=$1";
-const cardFields=`SELECT l.request_id, k.id::text AS id,k.title,k.state,k.updated_at,k.member_ids,k.owner_id,
- k.estimate_raw,k.estimate_unit,k.estimate_text,k.spent_raw,k.column_id,k.board_id,k.synced_at,
- l.linked_at,l.linked_by FROM fit_request_kaiten_links l
- JOIN kaiten_cards k ON k.id=l.card_id`;
-function cardOutput(r){return {id:r.id,title:r.title,state:r.state,updatedAt:r.updated_at,memberIds:r.member_ids,ownerId:r.owner_id,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,spentRaw:r.spent_raw,columnId:r.column_id,boardId:r.board_id,syncedAt:r.synced_at,linkedAt:r.linked_at,linkedBy:r.linked_by}}
 export async function listRequests(pool,user){
  const params=user.role==="admin"?[]:[user.telegram_id];
  const q=await pool.query(select+roleFilter(user)+" ORDER BY r.updated_at DESC,r.id DESC LIMIT 3000",params);
- const items=q.rows.map(toOutput),byId=new Map(items.map(t=>[t.id,t]));
- if(items.length){
-  const linked=await pool.query(cardFields+" WHERE l.request_id=ANY($1::text[]) ORDER BY l.linked_at,k.id",[items.map(t=>t.id)]);
-  for(const row of linked.rows){const item=byId.get(row.request_id);if(item)item.kaitenCards.push(cardOutput(row))}
- }
- return {items,limit:3000};
+ return {items:q.rows.map(toOutput),limit:3000};
 }
 export async function searchKaitenCards(pool,user,search){
  if(user.role!=="admin")throw Error("Нет доступа к поиску карточек");
