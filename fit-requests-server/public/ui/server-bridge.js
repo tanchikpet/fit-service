@@ -128,5 +128,5 @@
   }catch(err){button.disabled=false;notify("Не удалось изменить связь: "+err.message)}
  });
  window.FitRequestPersistence={save,reload};
- reload().catch(err=>{showError("Не удалось загрузить заявки: "+err.message);notify("Ошибка загрузки с сервера")});
+ Promise.all([fetchJson("/api/me"),reload()]).then(([user])=>{window.FitUser=user;render()}).catch(err=>{showError("Не удалось загрузить профиль или заявки: "+err.message);notify("Ошибка загрузки с сервера")});
 })();
