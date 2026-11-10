@@ -21,7 +21,7 @@ modal.innerHTML=`<form id="intakeForm" novalidate><div class="modal-head"><div><
 <label>Приоритет<select id="requestPriority"><option>Средний</option><option>Высокий</option><option>Критический</option><option>Низкий</option></select></label>
 <label>Статус<select id="requestStatus"><option>Новая</option><option>Уточнение</option><option>Запланирована</option><option>Разработка</option><option>Тестирование</option><option>Демо</option><option>Готово</option></select></label>
 <label>Исполнитель<select id="requestAssignee"><option>Не назначен</option><option>Дмитрий Ершов</option><option>Дмитрий Олейников</option><option>Внутренняя команда</option></select></label>
-<label>Согласованный срок<input id="requestDue" type="date"></label><label>Ссылка на Kaiten<input id="requestKaiten" type="url" placeholder="https://rossko.kaiten.ru/..."></label></div></section>
+<label>Согласованный срок<input id="requestDue" type="date"></label></div></section>
 <div class="modal-actions"><button type="button" class="button secondary" id="cancelIntake">Отмена</button><button type="button" class="button secondary" id="saveDraft">Черновик</button><button type="submit" class="button primary" id="submitIntake">Отправить заявку</button></div></form>`;
 function syncPageFields(){const a=document.getElementById("requestPageAction").value;document.getElementById("pageRequestFields").hidden=!a;document.getElementById("redirectLabel").hidden=a!=="close"}
 document.getElementById("requestPageAction").addEventListener("change",syncPageFields);
@@ -35,7 +35,7 @@ if(!t){put("Type","Доработка");put("Priority","Средний");put("St
 syncPageFields();if(t?.status==="Черновик")put("Status","Новая");switchMode(requested||t?.mode||"employee");modal.showModal();document.getElementById("requestTitle").focus()}
 function urlOkay(k){const v=get(k);if(!v)return true;try{return ["http:","https:"].includes(new URL(v).protocol)}catch{return false}}
 function storeRequest(draft){const title=get("Title"),description=get("Description"),requester=get("Requester");if(!draft&&(!title||(mode!=="pm"&&(!description||!requester)))){notify("Для подачи нужны название, инициатор и описание");document.getElementById(!title?"requestTitle":!requester?"requestRequester":"requestDescription").focus();return}
-if(!["Materials","Express",...(mode==="pm"?["Kaiten"]:[])].every(urlOkay)){notify("Ссылки должны начинаться с https:// или http://");return}
+if(!["Materials","Express",].every(urlOkay)){notify("Ссылки должны начинаться с https:// или http://");return}
 if(!draft&&get("PageAction")){if(!get("Project")||!get("PagePurpose")||!get("PageOwner")){notify("Для страницы заполни проект, назначение и ответственного");return}if(!get("PlannedUrl")&&!get("ActualUrl")){notify("Укажи планируемый или фактический адрес");return}if(!["PlannedUrl","ActualUrl","RedirectTo"].every(urlOkay)){notify("Укажи корректные адреса http:// или https://");return}if(get("PageAction")==="close"&&!get("RedirectTo")){notify("Для закрытия укажи адрес редиректа");return}}
 const old=data.find(t=>t.id===get("Id"));const newId="REQ-"+(Math.max(100,...data.map(t=>Number(String(t.id).split("-")[1])||0))+1);
 const base=old||{id:newId,created:iso(new Date()),start:iso(new Date()),type:"Не определён",priority:"Не назначен",status:"Новая",assignee:"Не назначен",due:"",kaiten:""};
