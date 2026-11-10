@@ -38,7 +38,7 @@ async function developmentCsv(res){
  const titles=new Map(columns.map(c=>[String(c.id),c.title]));
  const header=["ID","Название","Доска","Колонка","Статус","Исполнитель ID","Участники ID","Оценка","Единица оценки","Обновлено"];
  const rows=result.rows.map(c=>[c.id,c.title,board.title,titles.get(String(c.column_id))||c.column_id,c.state,c.owner_id,(c.member_ids||[]).join("; "),c.estimate_text,c.estimate_unit,c.updated_at?new Date(c.updated_at).toISOString():""]);
- const csv="\\uFEFF"+[header,...rows].map(row=>row.map(csvCell).join(";")).join("\\r\\n")+"\\r\\n";
+ const csv="\uFEFF"+[header,...rows].map(row=>row.map(csvCell).join(";")).join("\r\n")+"\r\n";
  res.writeHead(200,{"Content-Type":"text/csv; charset=utf-8","Content-Disposition":"attachment; filename=\"kaiten-development.csv\"","Cache-Control":"private, no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});
  res.end(csv);
 }
