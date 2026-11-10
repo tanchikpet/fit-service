@@ -15,10 +15,14 @@ function inputPayload(input,role,{draft=false,legacy=false}={}){
  }
  for(const key of urls){const v=payload[key];if(!v)continue;try{const u=new URL(v);if(!["https:","http:"].includes(u.protocol)||u.username||u.password)throw Error()}catch{throw new Error("Неверная ссылка: "+key)}}
  for(const key of ["due","desiredDue","promotionEnd"]){if(!validDate(payload[key]))throw new Error("Неверная дата: "+key)}
- if(!["employee","pm"].includes(payload.mode))payload.mode="employee";
- if(role!=="admin"){payload.mode="employee";for(const key of pmFields)delete payload[key]}
- if(payload.status&&!statuses.has(payload.status))throw new Error("Неверный статус");
- if(!legacy&&!draft&&(!payload.title||(payload.mode!=="pm"&&(!payload.description||!payload.requester))))throw new Error("Для подачи укажи название, описание и инициатора");
+ if(!legacy){
+  // FIT Requests accepts employee requests only. PM manages clarification, not Kaiten execution.
+  payload.mode="employee";
+  for(const key of ["type","priority","assignee","due","kaiten"])delete payload[key];
+ }
+ if(role!=="admin")delete payload.status;
+ if(payload.status&&!(legacy?statuses:new Set(["Черновик","Новая","Уточнение"])).has(payload.status))throw new Error("Неверный этап обработки заявки");
+ if(!legacy&&!draft&&(!payload.title||!payload.description||!payload.requester))throw new Error("Для подачи укажи название, описание и инициатора");
  if(payload.pageAction&&!["new","close"].includes(payload.pageAction))throw new Error("Неверное действие со страницей");
  return payload;
 }
