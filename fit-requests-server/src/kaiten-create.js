@@ -10,8 +10,14 @@ export async function initCardCreation(pool){
  await pool.query("CREATE TABLE IF NOT EXISTS fit_kaiten_creation_attempts(request_id text PRIMARY KEY REFERENCES fit_requests(id) ON DELETE CASCADE,status text NOT NULL CHECK(status IN ('pending','created','rejected')),card_id bigint,board_id bigint NOT NULL,column_id bigint NOT NULL,lane_id bigint,initiated_by text NOT NULL,initiated_at timestamptz NOT NULL DEFAULT now(),completed_at timestamptz,error_code text)");
 }
 export async function boardCandidates(pool,config){
- const q=await pool.query("SELECT board_id::text AS id,count(*)::int AS card_count FROM kaiten_cards WHERE space_id=$1 AND board_id IS NOT NULL GROUP BY board_id ORDER BY card_count DESC LIMIT 80",[config.spaceId]);
- return q.rows.map(r=>({id:r.id,cardCount:r.card_count}));
+ const result=[];
+ for(let offset=0;offset<500;offset+=100){
+  const boards=await api(config,"/api/latest/spaces/"+config.spaceId+"/boards?limit=100&offset="+offset);
+  if(!Array.isArray(boards))throw Error("Kaiten вернул неожиданный список досок");
+  for(const b of boards){if(validId(b.id))result.push({id:String(b.id),title:String(b.title||"Доска "+b.id)})}
+  if(boards.length<100)break;
+ }
+ return result;
 }
 export async function boardDetails(config,boardId){
  if(!validId(boardId))throw Error("Неверный ID доски");
