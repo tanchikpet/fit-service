@@ -49,7 +49,9 @@
       [["ID",parent.id],["Название",parent.title||"—"],["Статус Kaiten",parent.state??"—"],["Оценка",parent.estimateText||"—"],["Исполнитель (ID)",parent.ownerId||"—"],["Участники (ID)",Array.isArray(parent.memberIds)?parent.memberIds.join(", "):"—"],["Срок",parent.dueDate||"—"],["Плановое начало",parent.plannedStart||"—"],["Плановое завершение",parent.plannedEnd||"—"]].map(([name,val])=>'<div class="kv-row"><span>'+escape(name)+'</span><b>'+escape(val)+'</b></div>').join("")+
       '</div><p style="margin-top:14px"><button class="button secondary sm" id="unlinkParent" type="button">Отвязать основную карточку</button></p>':
       '<p class="sub">Основная карточка в Kaiten еще не создана. После уточнения заявки PM создает одну основную карточку в Kaiten; дочерние появятся автоматически при декомпозиции.</p>'+
-      '<details><summary style="cursor:pointer">Карточка уже есть в Kaiten? Привязать существующую</summary>'+
+      '<div style="margin:14px 0"><button type="button" class="button primary sm" id="startCreateKaiten">Создать карточку в Kaiten</button></div>'+
+      '<div id="kaitenCreateForm" hidden style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;margin:12px 0"><h3 style="margin:0 0 12px">Создание основной карточки</h3><p class="sub">Карточка будет создана только после нажатия кнопки подтверждения. Создается одна карточка с названием и описанием заявки.</p><label>Доска<select id="createBoard" style="width:100%;margin:8px 0"><option value="">Выбери доску</option></select></label><label>Колонка<select id="createColumn" style="width:100%;margin:8px 0"><option value="">Сначала выбери доску</option></select></label><label>Дорожка<select id="createLane" style="width:100%;margin:8px 0"><option value="">По умолчанию</option></select></label><p id="createKaitenStatus" class="sub"></p><button id="confirmCreateKaiten" type="button" class="button primary sm" disabled>Подтвердить создание в Kaiten</button></div>'+
+      '<details><summary style="cursor:pointer">Карточка уже существует в Kaiten? Привязать</summary>'+
       '<label style="display:block;margin-top:12px">Название или ID карточки <input id="parentSearchInput" maxlength="120" placeholder="Минимум два символа" style="width:100%;margin:8px 0"></label>'+
       '<button id="parentSearchButton" class="button secondary sm" type="button">Найти карточку</button><div id="parentSearchResults" style="margin-top:12px" aria-live="polite"></div></details>')+
     '</div>';
@@ -69,6 +71,53 @@
    }).catch(err=>{const content=document.getElementById("kaitenChildrenContent");if(content)content.textContent="Не удалось загрузить дочерние задачи: "+err.message});
   }
  };
+ document.addEventListener("click",async event=>{
+  const b=event.target.closest("#startCreateKaiten,#confirmCreateKaiten");
+  if(!b)return;
+  const req=data.find(x=>x.id===detailId);if(!req||req.kaitenParent)return;
+  const panel=document.getElementById("kaitenCreateForm"),status=document.getElementById("createKaitenStatus");
+  if(b.id==="startCreateKaiten"){
+   panel.hidden=false;b.disabled=true;
+   try{
+    const r=await fetchJson("/api/kaiten/boards");
+    const select=document.getElementById("createBoard");
+    select.innerHTML='<option value="">Выбери доску</option>'+r.items.map(x=>'<option value="'+escape(x.id)+'">Доска #'+escape(x.id)+' ('+escape(x.cardCount)+' карточек)</option>').join("");
+    status.textContent="Выбери доску — загрузим ее название, колонки и дорожки из Kaiten.";
+   }catch(e){status.textContent="Не удалось загрузить доски: "+e.message;b.disabled=false}
+   return;
+  }
+  const boardId=document.getElementById("createBoard")?.value,
+        columnId=document.getElementById("createColumn")?.value,
+        laneId=document.getElementById("createLane")?.value;
+  if(!boardId||!columnId){status.textContent="Выбери доску и колонку";return}
+  if(!confirm("Создать одну основную карточку в Kaiten для "+req.id+"? Это изменение в реальной доске Kaiten."))return;
+  b.disabled=true;status.textContent="Отправляем карточку в Kaiten...";
+  try{
+   await queue;
+   const result=await fetchJson("/api/requests/"+encodeURIComponent(req.id)+"/kaiten/create",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({boardId,columnId,laneId:laneId||null})});
+   const response=await fetchJson("/api/requests"),oldId=detailId;
+   data=response.items;known=new Map(response.items.map(x=>[x.id,{revision:x.revision,record:record(x)}]));
+   detailId=oldId;render();notify("Карточка Kaiten создана: "+result.cardId);
+  }catch(e){status.textContent="Не удалось подтвердить создание: "+e.message+". Не повторяй отправку, пока не проверена карточка.";b.disabled=false}
+ });
+ document.addEventListener("change",async event=>{
+  if(event.target.id!=="createBoard"&&event.target.id!=="createColumn")return;
+  const status=document.getElementById("createKaitenStatus");
+  const board=document.getElementById("createBoard"),column=document.getElementById("createColumn"),lane=document.getElementById("createLane"),confirmButton=document.getElementById("confirmCreateKaiten");
+  if(!board||!column||!lane||!confirmButton)return;
+  if(event.target.id==="createBoard"){
+   confirmButton.disabled=true;column.innerHTML='<option value="">Загрузка...</option>';lane.innerHTML='<option value="">По умолчанию</option>';
+   if(!board.value){column.innerHTML='<option value="">Сначала выбери доску</option>';return}
+   try{
+    const info=await fetchJson("/api/kaiten/boards/"+encodeURIComponent(board.value));
+    board.options[board.selectedIndex].textContent=info.title+" (#"+info.id+")";
+    column.innerHTML='<option value="">Выбери колонку</option>'+info.columns.map(c=>'<option value="'+escape(c.id)+'">'+escape(c.title)+'</option>').join("");
+    lane.innerHTML='<option value="">По умолчанию</option>'+info.lanes.map(l=>'<option value="'+escape(l.id)+'">'+escape(l.title)+'</option>').join("");
+    status.textContent=info.columns.length?"Выбери колонку, затем подтверди создание":"У доски не найдены доступные колонки";
+   }catch(e){column.innerHTML='<option value="">Недоступно</option>';status.textContent="Ошибка получения доски: "+e.message}
+  }
+  confirmButton.disabled=!(board.value&&column.value);
+ });
  document.addEventListener("click",async event=>{
   const button=event.target.closest("#parentSearchButton,[data-link-parent],#unlinkParent");if(!button)return;
   const t=data.find(x=>x.id===detailId);if(!t)return;
