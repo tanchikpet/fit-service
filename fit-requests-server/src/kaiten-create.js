@@ -39,14 +39,15 @@ export async function createParentCard(pool,config,user,requestId,body){
   if(!q.rows.length){await tx.query("ROLLBACK");return {notFound:true}}request=q.rows[0];
   if(request.kaiten_card_id){await tx.query("ROLLBACK");return {alreadyLinked:true}}
   const previous=await tx.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[requestId]);
-  if(previous.rows.length){await tx.query("ROLLBACK");return {alreadyAttempted:true,status:previous.rows[0].status}}
+  if(previous.rows.length&&previous.rows[0].status!=="rejected"){await tx.query("ROLLBACK");return {alreadyAttempted:true,status:previous.rows[0].status}}
+  if(previous.rows[0]?.status==="rejected")await tx.query("DELETE FROM fit_kaiten_creation_attempts WHERE request_id=$1 AND status=\'rejected\'",[requestId]);
   if(!request.payload.title?.trim()){await tx.query("ROLLBACK");throw Error("Не заполнено название заявки")}
   await tx.query("INSERT INTO fit_kaiten_creation_attempts(request_id,status,board_id,column_id,lane_id,initiated_by) VALUES($1,'pending',$2,$3,$4,$5)",[requestId,body.boardId,body.columnId,body.laneId||null,user.telegram_id]);
   await tx.query("COMMIT");
  }catch(e){await tx.query("ROLLBACK").catch(()=>{});throw e}finally{tx.release()}
  const payload={title:String(request.payload.title).slice(0,1024),board_id:Number(body.boardId),column_id:Number(body.columnId),description:description(request),external_id:requestId,position:2};
  if(body.laneId)payload.lane_id=Number(body.laneId);
- if(request.payload.due&&/^\d{4}-\d{2}-\d{2}$/.test(request.payload.due))payload.due_date=request.payload.due+"T23:59:00.000Z";
+ // Do not translate date-only deadlines into a guessed UTC time.
  let card;
  try{card=await api(config,"/api/latest/cards","POST",payload)}
  catch(e){
