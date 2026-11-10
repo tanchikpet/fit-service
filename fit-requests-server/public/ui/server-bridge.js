@@ -66,20 +66,53 @@
   }
   dialog.showModal();
  }
+ const escape=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
  const previousRender=render;
  render=function(){
   previousRender();
   if(!detailId)return;
-  const t=data.find(x=>x.id===detailId),k=t?.kaitenSync;
-  if(!k)return;
+  const t=data.find(x=>x.id===detailId);
+  if(!t)return;
+  const cards=Array.isArray(t.kaitenCards)?t.kaitenCards:[];
   const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");
   if(!root)return;
-  const escape=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-  const el=document.createElement("section");el.className="panel";
-  el.innerHTML='<div class="panel-header"><h2>Синхронизация с Kaiten</h2></div><div class="panel-body kv"><p class="sub">Актуальные данные из карточки Kaiten. Статус заявки FIT Requests не изменяется автоматически.</p>'+
-   [["Карточка",k.id],["Название",k.title],["Статус Kaiten",k.state||"—"],["Оценка",k.estimateText||"—"],["Единицы оценки",k.estimateUnit||"—"],["Участники (ID)",Array.isArray(k.memberIds)?k.memberIds.join(", "):"—"]].map(([a,b])=>'<div class="kv-row"><span>'+escape(a)+'</span><b>'+escape(b||"—")+'</b></div>').join("")+'</div>';
-  root.append(el);
+  const section=document.createElement("section");section.className="panel";section.id="kaitenLinks";
+  section.innerHTML='<div class="panel-header"><h2>Задачи реализации в Kaiten · '+cards.length+'</h2></div>'+
+  '<div class="panel-body"><p class="sub">К одной заявке можно привязать несколько задач Kaiten. Статус исходной заявки не меняется автоматически.</p>'+
+  (cards.length?'<div class="table-wrap"><table><thead><tr><th>КАРТОЧКА</th><th>СТАТУС KAITEN</th><th>ОЦЕНКА</th><th></th></tr></thead><tbody>'+
+     cards.map(k=>'<tr><td><strong>'+escape(k.title||"Без названия")+'</strong><br><small>ID '+escape(k.id)+'</small></td><td>'+escape(k.state||"—")+'</td><td>'+escape(k.estimateText||"—")+'</td><td><button class="button secondary sm" data-unlink-kaiten="'+escape(k.id)+'" type="button">Отвязать</button></td></tr>').join("")+'</tbody></table></div>':
+     '<p class="sub">Пока нет привязанных карточек Kaiten.</p>')+
+  '<div style="margin-top:15px"><label>Найти карточку по названию или ID <input id="kaitenSearchInput" maxlength="120" placeholder="Введите минимум два символа" style="width:100%;margin:9px 0"></label>'+
+  '<button id="kaitenSearchButton" type="button" class="button secondary sm">Найти в Kaiten</button><div id="kaitenSearchResults" style="margin-top:12px" aria-live="polite"></div></div></div>';
+  root.append(section);
  };
+ document.addEventListener("click",async event=>{
+  const button=event.target.closest("#kaitenSearchButton,[data-link-kaiten],[data-unlink-kaiten]");
+  if(!button)return;
+  const t=data.find(x=>x.id===detailId);if(!t)return;
+  const results=document.getElementById("kaitenSearchResults");
+  if(button.id==="kaitenSearchButton"){
+   const q=document.getElementById("kaitenSearchInput")?.value.trim();
+   if(!q||q.length<2){if(results)results.textContent="Введите минимум два символа";return}
+   button.disabled=true;
+   try{const found=await fetchJson("/api/kaiten/search?q="+encodeURIComponent(q));
+    if(!results)return;
+    const linked=new Set((t.kaitenCards||[]).map(c=>String(c.id)));
+    results.innerHTML=found.items.length?found.items.map(c=>'<div class="demo-card"><div><strong>'+escape(c.title)+'</strong><small>ID '+escape(c.id)+' · '+escape(c.state||"—")+'</small></div><button type="button" class="button secondary sm" data-link-kaiten="'+escape(c.id)+'" '+(linked.has(String(c.id))?"disabled":"")+'>'+(linked.has(String(c.id))?"Привязана":"Привязать")+'</button></div>').join(""):"Совпадений не найдено";
+   }catch(err){if(results)results.textContent="Ошибка поиска: "+err.message}
+   finally{button.disabled=false}return
+  }
+  const cardId=button.dataset.linkKaiten||button.dataset.unlinkKaiten;
+  const action=button.hasAttribute("data-link-kaiten")?"link":"unlink";
+  if(action==="unlink"&&!confirm("Отвязать карточку "+cardId+" от заявки "+t.id+"? Сама карточка Kaiten не удалится."))return;
+  button.disabled=true;
+  try{
+   await queue;
+   await fetchJson("/api/requests/"+encodeURIComponent(t.id)+"/kaiten",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({cardId,action})});
+   const oldId=detailId;const response=await fetchJson("/api/requests");data=response.items;known=new Map(response.items.map(x=>[x.id,{revision:x.revision,record:record(x)}]));
+   detailId=oldId;render();notify(action==="link"?"Карточка привязана":"Карточка отвязана");
+  }catch(err){button.disabled=false;notify("Не удалось изменить связь: "+err.message)}
+ });
  window.FitRequestPersistence={save,showImport,reload};
  reload().catch(err=>{showError("Не удалось загрузить заявки: "+err.message);notify("Ошибка загрузки с сервера")});
 })();
