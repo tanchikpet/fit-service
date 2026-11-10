@@ -128,5 +128,17 @@
   }catch(err){button.disabled=false;notify("Не удалось изменить связь: "+err.message)}
  });
  window.FitRequestPersistence={save,reload};
- Promise.all([fetchJson("/api/me"),reload()]).then(([user])=>{window.FitUser=user;render()}).catch(err=>{showError("Не удалось загрузить профиль или заявки: "+err.message);notify("Ошибка загрузки с сервера")});
+ function renderCurrentUser(user){
+  const name=document.getElementById("userDisplayName");
+  const avatar=document.getElementById("userAvatar");
+  // /api/me is populated from the authenticated Telegram session, not editable browser data.
+  const display=String(user.displayName||user.telegramId||"Пользователь Telegram").trim();
+  if(name){name.textContent=display;name.title=display}
+  if(avatar){
+    const words=display.split(/\s+/).filter(Boolean);
+    const initials=(words.length>1?words[0].slice(0,1)+words[1].slice(0,1):display.slice(0,2)).toLocaleUpperCase("ru-RU");
+    avatar.textContent=initials||"?";
+  }
+}
+Promise.all([fetchJson("/api/me"),reload()]).then(([user])=>{window.FitUser=user;renderCurrentUser(user);render()}).catch(err=>{showError("Не удалось загрузить профиль или заявки: "+err.message);notify("Ошибка загрузки с сервера")});
 })();
