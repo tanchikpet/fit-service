@@ -7,7 +7,7 @@ import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
 import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
-import {initCardCreation,boardCandidates,boardDetails,createParentCard} from "./kaiten-create.js";
+import {initCardCreation,boardCandidates,boardDetails,createParentCard,fixedPmDestination} from "./kaiten-create.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
@@ -94,6 +94,11 @@ const server=http.createServer(async(req,res)=>{
     }
     send(res,200,{parentId:String(parentId),items:all,updatedAt:new Date().toISOString()});
    }catch(err){console.error("Kaiten children lookup failed:",err.message);send(res,502,{error:"Не удалось загрузить дочерние карточки из Kaiten"})}return
+  }
+  if(path==="/api/kaiten/pm-destination"&&req.method==="GET"){
+   if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+   try{send(res,200,await fixedPmDestination(config))}
+   catch(e){send(res,502,{error:"Не удалось определить доску PM, колонку Анализ и дорожки: "+e.message})}return
   }
   if(path==="/api/kaiten/boards"&&req.method==="GET"){
    if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
