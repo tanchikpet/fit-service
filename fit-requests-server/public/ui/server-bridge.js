@@ -34,12 +34,14 @@
   bar.textContent="Сохранение не завершено: "+message+". Не закрывай вкладку, пока ошибка не устранена.";
  }
  const escape=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const canManageKaiten=()=>window.FitUser?.role==="admin";
  const previousRender=render;
  render=function(){
   previousRender();
   if(!detailId)return;
   const t=data.find(x=>x.id===detailId);if(!t)return;
   const parent=t.kaitenParent;
+  const isPm=canManageKaiten();
   const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");if(!root)return;
   Array.from(root.querySelectorAll("section.panel")).filter(p=>p.querySelector(".panel-header h2")?.textContent==="Интеграция с Kaiten").forEach(p=>p.remove());
   const section=document.createElement("section");section.className="panel";section.id="kaitenParentPanel";
@@ -47,15 +49,15 @@
     '<div class="panel-body">'+
     (parent?'<div class="kv">'+
       [["ID",parent.id],["Название",parent.title||"—"],["Статус Kaiten",parent.state??"—"],["Оценка",parent.estimateText||"—"],["Исполнитель (ID)",parent.ownerId||"—"],["Участники (ID)",Array.isArray(parent.memberIds)?parent.memberIds.join(", "):"—"],["Срок",parent.dueDate||"—"],["Плановое начало",parent.plannedStart||"—"],["Плановое завершение",parent.plannedEnd||"—"]].map(([name,val])=>'<div class="kv-row"><span>'+escape(name)+'</span><b>'+escape(val)+'</b></div>').join("")+
-      '</div><p style="margin-top:14px"><button class="button secondary sm" id="unlinkParent" type="button">Отвязать основную карточку</button></p>':
+      '</div>'+(isPm?'<p style="margin-top:14px"><button class="button secondary sm" id="unlinkParent" type="button">Отвязать основную карточку</button></p>':''):
       '<p class="sub">Основная карточка в Kaiten еще не создана. После уточнения заявки PM создает одну основную карточку в Kaiten; дочерние появятся автоматически при декомпозиции.</p>'+
-      '<div id="kaitenCreateForm" style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;margin:12px 0"><p class="sub"><strong>Доска: PM · Колонка: Анализ</strong></p><label>Дорожка<select id="createLane" style="width:100%;margin:8px 0" disabled><option value="">Загрузка дорожек...</option></select></label><p id="createKaitenStatus" class="sub"></p><button id="sendToKaiten" type="button" class="button primary sm" disabled>Отправить в Kaiten</button></div>'+
+      (isPm?'<div id="kaitenCreateForm" style="padding:14px;border:1px solid #e5e7eb;border-radius:10px;margin:12px 0"><p class="sub"><strong>Доска: PM · Колонка: Анализ</strong></p><label>Дорожка<select id="createLane" style="width:100%;margin:8px 0" disabled><option value="">Загрузка дорожек...</option></select></label><p id="createKaitenStatus" class="sub"></p><button id="sendToKaiten" type="button" class="button primary sm" disabled>Отправить в Kaiten</button></div>'+
       '<details><summary style="cursor:pointer">Карточка уже существует в Kaiten? Привязать</summary>'+
       '<label style="display:block;margin-top:12px">Название или ID карточки <input id="parentSearchInput" maxlength="120" placeholder="Минимум два символа" style="width:100%;margin:8px 0"></label>'+
-      '<button id="parentSearchButton" class="button secondary sm" type="button">Найти карточку</button><div id="parentSearchResults" style="margin-top:12px" aria-live="polite"></div></details>')+
+      '<button id="parentSearchButton" class="button secondary sm" type="button">Найти карточку</button><div id="parentSearchResults" style="margin-top:12px" aria-live="polite"></div></details>':''))+
     '</div>';
   root.append(section);
-  if(!parent)loadPmLanes();
+  if(isPm&&!parent)loadPmLanes();
   const childrenSection=document.createElement("section");childrenSection.id="kaitenChildrenPanel";childrenSection.className="panel";
   childrenSection.innerHTML='<div class="panel-header"><h2>Дочерние задачи Kaiten</h2></div><div class="panel-body" id="kaitenChildrenContent"><p class="sub">'+(parent?"Получаем дочерние задачи из Kaiten…":"После появления основной карточки здесь будут дочерние задачи.")+'</p></div>';
   root.append(childrenSection);
@@ -72,6 +74,7 @@
   }
  };
  async function loadPmLanes(){
+  if(!canManageKaiten())return;
   const lane=document.getElementById("createLane"),status=document.getElementById("createKaitenStatus"),sendButton=document.getElementById("sendToKaiten");
   if(!lane||!sendButton)return;
   try{
@@ -89,7 +92,7 @@
   }
  });
  document.addEventListener("click",async event=>{
-  const button=event.target.closest("#sendToKaiten");if(!button)return;
+  const button=event.target.closest("#sendToKaiten");if(!button||!canManageKaiten())return;
   const request=data.find(x=>x.id===detailId),laneId=document.getElementById("createLane")?.value,status=document.getElementById("createKaitenStatus");
   if(!request||request.kaitenParent||!laneId)return;
   button.disabled=true;if(status)status.textContent="Отправляем карточку в Kaiten...";
@@ -105,7 +108,7 @@
   }
  });
  document.addEventListener("click",async event=>{
-  const button=event.target.closest("#parentSearchButton,[data-link-parent],#unlinkParent");if(!button)return;
+  const button=event.target.closest("#parentSearchButton,[data-link-parent],#unlinkParent");if(!button||!canManageKaiten())return;
   const t=data.find(x=>x.id===detailId);if(!t)return;
   if(button.id==="parentSearchButton"){
    const q=document.getElementById("parentSearchInput")?.value.trim(),out=document.getElementById("parentSearchResults");
