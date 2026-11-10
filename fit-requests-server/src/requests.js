@@ -56,12 +56,7 @@ export async function initRequests(pool){
  request_id text NOT NULL,editor_id text NOT NULL,action text NOT NULL,
  revision integer NOT NULL,payload jsonb NOT NULL,occurred_at timestamptz NOT NULL DEFAULT now());
  `);
- // Retain old links for audit. Migrate the earliest valid link only if no parent exists.
- await pool.query(`WITH ranked AS (
- SELECT l.request_id,l.card_id,ROW_NUMBER() OVER(PARTITION BY l.request_id ORDER BY l.linked_at,l.card_id) AS n
- FROM fit_request_kaiten_links l JOIN kaiten_cards k ON k.id=l.card_id)
- UPDATE fit_requests r SET kaiten_card_id=x.card_id FROM ranked x
- WHERE r.id=x.request_id AND x.n=1 AND r.kaiten_card_id IS NULL`);
+ // Legacy multi-links are retained for audit only; no automatic reattachment after unlink.
 }
 const select=`SELECT r.id,r.payload,r.created_by,r.updated_by,r.revision,r.created_at,r.updated_at,
  k.id AS card_id,k.title AS card_title,k.state AS card_state,k.updated_at AS card_updated_at,k.estimate_raw,k.estimate_unit,k.estimate_text,k.member_ids,k.owner_id,k.children_count,k.children_done,k.data->>'due_date' AS card_due_date,k.data->>'planned_start' AS card_planned_start,k.data->>'planned_end' AS card_planned_end
@@ -108,7 +103,7 @@ export async function createRequest(pool,user,body){
  const client=await pool.connect();try{
  await client.query("BEGIN");
  const id="REQ-"+(await client.query("SELECT nextval('fit_request_seq') AS n")).rows[0].n;
- const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by,kaiten_card_id) VALUES($1,$2::jsonb,$3,$3,$4) RETURNING *",[id,JSON.stringify({...payload,created:new Date().toISOString().slice(0,10)}),user.telegram_id,extractKaitenId(payload.kaiten)]);
+ const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by) VALUES($1,$2::jsonb,$3,$3) RETURNING *",[id,JSON.stringify({...payload,created:new Date().toISOString().slice(0,10)}),user.telegram_id]);
  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'create',1,$3::jsonb)",[id,user.telegram_id,JSON.stringify(q.rows[0].payload)]);
  await client.query("COMMIT");return toOutput(q.rows[0]);
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
@@ -128,8 +123,8 @@ export async function updateRequest(pool,user,id,body){
  if(user.role!=="admin"){for(const f of pmFields){if(old.payload[f]!==undefined)payload[f]=old.payload[f];else delete payload[f]}
  payload.mode=old.payload.mode||"employee";payload.status=old.payload.status==="Черновик"?(body.status==="Черновик"?"Черновик":"Новая"):old.payload.status}
  const merged={...old.payload,...payload,id:undefined};
- delete merged.id;delete merged.revision;delete merged.createdBy;delete merged.kaitenSync;merged.created=old.payload.created;
- const result=await client.query("UPDATE fit_requests SET payload=$2::jsonb,revision=revision+1,updated_at=now(),updated_by=$3,kaiten_card_id=$4 WHERE id=$1 RETURNING *",[id,JSON.stringify(merged),user.telegram_id,extractKaitenId(merged.kaiten)]);
+ delete merged.id;delete merged.revision;delete merged.createdBy;delete merged.kaitenSync;delete merged.kaitenParent;delete merged.kaitenCards;merged.created=old.payload.created;
+ const result=await client.query("UPDATE fit_requests SET payload=$2::jsonb,revision=revision+1,updated_at=now(),updated_by=$3 WHERE id=$1 RETURNING *",[id,JSON.stringify(merged),user.telegram_id]);
  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'update',$3,$4::jsonb)",[id,user.telegram_id,result.rows[0].revision,JSON.stringify(merged)]);
  await client.query("COMMIT");return toOutput(result.rows[0]);
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
@@ -147,7 +142,7 @@ export async function importRequests(pool,user,body){
  const client=await pool.connect();let imported=0,skipped=0;try{
  await client.query("BEGIN");
  for(const it of normalized){
- const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by,kaiten_card_id,source) VALUES($1,$2::jsonb,$3,$3,$4,'import') ON CONFLICT(id) DO NOTHING RETURNING id",[it.id,JSON.stringify(it.payload),user.telegram_id,extractKaitenId(it.payload.kaiten)]);
+ const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by,source) VALUES($1,$2::jsonb,$3,$3,'import') ON CONFLICT(id) DO NOTHING RETURNING id",[it.id,JSON.stringify(it.payload),user.telegram_id]);
  if(q.rowCount){imported++;await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'import',1,$3::jsonb)",[it.id,user.telegram_id,JSON.stringify(it.payload)])}
  else skipped++;
  }
