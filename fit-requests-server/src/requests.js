@@ -71,7 +71,7 @@ const cardFields=`SELECT l.request_id, k.id::text AS id,k.title,k.state,k.update
  k.estimate_raw,k.estimate_unit,k.estimate_text,k.spent_raw,k.column_id,k.board_id,k.synced_at,
  l.linked_at,l.linked_by FROM fit_request_kaiten_links l
  JOIN kaiten_cards k ON k.id=l.card_id`;
-function cardOutput(r){return {id:r.id,title:r.title,state:r.state,updatedAt:r.updated_at,memberIds:r.member_ids,ownerId:r.owner_id,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,spentRaw:r.spent_raw,columnId:r.column_id,boardId:r.board_id,syncedAt:r.synced_at,linkedAt:r.linked_at,linkedBy:r.linked_by,url:"https://rossko.kaiten.ru/space/"+encodeURIComponent(r.board_id||"")+"/card/"+encodeURIComponent(r.id)}}
+function cardOutput(r){return {id:r.id,title:r.title,state:r.state,updatedAt:r.updated_at,memberIds:r.member_ids,ownerId:r.owner_id,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,spentRaw:r.spent_raw,columnId:r.column_id,boardId:r.board_id,syncedAt:r.synced_at,linkedAt:r.linked_at,linkedBy:r.linked_by}}
 export async function listRequests(pool,user){
  const params=user.role==="admin"?[]:[user.telegram_id];
  const q=await pool.query(select+roleFilter(user)+" ORDER BY r.updated_at DESC,r.id DESC LIMIT 3000",params);
