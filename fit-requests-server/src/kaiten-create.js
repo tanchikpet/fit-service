@@ -27,6 +27,16 @@ export async function boardDetails(config,boardId){
   columns:Array.isArray(b.columns)?b.columns.filter(c=>c.id&&c.type!==3).map(c=>({id:String(c.id),title:String(c.title||c.id)})):[],
   lanes:Array.isArray(b.lanes)?b.lanes.filter(l=>l.id&&l.condition!==3).map(l=>({id:String(l.id),title:String(l.title||"Без названия")})):[]};
 }
+export async function fixedPmDestination(config){
+ const boards=await boardCandidates(null,config);
+ const matches=boards.filter(b=>b.title.trim().toLocaleLowerCase("ru")==="pm");
+ if(matches.length!==1)throw Error(matches.length?"Найдено несколько досок PM — требуется уточнить настройку":"Доска PM не найдена в пространстве Kaiten");
+ const board=await boardDetails(config,matches[0].id);
+ const columns=board.columns.filter(c=>c.title.trim().toLocaleLowerCase("ru")==="анализ");
+ if(columns.length!==1)throw Error(columns.length?"В доске PM несколько колонок «Анализ»":"Колонка «Анализ» не найдена в доске PM");
+ const lanes=board.lanes.filter(l=>l.title.trim()||board.lanes.length===1);
+ return {boardId:board.id,boardTitle:board.title,columnId:columns[0].id,columnTitle:columns[0].title,lanes};
+}
 function description(request){
  const p=request.payload;
  const lines=[["Описание",p.description],["Инициатор",p.requester],["Подразделение",p.department],["Цель",p.goal],["Желаемый срок",p.desiredDue],["Материалы",p.materials],["Обсуждение",p.express]];
@@ -34,10 +44,10 @@ function description(request){
 }
 export async function createParentCard(pool,config,user,requestId,body){
  if(user.role!=="admin")return {forbidden:true};
- if(!requestIdOk(requestId)||!validId(body?.boardId)||!validId(body?.columnId)||body?.laneId&&!validId(body.laneId))throw Error("Некорректная заявка или расположение карточки");
- const board=await boardDetails(config,body.boardId);
- if(!board.columns.some(c=>c.id===String(body.columnId)))throw Error("Колонка не принадлежит выбранной доске");
- if(body.laneId&&!board.lanes.some(l=>l.id===String(body.laneId)))throw Error("Дорожка не принадлежит выбранной доске");
+ if(!requestIdOk(requestId)||!validId(body?.laneId))throw Error("Нужно выбрать дорожку Kaiten");
+ const destination=await fixedPmDestination(config);
+ if(!destination.lanes.some(l=>l.id===String(body.laneId)))throw Error("Дорожка не принадлежит доске PM");
+ const board={id:destination.boardId};
  const tx=await pool.connect();let request;
  try{
   await tx.query("BEGIN");
@@ -48,11 +58,11 @@ export async function createParentCard(pool,config,user,requestId,body){
   if(previous.rows.length&&previous.rows[0].status!=="rejected"){await tx.query("ROLLBACK");return {alreadyAttempted:true,status:previous.rows[0].status}}
   if(previous.rows[0]?.status==="rejected")await tx.query("DELETE FROM fit_kaiten_creation_attempts WHERE request_id=$1 AND status=\'rejected\'",[requestId]);
   if(!request.payload.title?.trim()){await tx.query("ROLLBACK");throw Error("Не заполнено название заявки")}
-  await tx.query("INSERT INTO fit_kaiten_creation_attempts(request_id,status,board_id,column_id,lane_id,initiated_by) VALUES($1,'pending',$2,$3,$4,$5)",[requestId,body.boardId,body.columnId,body.laneId||null,user.telegram_id]);
+  await tx.query("INSERT INTO fit_kaiten_creation_attempts(request_id,status,board_id,column_id,lane_id,initiated_by) VALUES($1,'pending',$2,$3,$4,$5)",[requestId,destination.boardId,destination.columnId,body.laneId,user.telegram_id]);
   await tx.query("COMMIT");
  }catch(e){await tx.query("ROLLBACK").catch(()=>{});throw e}finally{tx.release()}
- const payload={title:String(request.payload.title).slice(0,1024),board_id:Number(body.boardId),column_id:Number(body.columnId),description:description(request),external_id:requestId,position:2};
- if(body.laneId)payload.lane_id=Number(body.laneId);
+ const payload={title:String(request.payload.title).slice(0,1024),board_id:Number(destination.boardId),column_id:Number(destination.columnId),description:description(request),external_id:requestId,position:2};
+ payload.lane_id=Number(body.laneId);
  // Do not translate date-only deadlines into a guessed UTC time.
  let card;
  try{card=await api(config,"/api/latest/cards","POST",payload)}
@@ -71,7 +81,7 @@ export async function createParentCard(pool,config,user,requestId,body){
   const linked=await client.query("UPDATE fit_requests SET kaiten_card_id=$2,updated_at=now() WHERE id=$1 AND kaiten_card_id IS NULL RETURNING id",[requestId,card.id]);
   if(!linked.rowCount)throw Error("Заявка уже связана с карточкой");
   await client.query("UPDATE fit_kaiten_creation_attempts SET status='created',card_id=$2,completed_at=now() WHERE request_id=$1",[requestId,card.id]);
-  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) SELECT id,$2,'kaiten_parent_create',revision,$3::jsonb FROM fit_requests WHERE id=$1",[requestId,user.telegram_id,JSON.stringify({cardId:String(card.id),boardId:String(body.boardId)})]);
+  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) SELECT id,$2,'kaiten_parent_create',revision,$3::jsonb FROM fit_requests WHERE id=$1",[requestId,user.telegram_id,JSON.stringify({cardId:String(card.id),boardId:String(destination.boardId)})]);
   await client.query("COMMIT");return {ok:true,cardId:String(card.id)};
  }catch(e){await client.query("ROLLBACK").catch(()=>{});return {uncertain:true,error:"Kaiten создал карточку, но связь не подтверждена. Проверь external_id "+requestId+" перед повтором."}}
  finally{client.release()}
