@@ -76,25 +76,34 @@ export async function searchKaitenCards(pool,user,search){
  ORDER BY CASE WHEN id::text=$3 THEN 0 ELSE 1 END,updated_at DESC NULLS LAST LIMIT 20`,[process.env.KAITEN_SPACE_ID,"%"+q.replace(/[\\%_]/g,"\\$&")+"%",numeric?q:"0"]);
  return {items:result.rows};
 }
-export async function updateKaitenLink(pool,user,requestId,cardId,action){
+export async function updateKaitenParent(pool,user,requestId,cardId,action){
  if(user.role!=="admin")return {forbidden:true};
- if(!/^REQ-\d{1,12}$/.test(requestId)||!/^\d{1,16}$/.test(String(cardId)))throw Error("Неверный ID заявки или карточки");
- if(!["link","unlink"].includes(action))throw Error("Неверное действие");
+ if(!/^REQ-\d{1,12}$/.test(requestId)||!["link","unlink"].includes(action))throw Error("Неверные параметры");
+ if(!/^\d{1,16}$/.test(String(cardId||"")))throw Error("Неверный ID карточки");
  const client=await pool.connect();
  try{
   await client.query("BEGIN");
-  const request=await client.query("SELECT id FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
-  if(!request.rows.length){await client.query("ROLLBACK");return {notFound:true}}
+  const q=await client.query("SELECT kaiten_card_id FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
+  if(!q.rows.length){await client.query("ROLLBACK");return {notFound:true}}
+  const current=q.rows[0].kaiten_card_id;
   if(action==="link"){
+   if(current&&String(current)!==String(cardId)){await client.query("ROLLBACK");return {alreadyLinked:true}}
    const exists=await client.query("SELECT id FROM kaiten_cards WHERE id=$1 AND space_id=$2",[cardId,process.env.KAITEN_SPACE_ID]);
    if(!exists.rows.length){await client.query("ROLLBACK");return {cardNotFound:true}}
-   await client.query("INSERT INTO fit_request_kaiten_links(request_id,card_id,linked_by) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",[requestId,cardId,user.telegram_id]);
+   if(!current)await client.query("UPDATE fit_requests SET kaiten_card_id=$2,updated_at=now() WHERE id=$1",[requestId,cardId]);
   }else{
-   await client.query("DELETE FROM fit_request_kaiten_links WHERE request_id=$1 AND card_id=$2",[requestId,cardId]);
+   if(!current){await client.query("ROLLBACK");return {ok:true}}
+   if(String(current)!==String(cardId)){await client.query("ROLLBACK");return {alreadyLinked:true}}
+   await client.query("UPDATE fit_requests SET kaiten_card_id=NULL,updated_at=now() WHERE id=$1",[requestId]);
   }
-  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) SELECT id,$2,$3,revision,$4::jsonb FROM fit_requests WHERE id=$1",[requestId,user.telegram_id,action==="link"?"kaiten_link":"kaiten_unlink",JSON.stringify({cardId:String(cardId)})]);
+  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) SELECT id,$2,$3,revision,$4::jsonb FROM fit_requests WHERE id=$1",[requestId,user.telegram_id,action==="link"?"kaiten_parent_link":"kaiten_parent_unlink",JSON.stringify({cardId:String(cardId)})]);
   await client.query("COMMIT");return {ok:true};
  }catch(err){await client.query("ROLLBACK");throw err}finally{client.release()}
+}
+export async function getKaitenParentId(pool,user,requestId){
+ if(!/^REQ-\d{1,12}$/.test(requestId))return null;
+ const q=await pool.query("SELECT kaiten_card_id FROM fit_requests WHERE id=$1 AND ($2='admin' OR created_by=$3)",[requestId,user.role,user.telegram_id]);
+ return q.rows.length?q.rows[0].kaiten_card_id:null;
 }
 export async function createRequest(pool,user,body){
  const isDraft=body.status==="Черновик";
