@@ -7,11 +7,13 @@ import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
 import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
+import {initCardCreation,boardCandidates,boardDetails,createParentCard} from "./kaiten-create.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
 await initBotAuth(pool);
 await initRequests(pool);
+await initCardCreation(pool);
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const botLogin=makeBotLogin({pool});
@@ -92,6 +94,30 @@ const server=http.createServer(async(req,res)=>{
     }
     send(res,200,{parentId:String(parentId),items:all,updatedAt:new Date().toISOString()});
    }catch(err){console.error("Kaiten children lookup failed:",err.message);send(res,502,{error:"Не удалось загрузить дочерние карточки из Kaiten"})}return
+  }
+  if(path==="/api/kaiten/boards"&&req.method==="GET"){
+   if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+   try{send(res,200,{items:await boardCandidates(pool,config)})}catch(e){send(res,502,{error:"Не удалось загрузить список досок"})}return
+  }
+  if(path.startsWith("/api/kaiten/boards/")&&req.method==="GET"){
+   if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+   try{send(res,200,await boardDetails(config,path.slice("/api/kaiten/boards/".length)))}
+   catch(e){send(res,502,{error:"Не удалось получить колонки и дорожки доски из Kaiten"})}return
+  }
+  if(path.startsWith("/api/requests/")&&path.endsWith("/kaiten/create")&&req.method==="POST"){
+   if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+   if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+   const requestId=path.slice("/api/requests/".length,-"/kaiten/create".length);
+   let body;try{body=JSON.parse(await collect(req,4096))}catch{send(res,400,{error:"Неверные параметры карточки"});return}
+   try{
+    const result=await createParentCard(pool,config,me,requestId,body);
+    if(result.forbidden)send(res,403,{error:"Нет доступа"});
+    else if(result.notFound)send(res,404,{error:"Заявка не найдена"});
+    else if(result.alreadyLinked||result.alreadyAttempted)send(res,409,{error:"Основная карточка уже создана или попытка создания требует проверки. Новая карточка не отправлена."});
+    else if(result.uncertain)send(res,409,{error:result.error});
+    else if(result.rejected)send(res,422,{error:result.error});
+    else {sync.schedule();send(res,201,result)}
+   }catch(e){send(res,400,{error:e.message})}return
   }
   if(path==="/api/kaiten/search"&&req.method==="GET"){
     if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
