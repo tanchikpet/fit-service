@@ -74,6 +74,7 @@
   const t=data.find(x=>x.id===detailId);if(!t)return;
   const parent=t.kaitenParent;
   const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");if(!root)return;
+  Array.from(root.querySelectorAll("section.panel")).filter(p=>p.querySelector(".panel-header h2")?.textContent==="Интеграция с Kaiten").forEach(p=>p.remove());
   const section=document.createElement("section");section.className="panel";section.id="kaitenParentPanel";
   section.innerHTML='<div class="panel-header"><h2>Основная карточка Kaiten</h2></div>'+
     '<div class="panel-body">'+
