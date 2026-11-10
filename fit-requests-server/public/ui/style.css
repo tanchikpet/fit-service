@@ -15,3 +15,6 @@
 .logout-button{border:1px solid var(--line);background:#fff;color:#4b5563;padding:9px 13px;border-radius:8px;font-size:12px;font-weight:650;white-space:nowrap}
 .logout-button:hover{border-color:var(--accent);color:var(--accent)}
 @media(max-width:590px){.top-actions{gap:8px}.user-account{max-width:125px}.user-name{max-width:88px;font-size:11px}.logout-button{padding:8px 10px}.topbar{gap:9px}}
+
+/* WEB scope reminder, visible below navigation */
+.web-scope-disclaimer{margin:auto 9px 10px;padding:12px 11px;border:1px solid rgba(254,80,0,.35);border-left:3px solid #fe5000;border-radius:7px;background:rgba(254,80,0,.07);color:#cbd0d7;font-size:11px;line-height:1.55}
