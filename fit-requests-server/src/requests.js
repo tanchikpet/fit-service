@@ -85,7 +85,7 @@ export async function listRequests(pool,user){
 export async function searchKaitenCards(pool,user,search){
  if(user.role!=="admin")throw Error("Нет доступа к поиску карточек");
  const q=String(search||"").trim();if(q.length<2||q.length>120)throw Error("Для поиска укажи минимум два символа");
- const numeric=/^\\d{1,16}$/.test(q);
+ const numeric=/^\d{1,16}$/.test(q);
  const result=await pool.query(`SELECT id::text AS id,title,state,board_id,column_id,estimate_text,updated_at
  FROM kaiten_cards WHERE space_id=$1 AND (title ILIKE $2 OR id::text=$3)
  ORDER BY CASE WHEN id::text=$3 THEN 0 ELSE 1 END,updated_at DESC NULLS LAST LIMIT 20`,[process.env.KAITEN_SPACE_ID,"%"+q.replace(/[\\%_]/g,"\\$&")+"%",numeric?q:"0"]);
@@ -93,7 +93,7 @@ export async function searchKaitenCards(pool,user,search){
 }
 export async function updateKaitenLink(pool,user,requestId,cardId,action){
  if(user.role!=="admin")return {forbidden:true};
- if(!/^REQ-\\d{1,12}$/.test(requestId)||!/^\\d{1,16}$/.test(String(cardId)))throw Error("Неверный ID заявки или карточки");
+ if(!/^REQ-\d{1,12}$/.test(requestId)||!/^\d{1,16}$/.test(String(cardId)))throw Error("Неверный ID заявки или карточки");
  if(!["link","unlink"].includes(action))throw Error("Неверное действие");
  const client=await pool.connect();
  try{
