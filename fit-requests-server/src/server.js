@@ -6,7 +6,7 @@ import {makeDb,setupDb} from "./db.js";
 import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
-import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenLink} from "./requests.js";
+import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
@@ -72,6 +72,27 @@ const server=http.createServer(async(req,res)=>{
   const me=await auth.user(req);
   if(!me&&!authorized(req)){send(res,401,{error:"unauthorized"});return}
   if(path==="/api/me"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,{telegramId:me.telegram_id,displayName:me.display_name,role:me.role});return}
+  if(path.startsWith("/api/requests/")&&path.endsWith("/kaiten/children")&&req.method==="GET"){
+   if(!me){send(res,401,{error:"unauthorized"});return}
+   const id=path.slice("/api/requests/".length,-"/kaiten/children".length);
+   const parentId=await getKaitenParentId(pool,me,id);
+   if(!parentId){send(res,200,{items:[],parentId:null});return}
+   try{
+    const all=[];const pageSize=100;
+    for(let offset=0;offset<1000;offset+=pageSize){
+     const url=new URL(config.kaitenBase+"/api/latest/cards/"+encodeURIComponent(String(parentId))+"/children");
+     url.searchParams.set("limit",String(pageSize));url.searchParams.set("offset",String(offset));
+     const reply=await fetch(url,{headers:{Authorization:"Bearer "+config.kaitenToken,Accept:"application/json"},signal:AbortSignal.timeout(10000)});
+     if(!reply.ok)throw Error("Kaiten API HTTP "+reply.status);
+     const batch=await reply.json();if(!Array.isArray(batch))throw Error("Неверный ответ Kaiten");
+     for(const c of batch){
+      all.push({id:String(c.id),title:String(c.title||""),state:c.state,ownerId:c.owner_id||null,memberIds:Array.isArray(c.members)?c.members.map(m=>m.id||m):[],estimateText:c.size_text||null,estimateUnit:c.size_unit||null,dueDate:c.due_date||null,plannedStart:c.planned_start||c.calculated_planned_start||null,plannedEnd:c.planned_end||c.calculated_planned_end||null,childrenCount:c.children_count||0,childrenDone:c.children_done||0,updatedAt:c.updated||null});
+     }
+     if(batch.length<pageSize)break;
+    }
+    send(res,200,{parentId:String(parentId),items:all,updatedAt:new Date().toISOString()});
+   }catch(err){console.error("Kaiten children lookup failed:",err.message);send(res,502,{error:"Не удалось загрузить дочерние карточки из Kaiten"})}return
+  }
   if(path==="/api/kaiten/search"&&req.method==="GET"){
     if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
     try{send(res,200,await searchKaitenCards(pool,me,url.searchParams.get("q")))}catch(err){send(res,400,{error:err.message})}return
@@ -81,10 +102,11 @@ const server=http.createServer(async(req,res)=>{
     if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const requestId=path.slice("/api/requests/".length,-"/kaiten".length),raw=await collect(req,2048);let body;
     try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{const result=await updateKaitenLink(pool,me,requestId,body.cardId,body.action);
+    try{const result=await updateKaitenParent(pool,me,requestId,body.cardId,body.action);
       if(result.forbidden)send(res,403,{error:"Нет доступа"});
       else if(result.notFound)send(res,404,{error:"Заявка не найдена"});
       else if(result.cardNotFound)send(res,404,{error:"Карточка Kaiten не найдена в синхронизированном пространстве"});
+      else if(result.alreadyLinked)send(res,409,{error:"У заявки уже есть основная карточка Kaiten. Сначала отвяжи ее."});
       else send(res,200,result)
     }catch(err){send(res,400,{error:err.message})}return
   }
