@@ -81,7 +81,7 @@
    try{
     const r=await fetchJson("/api/kaiten/boards");
     const select=document.getElementById("createBoard");
-    select.innerHTML='<option value="">Выбери доску</option>'+r.items.map(x=>'<option value="'+escape(x.id)+'">Доска #'+escape(x.id)+' ('+escape(x.cardCount)+' карточек)</option>').join("");
+    select.innerHTML='<option value="">Выбери доску</option>'+r.items.map(x=>'<option value="'+escape(x.id)+'">'+escape(x.title)+' (#'+escape(x.id)+')</option>').join("");
     status.textContent="Выбери доску — загрузим ее название, колонки и дорожки из Kaiten.";
    }catch(e){status.textContent="Не удалось загрузить доски: "+e.message;b.disabled=false}
    return;
