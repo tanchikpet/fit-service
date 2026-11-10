@@ -4,7 +4,7 @@ const projects=[{id:"site",name:"Основной сайт",description:"Осн�
 const todayLocal=new Date(); const iso=(d)=>{const z=new Date(d);return [z.getFullYear(),String(z.getMonth()+1).padStart(2,"0"),String(z.getDate()).padStart(2,"0")].join("-")};const plus=(days)=>{const z=new Date();z.setDate(z.getDate()+days);return iso(z)};let data=[];
 let page="requests",detailId=null,searchTerm="",filterStatus="",filterProject="";
 const $=(s)=>document.querySelector(s);const esc=(s)=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const save=()=>{if(!window.FitRequestPersistence) return notify("Серверное сохранение еще не подключено");window.FitRequestPersistence.save(data.map(t=>({...t})))};const notify=(m)=>{const e=$("#toast");e.textContent=m;e.classList.add("visible");clearTimeout(notify.t);notify.t=setTimeout(()=>e.classList.remove("visible"),3000)};const label=(p)=>projects.find(x=>x.id===p)?.name||p;const fmt=(d)=>d?new Date(d+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"short"}):"—";const longdate=(d)=>d?new Date(d+"T12:00:00").toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"}):"—";const statusClass=(s)=>({"Разработка":"status-development","Тестирование":"status-testing","Демо":"status-demo","Готово":"status-done"}[s]||"status-new");const badge=(s)=>'<span class="pill '+statusClass(s)+'">'+esc(s)+'</span>';const priority=(s)=>'<span class="'+(["Критический","Высокий"].includes(s)?"priority-high":"priority-normal")+'">● '+esc(s)+'</span>';
-const nav=[["requests","☷","Заявки"],["projects","▣","Проекты"]];
+const nav=[["requests","☷","Заявки"]];
 const heading=(ey,title,desc,action=true)=>'<div class="page-head"><div><div class="eyebrow">'+ey+'</div><h1>'+title+'</h1><p class="sub">'+desc+'</p></div>'+(action?'<button class="button primary" data-action="new">＋ Подать заявку</button>':"")+'</div>';
 const stage=t=>t.kaitenParent?"Передана в Kaiten":t.status||"Новая";
 const taskTable=(rows,limit)=>{
@@ -29,9 +29,6 @@ const requests=()=>{
  '<select id="projectFilter" aria-label="Проект"><option value="">Все проекты</option>'+projects.map(p=>'<option value="'+esc(p.id)+'" '+(filterProject===p.id?"selected":"")+'>'+esc(p.name)+'</option>').join("")+'</select></div>'+
  '<section class="panel"><div class="panel-header"><h2>Список заявок <span class="muted">('+tasks.length+')</span></h2><span class="badge-mini">Нажми на заявку для просмотра</span></div>'+taskTable(tasks)+'</section>';
 };
-const projectPage=()=>heading("По направлениям","Проекты","Количество входящих запросов в каждом направлении.")+
- '<div class="project-grid">'+projects.map(p=>{const ts=data.filter(t=>t.project===p.id),sent=ts.filter(t=>Boolean(t.kaitenParent)).length;
- return '<article class="project-card"><div class="project-top"><div class="project-letter">'+p.letter+'</div><span class="badge-mini">'+ts.length+' заявок</span></div><h3>'+esc(p.name)+'</h3><p>'+esc(p.description)+'</p><div class="project-foot"><span>Передано в Kaiten: '+sent+'</span></div><button class="button secondary sm mt" data-open-project="'+esc(p.id)+'">Открыть заявки</button></article>'}).join("")+'</div>';
 const detail=()=>{
  const t=data.find(x=>x.id===detailId);if(!t)return requests();
  return '<div class="page-head"><div><div class="eyebrow">ЗАЯВКА / '+esc(t.id)+'</div><h1>'+esc(t.title)+'</h1><p class="sub">'+esc(label(t.project))+' · создана '+longdate(t.created)+'</p></div>'+
@@ -39,17 +36,16 @@ const detail=()=>{
  '<div class="detail-layout"><div class="stack"><section class="panel"><div class="panel-header"><h2>Описание запроса</h2>'+badge(stage(t))+'</div><div class="panel-body"><div class="detail-desc">'+esc(t.description||"Описание пока не добавлено")+'</div></div></section></div>'+
  '<section class="panel"><div class="panel-header"><h2>Данные заявки</h2></div><div class="panel-body kv">'+[["ID",t.id],["Проект",label(t.project)],["Инициатор",t.requester],["Подразделение",t.department],["Этап обработки",stage(t)],["Желаемый срок",fmt(t.desiredDue)],["Создана",longdate(t.created)]].map(([a,b])=>'<div class="kv-row"><span>'+esc(a)+'</span><b>'+esc(b||"—")+'</b></div>').join("")+'</div></section></div>';
 };
-function render(){document.querySelector("#navigation").innerHTML=nav.map(([key,icon,name])=>'<button class="nav-link '+(page===key?"active":"")+'" data-page="'+key+'"><span class="nav-icon">'+icon+'</span><span class="nav-label">'+name+'</span></button>').join("");$("#breadcrumb").textContent=detailId?"Заявки / "+detailId:nav.find(n=>n[0]===page)?.[2]||"Заявки";$("#today").textContent=new Date().toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});$("#main").innerHTML=detailId?detail():({requests,projects:projectPage}[page]||requests)();bindInputs()}
+function render(){document.querySelector("#navigation").innerHTML=nav.map(([key,icon,name])=>'<button class="nav-link '+(page===key?"active":"")+'" data-page="'+key+'"><span class="nav-icon">'+icon+'</span><span class="nav-label">'+name+'</span></button>').join("");$("#breadcrumb").textContent=detailId?"Заявки / "+detailId:nav.find(n=>n[0]===page)?.[2]||"Заявки";$("#today").textContent=new Date().toLocaleDateString("ru-RU",{day:"numeric",month:"long",year:"numeric"});$("#main").innerHTML=detailId?detail():requests();bindInputs()}
 function bindInputs(){const s=$("#search");if(s)s.addEventListener("input",e=>{searchTerm=e.target.value;const at=e.target.selectionStart;render();const i=$("#search");i.focus();i.setSelectionRange(at,at)});$("#statusFilter")?.addEventListener("change",e=>{filterStatus=e.target.value;render()});$("#projectFilter")?.addEventListener("change",e=>{filterProject=e.target.value;render()})}
 function openForm(){/* Replaced by the request-only intake module after app initialization. */}
 document.addEventListener("click",e=>{
- const b=e.target.closest("[data-page],[data-action],[data-id],[data-edit],[data-open-project],[data-stage]");
+ const b=e.target.closest("[data-page],[data-action],[data-id],[data-edit],[data-stage]");
  if(!b)return;
  if(b.hasAttribute("data-stage")){filterStatus=b.dataset.stage;detailId=null;page="requests";render();return}
  if(b.dataset.page){page=b.dataset.page;detailId=null;render();return}
  if(b.dataset.id){detailId=b.dataset.id;page="requests";render();return}
  if(b.dataset.edit){openForm(b.dataset.edit);return}
- if(b.dataset.openProject){filterProject=b.dataset.openProject;page="requests";detailId=null;render();return}
  if(b.dataset.action==="new")openForm();
 });
 render();
