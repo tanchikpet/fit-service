@@ -7,3 +7,11 @@
 .stat-filter:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .stat-filter.active{border-color:var(--accent);background:#fff6ef;box-shadow:inset 0 0 0 1px var(--accent)}
 .stat-filter.active .stat-label{color:var(--accent)}
+
+/* Authenticated Telegram identity and sign-out in the topbar */
+.user-account{display:flex;align-items:center;gap:9px;min-width:0;max-width:260px}
+.user-name{font-size:12px;font-weight:650;color:#303946;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-form{margin:0;display:inline-flex}
+.logout-button{border:1px solid var(--line);background:#fff;color:#4b5563;padding:9px 13px;border-radius:8px;font-size:12px;font-weight:650;white-space:nowrap}
+.logout-button:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:590px){.top-actions{gap:8px}.user-account{max-width:125px}.user-name{max-width:88px;font-size:11px}.logout-button{padding:8px 10px}.topbar{gap:9px}}
