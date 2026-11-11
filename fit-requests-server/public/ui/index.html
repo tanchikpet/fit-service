@@ -1,0 +1,9 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8fa"><title>FIT Requests — рабочая среда</title><link rel="icon" type="image/svg+xml" href="/ui/favicon.svg?v=brand-3"><link rel="shortcut icon" href="/ui/favicon.svg?v=brand-3"><link rel="stylesheet" href="/ui/style.css?v=brand-3"><link rel="stylesheet" href="/ui/intake.css"></head>
+<body><div class="shell">
+<aside class="sidebar"><div class="brand"><img class="brand-logo" src="/ui/brand-dark.svg?v=brand-3" alt="FIT Requests"><span class="brand-caption">Заявки на web-разработку</span><img class="brand-mark" src="/ui/favicon.svg?v=brand-3" alt="FIT Requests"></div><nav id="navigation" aria-label="Главное меню"></nav><a class="nav-link" href="/app/registry" aria-label="Реестр сайтов" title="Реестр сайтов"><span class="nav-icon" aria-hidden="true">▦</span><span class="nav-label">Реестр сайтов</span></a></aside>
+<div class="main"><header class="topbar"><div class="crumb" id="breadcrumb">Заявки</div><div class="top-actions"><span class="today" id="today"></span><div class="user-account" aria-label="Текущий пользователь"><span id="userAvatar" class="avatar mini" aria-hidden="true">?</span><span id="userDisplayName" class="user-name">Загрузка профиля...</span></div><form action="/auth/logout" method="post" class="logout-form"><button type="submit" class="logout-button" title="Выйти из аккаунта">Выйти</button></form></div></header>
+<main id="main" tabindex="-1"></main><div id="syncWarning" style="display:none"></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="requestDialog"></dialog>
+<script src="/ui/app.js" defer></script><script src="/ui/intake.js" defer></script><script src="/ui/server-bridge.js?v=pm-controls-1" defer></script></body></html>

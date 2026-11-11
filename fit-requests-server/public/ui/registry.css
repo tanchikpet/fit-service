@@ -1,0 +1,61 @@
+#registryMain{padding:28px 32px;max-width:1600px;margin:auto}
+#registryMain .heading{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+#registryMain h1{font-size:26px;line-height:1.3;margin:0 0 6px}#registryMain .heading p{margin:0}#registryMain .eyebrow{display:none}
+:is(#registryMain,#editor,#serviceInfo) button{font:inherit;font-size:13px;font-weight:500;border:1px solid transparent;border-radius:7px;padding:8px 12px;min-height:36px;background:#fe5000;color:white;cursor:pointer}
+:is(#registryMain,#editor,#serviceInfo) button.secondary{background:white;color:#394352;border-color:#dce1e7}
+:is(#registryMain,#editor,#serviceInfo) button.text-button,:is(#editor,#serviceInfo) button.icon{background:transparent;color:#596373;border-color:transparent}
+:is(#registryMain,#editor,#serviceInfo) button:hover{filter:brightness(.96)}
+:is(#registryMain,#editor,#serviceInfo) button:disabled{opacity:.5;cursor:wait}
+:is(#registryMain,#editor,#serviceInfo) :is(button,a,summary,input,select,textarea):focus-visible{outline:2px solid #fe5000;outline-offset:3px}
+:is(#registryMain,#editor,#serviceInfo) [hidden]{display:none!important}
+:is(#registryMain,#editor) label{display:grid;gap:6px;font-size:13px;font-weight:500}
+:is(#registryMain,#editor) :is(input,select,textarea){font:inherit;font-size:14px;width:100%;padding:10px 12px;border:1px solid #d7dde4;border-radius:7px;background:white;color:#202a36;box-sizing:border-box}
+#registryMain .toolbar{display:flex;gap:16px;margin:20px 0 12px}#registryMain .search{width:min(100%,520px)}
+#registryMain .registry-tabs{display:flex;gap:20px;border-bottom:1px solid #e1e6ec;overflow-x:auto}
+#registryMain .registry-tabs button{border-radius:0;background:transparent;color:#647080;border:0;border-bottom:2px solid transparent;padding:12px 0;white-space:nowrap;display:flex;gap:8px;align-items:center}
+#registryMain .registry-tabs button[aria-selected=true]{color:#ce4200;border-bottom-color:#fe5000}
+#registryMain .tab-count,#registryMain .group-count{font-size:12px;border-radius:12px;padding:2px 7px;background:#edf0f4;color:#687383;font-weight:400}
+#registryMain [aria-selected=true] .tab-count{background:#fff0e8;color:#ba3c00}
+#registryMain .scan-bar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;color:#77818e;font-size:12px;margin-bottom:20px}
+#registryMain #reviewTools{display:flex;gap:14px;align-items:center;margin:16px 0;font-size:12px}
+#registryMain #summary{font-size:12px;margin:16px 0 10px;color:#77818e}
+#registryMain #notice:empty{display:none}#registryMain #notice{font-size:13px;color:#596373}
+#registryMain .group{margin:0 0 16px;background:white;border:1px solid #e6e9ee;border-radius:9px;overflow:hidden}
+#registryMain .group>summary{padding:13px 16px;font-size:14px;font-weight:600;cursor:pointer;background:#fafbfc}
+#registryMain .nested-group{padding:0 16px 12px}#registryMain .nested-group .group{border:0;margin:0}#registryMain .nested-group .group>summary{background:white}
+#registryMain .table-scroll{overflow-x:auto;background:white}
+#registryMain table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:13px}
+#registryMain th{text-align:left;color:#77818e;font-size:11px;font-weight:500;padding:10px 16px;border-bottom:1px solid #e9edf1;background:#fcfcfd}
+#registryMain th:nth-child(1){width:40%}#registryMain th:nth-child(2){width:20%}#registryMain th:nth-child(3){width:23%}#registryMain th:nth-child(4){width:17%}
+#registryMain td{padding:12px 16px;border-bottom:1px solid #edf0f3;vertical-align:top;overflow-wrap:anywhere;color:#394352}
+#registryMain tr:last-child td{border-bottom:0}#registryMain tbody tr:hover{background:#fcfcfd}
+#registryMain td a{color:#42546a;text-decoration:none}#registryMain td a:hover{text-decoration:underline}
+#registryMain .entry-name{font-weight:500;color:#253140;margin-bottom:5px}
+#registryMain .address{font-size:12px;margin:3px 0}#registryMain .tag{font-size:10px;color:#85909c;margin-right:6px}
+#registryMain .entry-details{margin-top:7px}#registryMain .entry-details>summary{font-size:11px;color:#7b8592;cursor:pointer;width:fit-content}
+#registryMain dl{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;font-size:12px;margin:12px 0 0}#registryMain dt{color:#7b8592}#registryMain dd{margin:0}
+#registryMain .status{display:inline-block;font-size:11px;line-height:1.4;padding:4px 8px;border-radius:5px;font-weight:400}
+#registryMain .good{background:#edf6f1;color:#377054}#registryMain .neutral{background:#f0f3f7;color:#65758a}#registryMain .warning{background:#faf3e9;color:#8a6b35}
+#registryMain .check-line{margin-bottom:5px}#registryMain .check-details>summary{cursor:pointer;list-style:none}#registryMain .check-details>summary::-webkit-details-marker{display:none}
+#registryMain .check-details>summary:after{content:'⌄';color:#9aa3ae;margin-left:4px;font-size:11px}
+#registryMain .check-info{font-size:11px;color:#77818e;padding:10px 0;overflow-wrap:anywhere}#registryMain .check-info p{margin:6px 0}
+#registryMain .row-actions{display:flex;flex-wrap:wrap;gap:6px}#registryMain td button{font-size:12px;padding:6px 9px;min-height:32px}
+#registryMain .empty{padding:40px 20px;text-align:center;color:#77818e;background:white;border-radius:8px;font-size:14px}
+#registryMain .discovery-warning{padding:10px 14px;margin:12px 0;background:#faf6ef;border-radius:7px;color:#806a46;font-size:12px}#registryMain .discovery-warning p{margin:0 0 4px}#registryMain .discovery-warning summary{cursor:pointer;text-decoration:underline;width:fit-content}#registryMain .discovery-warning li{overflow-wrap:anywhere}
+#editor{position:fixed;inset:0 0 0 auto;margin:0;width:520px;max-width:100%;height:100dvh;max-height:100dvh;border:0;border-radius:0;padding:0;box-shadow:-10px 0 40px #1d28351a;background:white}
+#editor::backdrop,#serviceInfo::backdrop{background:#25334535}
+#editor #entryForm{padding:24px;display:flex;flex-direction:column;gap:18px;min-height:100%;box-sizing:border-box}
+:is(#editor,#serviceInfo) .dialog-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+:is(#editor,#serviceInfo) h2{font-size:20px;margin:0}
+:is(#editor,#serviceInfo) .icon{font-size:24px;padding:0 8px;min-width:36px}
+#editor label{margin:0}
+#editor .columns{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#editor #extraFields{border-top:1px solid #e9edf1;padding-top:16px}#editor #extraFields>summary{font-size:13px;font-weight:500;cursor:pointer;color:#657185}#editor #extraFields .columns{margin-top:16px}
+#editor .actions{position:sticky;bottom:-24px;display:flex;justify-content:flex-end;gap:10px;background:white;padding:16px 0;margin-top:auto;border-top:1px solid #e9edf1}
+#editor .error{color:#b34141;font-size:13px;margin:0}#editor .error:empty{display:none}
+#serviceInfo{width:540px;max-width:calc(100% - 32px);padding:24px;border:0;border-radius:12px;color:#596373;font-size:14px;line-height:1.6}
+@media(max-width:900px){#registryMain{padding:24px 16px}#registryMain table{min-width:760px}#registryMain .registry-tabs{gap:16px}}
+@media(max-width:600px){#registryMain .heading{align-items:flex-start;flex-direction:column;gap:14px}#registryMain h1{font-size:22px}#registryMain .registry-tabs button{font-size:12px}#registryMain #reviewTools{align-items:flex-start;flex-direction:column}#editor .columns{grid-template-columns:1fr}#editor #entryForm{padding:20px}#editor .actions{bottom:-20px}}
+
+#registryMain #attentionTools{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin:16px 0}
+#registryMain #attentionTools label{min-width:240px}#registryMain #attentionTools p{font-size:12px;max-width:500px}
