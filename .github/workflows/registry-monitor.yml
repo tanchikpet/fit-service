@@ -1,56 +1,10 @@
-name: Registry monitor
+name: Registry monitor (moved to Railway)
 on:
-  schedule:
-    - cron: '0 5 * * *'
   workflow_dispatch:
-  workflow_run:
-    workflows: [Registry tests]
-    types: [completed]
-    branches: [main]
 permissions:
-  contents: write
-concurrency:
-  group: registry-monitor
-  cancel-in-progress: false
+  contents: read
 jobs:
-  monitor:
-    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+  moved:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - run: pip install cryptography==46.0.3
-      - name: Check URLs, discover pages and send reminders
-        env:
-          NOTIFICATION_CHANNEL: telegram
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_FROM: ${{ secrets.SMTP_FROM }}
-        run: python scripts/registry_monitor.py
-      - name: Save reports without overwriting concurrent edits
-        run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          cp data/registry-checks.json "$RUNNER_TEMP/registry-checks.json"
-          cp data/registry-candidates.json "$RUNNER_TEMP/registry-candidates.json"
-          for attempt in 1 2 3; do
-            git fetch origin main
-            git checkout -B registry-monitor-save origin/main
-            python scripts/registry_merge.py "$RUNNER_TEMP/registry-checks.json" "$RUNNER_TEMP/registry-candidates.json"
-            git add data/registry-checks.json data/registry-candidates.json
-            if git diff --cached --quiet; then exit 0; fi
-            git commit -m 'Update registry checks and discovered addresses'
-            if git push origin HEAD:main; then exit 0; fi
-          done
-          echo 'Could not save report after concurrent updates' >&2
-          exit 1
+      - run: echo 'Registry checks and reminders now run in Railway. Open https://fit-requests-kaiten-api-production.up.railway.app/app/registry'
