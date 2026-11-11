@@ -15,12 +15,26 @@ function suggestedProject(url){
  const projects=new Set((model?.entries||[]).filter(e=>[e.ru,e.kz].some(u=>{try{return new URL(u).hostname.replace(/^www\./,'')===host}catch{return false}})).map(e=>e.project).filter(Boolean));
  return projects.size===1?[...projects][0]:'';
 }
+const issueLabels={missing:'Страница не найдена',server:'Ошибка сайта',check:'Не удалось проверить',redirect:'Проблема с редиректом'};
+function checkIssues(c){
+ if(!c)return [];
+ const issues=[];
+ if(c.status===404||c.status===410)issues.push('missing');
+ else if(c.status>=500&&c.status<600)issues.push('server');
+ else if(c.error||!c.status||c.status>=400)issues.push('check');
+ if(c.expectedMismatch||c.changed||c.status>=300&&c.status<400)issues.push('redirect');
+ return issues;
+}
+function entryIssues(e){
+ if(e.isTemplate)return [];
+ return [...new Set([e.ru,e.kz].filter(Boolean).flatMap(u=>checkIssues(checks.checks?.[safeUrl(u)||u])))];
+}
 function checkView(url){
  const c=checks.checks?.[safeUrl(url)||url];if(!c)return '<span class="status neutral">Еще не проверен</span>';
  const failed=c.error||!c.status||c.status>=400;
  const redirected=c.finalUrl&&safeUrl(c.finalUrl)!==safeUrl(url)||c.status>=300&&c.status<400;
- const label=failed?'Не удалось проверить':redirected?'Редирект':'Доступен';
- return '<details class="check-details"><summary><span class="status '+(failed?'warning':redirected?'neutral':'good')+'">'+label+'</span></summary><div class="check-info">'+(c.error?esc(c.error):'HTTP '+esc(c.status))+'<br>'+esc(new Date(c.checkedAt).toLocaleString('ru-RU'))+(c.finalUrl?'<p>Фактический адрес: '+link(c.finalUrl)+'</p>':'')+(c.changed?'<p>Адрес назначения изменился. Ранее: '+link(c.previousFinalUrl)+'</p>':'')+(c.expectedMismatch?'<p>Не совпадает с редиректом в реестре</p>':'')+'</div></details>';
+ const issues=checkIssues(c);const label=issues.length?issues.map(k=>issueLabels[k]).join(' · '):redirected?'Редирект':'Доступен';
+ return '<details class="check-details"><summary><span class="status '+(issues.length?'warning':redirected?'neutral':'good')+'">'+label+'</span></summary><div class="check-info">'+(c.error?esc(c.error):'HTTP '+esc(c.status))+'<br>'+esc(new Date(c.checkedAt).toLocaleString('ru-RU'))+(c.finalUrl?'<p>Фактический адрес: '+link(c.finalUrl)+'</p>':'')+(c.changed?'<p>Адрес назначения изменился. Ранее: '+link(c.previousFinalUrl)+'</p>':'')+(c.expectedMismatch?'<p>Не совпадает с редиректом в реестре</p>':'')+'</div></details>';
 }
 function row(e){
  const urls=[['RU',e.ru],['KZ',e.kz]].filter(([,u])=>u);
@@ -35,16 +49,16 @@ function render(){
  const errors=checks.discoveryErrors||[];$('#discoveryWarning').hidden=!errors.length;
  $('#discoveryErrors').replaceChildren(...errors.map(error=>{const item=document.createElement('li');item.textContent=error;return item}));
  if(!errors.length)$('#discoveryDetails').open=false;
- const counts={active:model.entries.filter(e=>e.status!=='archive').length,review:candidates.items.filter(e=>e.state==='pending').length,archive:model.entries.filter(e=>e.status==='archive').length};
+ const counts={attention:model.entries.filter(e=>e.status!=='archive'&&entryIssues(e).length).length,active:model.entries.filter(e=>e.status!=='archive').length,review:candidates.items.filter(e=>e.state==='pending').length,archive:model.entries.filter(e=>e.status==='archive').length};
  for(const [key,count] of Object.entries(counts))document.querySelector('[data-count="'+key+'"]').textContent=count;
- $('#reviewTools').hidden=scope!=='review';$('#excludedCount').textContent=candidates.items.filter(e=>e.state==='dismissed').length;
+ $('#attentionTools').hidden=scope!=='attention';$('#reviewTools').hidden=scope!=='review';$('#excludedCount').textContent=candidates.items.filter(e=>e.state==='dismissed').length;
  $('#showExcluded').setAttribute('aria-pressed',String(showExcluded));
  $('#showExcluded').firstChild.textContent=showExcluded?'← На проверку · исключенных ':'Исключенные ';
  const q=$('#search').value.trim().toLowerCase();
  const match=e=>[e.ru,e.kz,e.url,e.description,e.project,e.owner,e.url?suggestedProject(e.url):''].join(' ').toLowerCase().includes(q);
- const items=scope==='review'?candidates.items.filter(e=>e.state===(showExcluded?'dismissed':'pending')&&match(e)):model.entries.filter(e=>(scope==='archive'?e.status==='archive':e.status!=='archive')&&match(e));
+ const items=scope==='review'?candidates.items.filter(e=>e.state===(showExcluded?'dismissed':'pending')&&match(e)):model.entries.filter(e=>(scope==='archive'?e.status==='archive':e.status!=='archive')&&match(e)&&(scope!=='attention'||entryIssues(e).some(reason=>!$('#attentionReason').value||reason===$('#attentionReason').value)));
  $('#summary').textContent=(scope==='review'&&showExcluded?'Исключенные · ':'')+items.length+' записей'+(q?' по запросу':'');
- if(!items.length){$('#list').innerHTML='<div class="empty">'+(q?'Ничего не найдено. Попробуй другой запрос.':scope==='review'?(showExcluded?'Нет исключенных адресов':'Все найденные адреса разобраны'):'В этом разделе пока нет записей')+'</div>';return}
+ if(!items.length){$('#list').innerHTML='<div class="empty">'+(q?'Ничего не найдено. Попробуй другой запрос.':scope==='review'?(showExcluded?'Нет исключенных адресов':'Все найденные адреса разобраны'):scope==='attention'?'По последней проверке проблем с выбранной причиной нет':'В этом разделе пока нет записей')+'</div>';return}
  if(scope==='review'){
  $('#list').innerHTML=table(items.map(e=>'<tr><td>'+link(e.url)+'</td><td>'+esc(suggestedProject(e.url)||'Не определен')+'</td><td><div>'+esc(e.source||'Найден при сканировании')+'</div><small class="muted">'+(e.foundAt?'Найден: '+esc(new Date(e.foundAt).toLocaleDateString('ru-RU')):'')+'</small></td><td><div class="row-actions">'+(isPm?(showExcluded?'<button class="secondary" data-restore="'+esc(e.id)+'">Вернуть на проверку</button>':'<button class="secondary" data-approve="'+esc(e.id)+'">Добавить</button><button class="text-button" data-dismiss="'+esc(e.id)+'">Не учитывать</button>'):'—')+'</div></td></tr>').join(''),true);return;
  }
@@ -55,8 +69,8 @@ function render(){
  else{const key=e.groupPath?.filter(x=>x!=='Архив').join(' / ')||e.project||'Другие страницы';if(!groups.has(key))groups.set(key,[]);groups.get(key).push(e)}
  }
  let html='';
- if(main.length||cities.length)html='<details class="group" open><summary>Основной сайт <span class="group-count">'+(main.length+cities.length)+'</span></summary>'+(main.length?table(main.map(row).join('')):'')+(cities.length?'<div class="nested-group">'+group('Города',cities,Boolean(q))+'</div>':'')+'</details>';
- html+=[...groups].map(([name,rs])=>group(name,rs,Boolean(q)||groups.size<4)).join('');
+ if(main.length||cities.length)html='<details class="group" open><summary>Основной сайт <span class="group-count">'+(main.length+cities.length)+'</span></summary>'+(main.length?table(main.map(row).join('')):'')+(cities.length?'<div class="nested-group">'+group('Города',cities,Boolean(q)||scope==='attention')+'</div>':'')+'</details>';
+ html+=[...groups].map(([name,rs])=>group(name,rs,Boolean(q)||scope==='attention'||groups.size<4)).join('');
  $('#list').innerHTML=html;
 }
 function openEditor(e=null,candidate=null){if(!isPm)return;if(!loaded)return message('Сначала дождись загрузки реестра.');$('#entryForm').reset();$('#editorError').textContent='';$('#editorTitle').textContent=e?'Редактировать страницу':candidate?'Адрес на проверке':'Новая страница';$('#entryId').value=e?.id||'';$('#candidateId').value=candidate?.id||'';for(const key of ['ru','kz','redirectRu','redirectKz','description','expires','owner','project','requestId'])$('#'+key).value=e?.[key]||'';if(candidate){$('#ru').value=candidate.url;$('#project').value=suggestedProject(candidate.url)}$('#extraFields').open=false;$('#projects').innerHTML=[...new Set(model.entries.map(x=>x.project))].map(x=>'<option value="'+esc(x)+'">').join('');$('#category').innerHTML=categories.map(x=>'<option>'+esc(x)+'</option>').join('');$('#category').value=e?.groupPath?.find(x=>categories.includes(x))||'Сайты и проекты';$('#status').value=e?.status||'active';if(e?.isTemplate){$('#ru').type='text';$('#kz').type='text'}else{$('#ru').type='url';$('#kz').type='url'}$('#editor').showModal()}
@@ -66,7 +80,7 @@ document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('di
 $('#about').onclick=()=>$('#serviceInfo').showModal();
 $('#showExcluded').onclick=()=>{showExcluded=!showExcluded;render()};
 for(const id of ['ru','kz'])$('#'+id).addEventListener('change',()=>{if(!$('#entryId').value&&!$('#project').value)$('#project').value=suggestedProject($('#'+id).value)});
-$('#search').oninput=render;const tabs=[...document.querySelectorAll('[data-scope]')];
+$('#attentionReason').onchange=render;$('#search').oninput=render;const tabs=[...document.querySelectorAll('[data-scope]')];
 function selectScope(tab){scope=tab.dataset.scope;for(const item of tabs){const selected=item===tab;item.setAttribute('aria-selected',String(selected));item.tabIndex=selected?0:-1}$('#registryPanel').setAttribute('aria-labelledby',tab.id);render()}
 tabs.forEach((tab,index)=>{tab.onclick=()=>selectScope(tab);tab.onkeydown=ev=>{let next;if(ev.key==='ArrowRight')next=(index+1)%tabs.length;else if(ev.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;else if(ev.key==='Home')next=0;else if(ev.key==='End')next=tabs.length-1;else return;ev.preventDefault();selectScope(tabs[next]);tabs[next].focus()}});
 $('#run').onclick=async()=>{if(!isPm)return;$('#run').disabled=true;try{await api('/api/registry/run','POST',{});checks.running=true;render();message('Проверка запущена. Результаты обновятся автоматически.')}catch(e){message(e.message);$('#run').disabled=false}};

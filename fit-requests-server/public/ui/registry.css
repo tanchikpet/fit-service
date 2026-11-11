@@ -56,3 +56,6 @@
 #serviceInfo{width:540px;max-width:calc(100% - 32px);padding:24px;border:0;border-radius:12px;color:#596373;font-size:14px;line-height:1.6}
 @media(max-width:900px){#registryMain{padding:24px 16px}#registryMain table{min-width:760px}#registryMain .registry-tabs{gap:16px}}
 @media(max-width:600px){#registryMain .heading{align-items:flex-start;flex-direction:column;gap:14px}#registryMain h1{font-size:22px}#registryMain .registry-tabs button{font-size:12px}#registryMain #reviewTools{align-items:flex-start;flex-direction:column}#editor .columns{grid-template-columns:1fr}#editor #entryForm{padding:20px}#editor .actions{bottom:-20px}}
+
+#registryMain #attentionTools{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin:16px 0}
+#registryMain #attentionTools label{min-width:240px}#registryMain #attentionTools p{font-size:12px;max-width:500px}
