@@ -59,3 +59,26 @@
 
 #registryMain #attentionTools{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin:16px 0}
 #registryMain #attentionTools label{min-width:240px}#registryMain #attentionTools p{font-size:12px;max-width:500px}
+
+#registryMain .primary-project{background:white;border:1px solid #e5e9ee;border-left:4px solid #fe5000;border-radius:10px;padding:24px;margin-bottom:28px}
+#registryMain .overview-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#registryMain .overview-heading h2{font-size:19px;margin:0}
+#registryMain .owner-badge{font-size:12px;color:#b63b00;background:#fff1e9;padding:5px 9px;border-radius:5px}
+#registryMain .homepages{display:flex;flex-wrap:wrap;gap:24px;margin:20px 0}
+#registryMain .homepage{min-width:200px;display:grid;gap:7px;align-content:start}
+#registryMain .homepage>span{font-size:12px;color:#7a8491}
+#registryMain .homepage>a{font-size:21px;font-weight:600;color:#253140}
+#registryMain .project-details .group{margin-bottom:8px;border:0}
+#registryMain .project-details .group>summary{font-size:12px;font-weight:400;background:#fafbfc}
+#registryMain .project-details .nested-group{padding:0}
+#registryMain .overview-caption{font-size:12px;color:#7a8491;margin:9px 0 18px}
+#registryMain .own-projects{margin-bottom:30px}
+#registryMain .own-projects .group{margin-bottom:8px}
+#registryMain .empty-category{display:flex;gap:10px;padding:13px 16px;margin-bottom:8px;color:#79818e;background:#fafbfc;border-radius:7px;font-size:14px}
+#registryMain .other-projects{border-top:1px solid #dce2e8;padding-top:20px;color:#66717f}
+#registryMain .other-projects>summary{cursor:pointer;font-size:16px;font-weight:500}
+#registryMain .team-project{padding:20px 0;border-bottom:1px solid #e5e9ee}
+#registryMain .team-project h3{margin:0;font-size:16px;color:#465261}
+#registryMain .team-owner{font-size:12px;margin:8px 0}
+#registryMain .team-project .homepage>a{font-size:16px;font-weight:500}
+@media(max-width:600px){#registryMain .primary-project{padding:18px}#registryMain .homepage>a{font-size:18px}}

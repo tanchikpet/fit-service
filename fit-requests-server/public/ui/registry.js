@@ -2,7 +2,7 @@
 (()=>{
 const $=s=>document.querySelector(s),esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 let isPm=false,model=null,candidates={items:[]},checks={checks:{}},busy=false,loaded=false,scope='active',showExcluded=false;
-const categories=["Сайты и проекты","Федеральные акции","Сезонные акции","Флеш акции","Акции","Акции СРК","Акции ИЛР","Партнерские акции","Интеграции"];
+const categories=["Сайты и проекты","Федеральные акции","Сезонные акции","Флеш акции","Акции","Акции СРК","Акции ИЛР","Партнерские акции","Интеграции","Другие акции","Интеграции с партнерами","Другие сервисы"];
 const message=m=>{$('#notice').textContent=m};
 function safeUrl(s){try{const u=new URL(s);return ['http:','https:'].includes(u.protocol)&&!u.username&&!u.password?u.href:null}catch{return null}}
 const link=(url,text)=>safeUrl(url)?'<a href="'+esc(safeUrl(url))+'" target="_blank" rel="noopener noreferrer">'+esc(text||url)+'</a>':'<code>'+esc(text||url)+'</code>';
@@ -47,6 +47,39 @@ function row(e){
 }
 function table(rows,review=false){return '<div class="table-scroll"><table><thead><tr><th scope="col">Адрес и название</th><th scope="col">'+(review?'Предполагаемый проект':'Проект')+'</th><th scope="col">'+(review?'Причина обнаружения':'Статус проверки')+'</th><th scope="col">Действия</th></tr></thead><tbody>'+rows+'</tbody></table></div>'}
 function group(name,rows,open=false){return '<details class="group"'+(open?' open':'')+'><summary>'+esc(name)+' <span class="group-count">'+rows.length+'</span></summary>'+table(rows.map(row).join(''))+'</details>'}
+
+const ownSections=['Федеральные акции','Сезонные акции','Флеш акции','Акции СРК','Акции ИЛР','Партнерские акции','Другие акции','Интеграции с партнерами','Другие сервисы'];
+const teamProjects=[
+ {name:'ФИТЛАБ',match:/фитлаб|fit.?lab/i,hosts:['fitautolab.ru'],owner:'Отдел ФитЛаб · руководитель отдела маркетинга ФитЛаба'},
+ {name:'Франчшоп',match:/franchshop|франчшоп/i,hosts:['franchshop.fitauto.ru','fs.fitauto.ru'],owner:'Отдел franchshop · руководитель отдела'},
+ {name:'ФИТФЛИТ',match:/fit.?fleet|фитфлит/i,hosts:['fleet.fitauto.ru'],owner:'Продакт ФИТФЛИТ'},
+ {name:'Франшиза',match:/франшиза/i,hosts:['fran.fitauto.ru','franch.fitavto.kz'],owner:'Отдел B2B-маркетинга · руководитель отдела'}
+];
+function hostOf(value){try{return new URL(value).hostname.replace(/^www\./,'')}catch{return ''}}
+function teamOf(e){return teamProjects.find(t=>t.match.test(e.project||'')||[e.ru,e.kz].some(u=>t.hosts.includes(hostOf(u))))}
+function ownSection(e){const path=e.groupPath||[];return path.find(k=>ownSections.includes(k))||(path.includes('Акции')?'Другие акции':path.includes('Интеграции')?'Интеграции с партнерами':'Другие сервисы')}
+function homepage(host,label){return '<div class="homepage"><span>'+esc(label)+'</span>'+link('https://'+host+'/',host)+checkView('https://'+host+'/')+'</div>'}
+function overview(items,q){
+ const main=[],cities=[],owned=new Map(ownSections.map(n=>[n,[]])),teams=new Map(teamProjects.map(t=>[t,[]]));
+ for(const e of items){
+ const team=teamOf(e);
+ if(team)teams.get(team).push(e);
+ else if(e.groupPath?.includes('Города'))cities.push(e);
+ else if(e.project?.startsWith('Основной сайт')||[e.ru,e.kz].some(u=>['fitauto.ru','fitavto.kz'].includes(hostOf(u))))main.push(e);
+ else owned.get(ownSection(e)).push(e);
+ }
+ let html='';
+ if(!q||main.length||cities.length){
+ const roots=main.filter(e=>[e.ru,e.kz].some(u=>{try{const x=new URL(u);return ['fitauto.ru','fitavto.kz'].includes(hostOf(u))&&x.pathname==='/'}catch{return false}}));
+ const pages=main.filter(e=>!roots.includes(e));
+ html='<section class="primary-project"><div class="overview-heading"><h2>Основной сайт FIT SERVICE</h2><span class="owner-badge">Моя зона ответственности</span></div><div class="homepages">'+homepage('fitauto.ru','Россия')+homepage('fitavto.kz','Казахстан')+'</div><div class="project-details">'+(roots.length?group('Данные основных доменов',roots,false):'')+(pages.length?group('Внутренние страницы',pages,Boolean(q)):'')+(cities.length?'<div class="nested-group">'+group('Города',cities,Boolean(q))+'</div>':'')+'</div></section>';
+ }
+ const ownCount=[...owned.values()].reduce((n,rs)=>n+rs.length,0);
+ if(!q||ownCount)html+='<section class="own-projects"><div class="overview-heading"><h2>Моя зона ответственности</h2><span class="owner-badge">Ответственная: Татьяна</span></div><p class="overview-caption">Акции, партнерские интеграции и другие сервисы</p>'+[...owned].filter(([,rs])=>!q||rs.length).map(([name,rs])=>rs.length?group(name,rs,Boolean(q)):'<div class="empty-category">'+esc(name)+' <span class="group-count">0</span></div>').join('')+'</section>';
+ const teamCount=[...teams.values()].reduce((n,rs)=>n+rs.length,0);
+ if(!q||teamCount)html+='<details class="other-projects"'+(q?' open':'')+'><summary>Проекты других команд <span class="group-count">'+(q?[...teams.values()].filter(rs=>rs.length).length:teamProjects.length)+'</span></summary><p class="overview-caption">Ведение этих проектов — в зоне ответственности профильных команд.</p>'+[...teams].filter(([,rs])=>!q||rs.length).map(([t,rs])=>'<section class="team-project"><h3>'+esc(t.name)+'</h3><p class="team-owner">'+esc(t.owner)+'</p><div class="homepages">'+t.hosts.map(h=>homepage(h,'Главная страница')).join('')+'</div>'+(rs.length?group('Страницы проекта',rs,Boolean(q)):'')+'</section>').join('')+'</details>';
+ return html;
+}
 function render(){
  if(!model)return;
  $('#monitorStatus').textContent=checks.emailStatus||'Уведомления Telegram ожидают подключения.';
@@ -63,10 +96,11 @@ function render(){
  const match=e=>[e.ru,e.kz,e.url,e.description,e.project,e.owner,e.url?suggestedProject(e.url):''].join(' ').toLowerCase().includes(q);
  const items=scope==='review'?candidates.items.filter(e=>e.state===(showExcluded?'dismissed':'pending')&&match(e)):model.entries.filter(e=>(scope==='archive'?e.status==='archive':e.status!=='archive')&&match(e)&&(scope!=='attention'||entryIssues(e).some(reason=>!$('#attentionReason').value||reason===$('#attentionReason').value)));
  $('#summary').textContent=(scope==='review'&&showExcluded?'Исключенные · ':'')+items.length+' записей'+(q?' по запросу':'');
- if(!items.length){$('#list').innerHTML='<div class="empty">'+(q?'Ничего не найдено. Попробуй другой запрос.':scope==='review'?(showExcluded?'Нет исключенных адресов':'Все найденные адреса разобраны'):scope==='attention'?'По последней проверке проблем с выбранной причиной нет':'В этом разделе пока нет записей')+'</div>';return}
+ if(!items.length&&!(scope==='active'&&!q)){$('#list').innerHTML='<div class="empty">'+(q?'Ничего не найдено. Попробуй другой запрос.':scope==='review'?(showExcluded?'Нет исключенных адресов':'Все найденные адреса разобраны'):scope==='attention'?'По последней проверке проблем с выбранной причиной нет':'В этом разделе пока нет записей')+'</div>';return}
  if(scope==='review'){
  $('#list').innerHTML=table(items.map(e=>'<tr><td>'+link(e.url)+'</td><td>'+esc(suggestedProject(e.url)||'Не определен')+'</td><td><div>'+esc(e.source||'Найден при сканировании')+'</div><small class="muted">'+(e.foundAt?'Найден: '+esc(new Date(e.foundAt).toLocaleDateString('ru-RU')):'')+'</small></td><td><div class="row-actions">'+(isPm?(showExcluded?'<button class="secondary" data-restore="'+esc(e.id)+'">Вернуть на проверку</button>':'<button class="secondary" data-approve="'+esc(e.id)+'">Добавить</button><button class="text-button" data-dismiss="'+esc(e.id)+'">Не учитывать</button>'):'—')+'</div></td></tr>').join(''),true);return;
  }
+ if(scope==='active'){$('#list').innerHTML=overview(items,q);return}
  const main=[],cities=[],groups=new Map();
  for(const e of items){
  if(e.groupPath?.includes('Города'))cities.push(e);
