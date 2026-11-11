@@ -80,10 +80,16 @@ function overview(items,q){
  if(!q||teamCount)html+='<details class="other-projects"'+(q?' open':'')+'><summary>Проекты других команд <span class="group-count">'+(q?[...teams.values()].filter(rs=>rs.length).length:teamProjects.length)+'</span></summary><p class="overview-caption">Ведение этих проектов — в зоне ответственности профильных команд.</p>'+[...teams].filter(([,rs])=>!q||rs.length).map(([t,rs])=>'<section class="team-project"><h3>'+esc(t.name)+'</h3><p class="team-owner">'+esc(t.owner)+'</p><div class="homepages">'+t.hosts.map(h=>homepage(h,'Главная страница')).join('')+'</div>'+(rs.length?group('Страницы проекта',rs,Boolean(q)):'')+'</section>').join('')+'</details>';
  return html;
 }
+function lastCheckLabel(value){
+ if(!value)return 'Проверок пока нет';
+ const date=new Date(value);if(!Number.isFinite(date.getTime()))return 'Дата проверки неизвестна';
+ const today=new Date(),time=date.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+ return date.toLocaleDateString('ru-RU')===today.toLocaleDateString('ru-RU')?'Проверено сегодня в '+time:'Проверено '+date.toLocaleDateString('ru-RU')+' в '+time;
+}
 function render(){
  if(!model)return;
  $('#monitorStatus').textContent=checks.emailStatus||'Уведомления Telegram ожидают подключения.';
- $('#lastScan').textContent=checks.running?'Проверка выполняется…':checks.checkedAt?'Последняя проверка: '+new Date(checks.checkedAt).toLocaleString('ru-RU'):'Проверок пока нет';
+ $('#lastScan').textContent=checks.running?'Проверка выполняется…':lastCheckLabel(checks.checkedAt);
  const errors=checks.discoveryErrors||[];$('#discoveryWarning').hidden=!errors.length;
  $('#discoveryErrors').replaceChildren(...errors.map(error=>{const item=document.createElement('li');item.textContent=error;return item}));
  if(!errors.length)$('#discoveryDetails').open=false;

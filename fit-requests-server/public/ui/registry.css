@@ -93,3 +93,6 @@
 body:has(.registry-side-nav) .sidebar{overflow-y:auto}
 @media(max-width:900px){body:has(.registry-side-nav) .sidebar{width:210px;flex-basis:210px;padding:20px 10px}body:has(.registry-side-nav) .nav-link .nav-label{display:inline}body:has(.registry-side-nav) .nav-link{justify-content:flex-start}.sidebar .registry-side-nav{padding-left:10px}}
 @media(max-width:600px){body:has(.registry-side-nav) .shell{display:block}body:has(.registry-side-nav) .sidebar{position:relative;width:100%;height:auto;padding:12px}.sidebar .registry-side-nav{display:grid;grid-template-columns:1fr 1fr;padding:8px 0}.sidebar .registry-side-nav button{font-size:12px}body:has(.registry-side-nav) .brand{padding-bottom:12px}}
+
+#registryMain .scan-bar .help-button{display:inline-flex;align-items:center;gap:6px}
+#registryMain .scan-bar .help-button span{font-size:16px}
