@@ -1,3 +1,4 @@
+import {cityAddress,groupRegistryCities} from './registry-cities.js';
 import {readFile,mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
@@ -16,7 +17,7 @@ export function validateEntry(value,old){
  if(!['active','archive'].includes(e.status))throw Error('Неверное состояние');
  if(e.expires&&(!/^\d{4}-\d{2}-\d{2}$/.test(e.expires)||!Number.isFinite(Date.parse(e.expires))||new Date(e.expires).toISOString().slice(0,10)!==e.expires))throw Error('Неверная дата');
  if(typeof value.category!=='string'||!value.category.trim()||value.category.length>150)throw Error('Укажи раздел');
- e.groupPath=[...(e.status==='archive'?['Архив']:[]),value.category.trim(),e.project];return e;
+ e.groupPath=[...(e.status==='archive'?['Архив']:[]),...(cityAddress(e.ru)&&!e.kz&&!e.expires?['Основной сайт','Города']:[value.category.trim(),e.project])];return e;
 }
 export async function initRegistry(pool){
  await pool.query(`CREATE TABLE IF NOT EXISTS fit_registry (id text PRIMARY KEY,payload jsonb NOT NULL,revision integer NOT NULL DEFAULT 1);
@@ -35,7 +36,7 @@ export async function initRegistry(pool){
  delete checks.notifications;checks.emailStatus='Напоминания через Telegram-бота FIT Requests';
  await client.query("INSERT INTO fit_registry_state VALUES('report',$1),('migration-v1',$2)",[checks,{at:new Date().toISOString(),entries:registry.entries.length,candidates:candidates.items.length}]);
  console.info('Registry migrated',{entries:registry.entries.length,candidates:candidates.items.length,checks:Object.keys(checks.checks||{}).length});
- }await client.query('COMMIT');}catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
+ }await groupRegistryCities(client);await client.query('COMMIT');}catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
 }
 export async function registrySnapshot(pool){const [r,c,s]=await Promise.all([pool.query('SELECT payload,revision FROM fit_registry ORDER BY id'),pool.query('SELECT payload FROM fit_registry_candidates ORDER BY id'),pool.query("SELECT payload FROM fit_registry_state WHERE id='report'")]);return {entries:r.rows.map(x=>({...x.payload,revision:x.revision})),candidates:c.rows.map(x=>x.payload),checks:s.rows[0]?.payload||{checks:{}}}}
 export async function saveRegistry(pool,user,body){
@@ -68,6 +69,7 @@ export function makeRegistryMonitor(pool){
  await client.query('BEGIN');
  for(const c of candidates.items)await client.query('INSERT INTO fit_registry_candidates VALUES($1,$2) ON CONFLICT DO NOTHING',[c.id,c]);
  await client.query("UPDATE fit_registry_candidates c SET payload=jsonb_set(c.payload,'{state}','\"approved\"') WHERE c.payload->>'state'='pending' AND EXISTS(SELECT 1 FROM fit_registry r WHERE c.payload->>'url' IN (r.payload->>'ru',r.payload->>'kz'))");
+ await groupRegistryCities(client);
  await client.query("UPDATE fit_registry_state SET payload=$1 WHERE id='report'",[report]);await client.query('COMMIT');
  // Existing authenticated PM receives reminders through the already configured login bot.
  const token=process.env.TELEGRAM_BOT_TOKEN,recipient=process.env.TELEGRAM_ADMIN_ID;
