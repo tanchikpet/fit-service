@@ -8,12 +8,16 @@ import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
 import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
 import {initCardCreation,boardCandidates,boardDetails,createParentCard,fixedPmDestination} from "./kaiten-create.js";
+import {initRegistry,registrySnapshot,saveRegistry,dismissCandidate,makeRegistryMonitor} from "./registry.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
 await initBotAuth(pool);
 await initRequests(pool);
 await initCardCreation(pool);
+await initRegistry(pool);
+const registryMonitor=makeRegistryMonitor(pool);
+registryMonitor.start();
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const botLogin=makeBotLogin({pool});
@@ -55,9 +59,9 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/auth/logout"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}await auth.logout(req,res);return}
   if(path==="/auth/invite"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}const body=await collect(req,2048);await auth.invite(req,res,new URLSearchParams(body).get("telegram_id"));return}
   if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><img class="login-logo" src="/ui/brand-light.svg?v=brand-3" alt="FIT Requests"><p class="login-caption">Заявки на web-разработку</p><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
-  if(path==="/app"&&req.method==="GET"){
+  if(["/app","/app/registry"].includes(path)&&req.method==="GET"){
     const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
-    const content=await readFile(new URL("../public/ui/index.html",import.meta.url));
+    const content=await readFile(new URL(path==="/app/registry"?"../public/ui/registry.html":"../public/ui/index.html",import.meta.url));
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(content);return
   }
   if(path==="/exports/development.csv"&&req.method==="GET"){
@@ -69,7 +73,7 @@ const server=http.createServer(async(req,res)=>{
     html(res,200,await dashboard(me));return
   }
   if(path.startsWith("/ui/")&&req.method==="GET"){
-    const asset=path.slice(4),mime={"app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
+    const asset=path.slice(4),mime={"registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
     if(!mime){send(res,404,{error:"not_found"});return}
     if(!["favicon.svg","brand-dark.svg","brand-light.svg"].includes(asset)){const me=await auth.user(req);if(!me){send(res,401,{error:"unauthorized"});return}}
     const content=await readFile(new URL("../public/ui/"+asset,import.meta.url));
@@ -94,6 +98,18 @@ const server=http.createServer(async(req,res)=>{
   if(!path.startsWith("/api/")){send(res,404,{error:"not_found"});return}
   const me=await auth.user(req);
   if(!me&&!authorized(req)){send(res,401,{error:"unauthorized"});return}
+  if(path.startsWith('/api/registry')){
+   if(!me){send(res,401,{error:'unauthorized'});return}
+   if(path==='/api/registry'&&req.method==='GET'){send(res,200,await registrySnapshot(pool));return}
+   if(me.role!=='admin'||!sameOrigin(req)){send(res,403,{error:'Нет доступа'});return}
+   if(req.method!=='POST'){send(res,405,{error:'method_not_allowed'});return}
+   try{const body=JSON.parse(await collect(req));
+    if(path==='/api/registry/entries'){send(res,200,await saveRegistry(pool,me,body));return}
+    if(path==='/api/registry/candidates/dismiss'){await dismissCandidate(pool,me,body.id);send(res,200,{ok:true});return}
+    if(path==='/api/registry/run'){registryMonitor.run().catch(()=>{});send(res,202,{accepted:true});return}
+    send(res,404,{error:'not_found'});
+   }catch(e){send(res,400,{error:e.message})}return
+  }
   if(path==="/api/me"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,{telegramId:me.telegram_id,displayName:me.display_name,role:me.role});return}
   if(path.startsWith("/api/requests/")&&path.endsWith("/kaiten/children")&&req.method==="GET"){
    if(!me){send(res,401,{error:"unauthorized"});return}
