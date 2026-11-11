@@ -8,7 +8,7 @@ import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
 import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
 import {initCardCreation,boardCandidates,boardDetails,createParentCard,fixedPmDestination} from "./kaiten-create.js";
-import {initRegistry,registrySnapshot,saveRegistry,dismissCandidate,makeRegistryMonitor} from "./registry.js";
+import {initRegistry,registrySnapshot,saveRegistry,dismissCandidate,restoreCandidate,makeRegistryMonitor} from "./registry.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
@@ -106,6 +106,7 @@ const server=http.createServer(async(req,res)=>{
    try{const body=JSON.parse(await collect(req));
     if(path==='/api/registry/entries'){send(res,200,await saveRegistry(pool,me,body));return}
     if(path==='/api/registry/candidates/dismiss'){await dismissCandidate(pool,me,body.id);send(res,200,{ok:true});return}
+    if(path==='/api/registry/candidates/restore'){await restoreCandidate(pool,me,body.id);send(res,200,{ok:true});return}
     if(path==='/api/registry/run'){registryMonitor.run().catch(()=>{});send(res,202,{accepted:true});return}
     send(res,404,{error:'not_found'});
    }catch(e){send(res,400,{error:e.message})}return

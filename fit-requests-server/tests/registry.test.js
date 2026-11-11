@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateEntry,dueReminder,saveRegistry,dismissCandidate} from '../src/registry.js';
+import {validateEntry,dueReminder,saveRegistry,dismissCandidate,restoreCandidate} from '../src/registry.js';
 const entry=()=>({ru:'https://example.com/',kz:'',redirectRu:'',redirectKz:'',description:'Test',expires:'',owner:'PM',project:'Web',requestId:'',status:'active',category:'Сайты'});
 test('registry validates required fields, URL protocols and dates',()=>{
  assert.equal(validateEntry(entry()).ru,'https://example.com/');
@@ -13,6 +13,7 @@ test('registry preserves existing templates but cannot create arbitrary template
 test('registry writes are denied to employees before accessing database',async()=>{
  await assert.rejects(saveRegistry({}, {role:'employee'},entry()),/Нет доступа/);
  await assert.rejects(dismissCandidate({}, {role:'employee'},'candidate'),/Нет доступа/);
+ await assert.rejects(restoreCandidate({}, {role:'employee'},'candidate'),/Нет доступа/);
 });
 test('reminder milestones, overdue window and archive exclusion',()=>{
  assert.equal(dueReminder({status:'active',expires:'2026-11-17'},'2026-11-10'),'7');

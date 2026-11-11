@@ -54,6 +54,11 @@ export async function saveRegistry(pool,user,body){
  }catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
 }
 export async function dismissCandidate(pool,user,id){if(user.role!=='admin')throw Error('Нет доступа');await pool.query("UPDATE fit_registry_candidates SET payload=jsonb_set(payload,'{state}','\"dismissed\"') WHERE id=$1 AND payload->>'state'='pending'",[id]);}
+export async function restoreCandidate(pool,user,id){
+ if(user.role!=='admin')throw Error('Нет доступа');
+ const result=await pool.query("UPDATE fit_registry_candidates SET payload=jsonb_set(payload,'{state}','\"pending\"') WHERE id=$1 AND payload->>'state'='dismissed' RETURNING id",[id]);
+ if(!result.rows.length)throw Error('Адрес уже изменен. Обнови список.');
+}
 export function dueReminder(e,date){if(e.status==='archive'||!e.expires)return null;const days=Math.round((Date.parse(e.expires)-Date.parse(date))/86400000);return [7,3,1,0].includes(days)?String(days):days<0&&days>=-7?'overdue':null}
 export function makeRegistryMonitor(pool){
  let running=false;
