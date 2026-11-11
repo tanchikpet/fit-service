@@ -25,9 +25,14 @@ function checkIssues(c){
  if(c.expectedMismatch||c.changed||c.status>=300&&c.status<400)issues.push('redirect');
  return issues;
 }
+function awaitingRequestedCheck(e){
+ if(!e.attentionRequestedAt)return false;
+ const c=checks.checks?.[e.attentionUrl];
+ return !c?.checkedAt||Date.parse(c.checkedAt)<=Date.parse(e.attentionRequestedAt);
+}
 function entryIssues(e){
  if(e.isTemplate)return [];
- return [...new Set([e.ru,e.kz].filter(Boolean).flatMap(u=>checkIssues(checks.checks?.[safeUrl(u)||u])))];
+ return [...new Set([...(awaitingRequestedCheck(e)?['check']:[]),...[e.ru,e.kz].filter(Boolean).flatMap(u=>checkIssues(checks.checks?.[safeUrl(u)||u]))])];
 }
 function checkView(url){
  const c=checks.checks?.[safeUrl(url)||url];if(!c)return '<span class="status neutral">Еще не проверен</span>';
@@ -38,7 +43,7 @@ function checkView(url){
 }
 function row(e){
  const urls=[['RU',e.ru],['KZ',e.kz]].filter(([,u])=>u);
- return '<tr><td><div class="entry-name">'+esc(e.description||'Без названия')+'</div>'+urls.map(([k,u])=>'<div class="address"><span class="tag">'+k+'</span>'+link(u)+'</div>').join('')+'<details class="entry-details"><summary>Подробнее</summary><dl><dt>Ответственный</dt><dd>'+esc(e.owner||'Не указан')+'</dd><dt>Срок акции</dt><dd>'+esc(e.expires||'Не указан')+'</dd><dt>Редирект RU</dt><dd>'+(e.redirectRu?link(e.redirectRu):'Не указан')+'</dd><dt>Редирект KZ</dt><dd>'+(e.redirectKz?link(e.redirectKz):'Не указан')+'</dd><dt>Заявка</dt><dd>'+esc(e.requestId||'Не связана')+'</dd></dl></details></td><td>'+esc(e.project)+'</td><td>'+urls.map(([k,u])=>'<div class="check-line">'+(urls.length>1?'<span class="tag">'+k+'</span>':'')+(e.isTemplate?'<span class="status neutral">Шаблон адреса</span>':checkView(u))+'</div>').join('')+'</td><td>'+(isPm?'<button class="secondary" data-edit="'+esc(e.id)+'">Изменить</button>':'—')+'</td></tr>';
+ return '<tr><td><div class="entry-name">'+esc(e.description||'Без названия')+'</div>'+urls.map(([k,u])=>'<div class="address"><span class="tag">'+k+'</span>'+link(u)+'</div>').join('')+'<details class="entry-details"><summary>Подробнее</summary><dl><dt>Ответственный</dt><dd>'+esc(e.owner||'Не указан')+'</dd><dt>Срок акции</dt><dd>'+esc(e.expires||'Не указан')+'</dd><dt>Редирект RU</dt><dd>'+(e.redirectRu?link(e.redirectRu):'Не указан')+'</dd><dt>Редирект KZ</dt><dd>'+(e.redirectKz?link(e.redirectKz):'Не указан')+'</dd><dt>Заявка</dt><dd>'+esc(e.requestId||'Не связана')+'</dd></dl></details></td><td>'+esc(e.project)+'</td><td>'+urls.map(([k,u])=>'<div class="check-line">'+(urls.length>1?'<span class="tag">'+k+'</span>':'')+(e.isTemplate?'<span class="status neutral">Шаблон адреса</span>':(awaitingRequestedCheck(e)&&u===e.attentionUrl?'<span class="status warning">Требует проверки · отмечено PM</span>':checkView(u)))+'</div>').join('')+'</td><td>'+(isPm?'<button class="secondary" data-edit="'+esc(e.id)+'">Изменить</button>':'—')+'</td></tr>';
 }
 function table(rows,review=false){return '<div class="table-scroll"><table><thead><tr><th scope="col">Адрес и название</th><th scope="col">'+(review?'Предполагаемый проект':'Проект')+'</th><th scope="col">'+(review?'Причина обнаружения':'Статус проверки')+'</th><th scope="col">Действия</th></tr></thead><tbody>'+rows+'</tbody></table></div>'}
 function group(name,rows,open=false){return '<details class="group"'+(open?' open':'')+'><summary>'+esc(name)+' <span class="group-count">'+rows.length+'</span></summary>'+table(rows.map(row).join(''))+'</details>'}

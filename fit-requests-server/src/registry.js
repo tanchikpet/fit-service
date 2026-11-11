@@ -1,3 +1,4 @@
+import {flagRabota3} from './registry-rabota3.js';
 import {archiveArendaKz} from './registry-archive-arenda.js';
 import {cityAddress,groupRegistryCities} from './registry-cities.js';
 import {readFile,mkdtemp,mkdir,writeFile,rm} from 'node:fs/promises';
@@ -37,7 +38,7 @@ export async function initRegistry(pool){
  delete checks.notifications;checks.emailStatus='Напоминания через Telegram-бота FIT Requests';
  await client.query("INSERT INTO fit_registry_state VALUES('report',$1),('migration-v1',$2)",[checks,{at:new Date().toISOString(),entries:registry.entries.length,candidates:candidates.items.length}]);
  console.info('Registry migrated',{entries:registry.entries.length,candidates:candidates.items.length,checks:Object.keys(checks.checks||{}).length});
- }await groupRegistryCities(client);await archiveArendaKz(client);await client.query('COMMIT');}catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
+ }await groupRegistryCities(client);await archiveArendaKz(client);await flagRabota3(client);await client.query('COMMIT');}catch(e){await client.query('ROLLBACK');throw e}finally{client.release()}
 }
 export async function registrySnapshot(pool){const [r,c,s]=await Promise.all([pool.query('SELECT payload,revision FROM fit_registry ORDER BY id'),pool.query('SELECT payload FROM fit_registry_candidates ORDER BY id'),pool.query("SELECT payload FROM fit_registry_state WHERE id='report'")]);return {entries:r.rows.map(x=>({...x.payload,revision:x.revision})),candidates:c.rows.map(x=>x.payload),checks:s.rows[0]?.payload||{checks:{}}}}
 export async function saveRegistry(pool,user,body){
