@@ -3,3 +3,11 @@
 #registryMain button,#editor button{background:#fe5000;color:white;border:1px solid transparent;border-radius:8px;padding:10px 14px;cursor:pointer}#registryMain button.secondary,#editor button.secondary{background:white;color:#394352;border-color:#e1e7ed}#registryMain label{display:grid;gap:6px}#registryMain input,#registryMain select{padding:10px;border:1px solid #c9d0d7;border-radius:8px}#editor .columns{display:grid;grid-template-columns:1fr 1fr;gap:16px}#registryMain .row a{color:#c73f00}#registryMain code{overflow-wrap:anywhere}#registryMain .row-actions:empty{display:none}#editor .error{color:#c01c31}#editor [data-close]{background:white;color:#394352}#registryMain button:disabled,#editor button:disabled{opacity:.5}#registryMain .row{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr) auto}@media(max-width:700px){#registryMain .row,#editor .columns{grid-template-columns:1fr}}
 
 #editor{width:min(720px,calc(100% - 24px));padding:0}#registryMain [hidden],#editor [hidden]{display:none!important}
+
+#registryMain .registry-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px;border-bottom:1px solid var(--line);padding-bottom:12px}
+#registryMain .registry-tabs button{gap:8px;background:transparent;color:var(--muted);border:1px solid transparent;font:inherit;font-weight:500}
+#registryMain .registry-tabs button[aria-selected="true"]{background:#fff0e8;color:#b83a00;border-color:#ffd3bd}
+#registryMain .tab-count{display:inline-flex;align-items:center;justify-content:center;min-width:26px;padding:2px 7px;border-radius:12px;background:#e9edf2;color:#394352;font-size:12px;font-variant-numeric:tabular-nums}
+#registryMain [aria-selected="true"] .tab-count{background:#fe5000;color:white}
+#registryMain .registry-tabs button:focus-visible,#registryPanel:focus-visible{outline:2px solid #fe5000;outline-offset:3px}
+@media(max-width:700px){#registryMain .registry-tabs{gap:6px}#registryMain .registry-tabs button{padding:10px;font-size:14px}}
