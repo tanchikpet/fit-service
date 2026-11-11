@@ -96,3 +96,11 @@ body:has(.registry-side-nav) .sidebar{overflow-y:auto}
 
 #registryMain .scan-bar .help-button{display:inline-flex;align-items:center;gap:6px}
 #registryMain .scan-bar .help-button span{font-size:16px}
+
+#registryMain .toolbar{align-items:flex-end;flex-wrap:wrap;gap:12px}
+#registryMain .scan-actions{display:flex;align-items:center;gap:6px}
+#registryMain .scan-actions #run{height:40px;white-space:nowrap}
+#registryMain .scan-actions .info-button{background:transparent;color:#77818e;border:0;padding:6px;min-width:32px;min-height:32px;font-size:20px;line-height:1}
+#registryMain .scan-actions .info-button:hover{color:#253140;background:#edf0f4}
+#registryMain .last-scan{font-size:12px;color:#77818e;margin:8px 0 20px}
+@media(max-width:600px){#registryMain .toolbar .search{width:100%}}
