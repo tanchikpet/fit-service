@@ -2,14 +2,14 @@
 (()=>{
 const modal=document.getElementById("requestDialog");
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const mappings={Title:"title",Project:"project",Requester:"requester",Department:"department",OnBehalf:"onBehalf",Description:"description",Goal:"goal",Desired:"desiredDue",Materials:"materials",Express:"express",PageAction:"pageAction",PlannedUrl:"plannedUrl",ActualUrl:"actualUrl",PagePurpose:"pagePurpose",PageOwner:"pageOwner",PromotionEnd:"promotionEnd",RedirectTo:"redirectTo"};
+const mappings={Title:"title",Project:"project",Requester:"requester",OnBehalf:"onBehalf",Description:"description",Goal:"goal",Desired:"desiredDue",Materials:"materials",Express:"express",PageAction:"pageAction",PlannedUrl:"plannedUrl",ActualUrl:"actualUrl",PagePurpose:"pagePurpose",PageOwner:"pageOwner",PromotionEnd:"promotionEnd",RedirectTo:"redirectTo"};
 modal.innerHTML='<form id="intakeForm" novalidate>'+
 '<div class="modal-head"><div><small>FIT REQUESTS</small><h2 id="dialogTitle">Новая заявка</h2><p class="sub">Расскажи, что нужно изменить или запустить и какого результата ты ожидаешь. Если понадобятся уточнения, менеджер проекта свяжется с тобой.</p></div><button class="close" type="button" id="closeIntake" aria-label="Закрыть">×</button></div>'+
 '<input type="hidden" id="requestId">'+
 '<section class="intake-section"><h3>Запрос сотрудника</h3>'+
 '<label>Название задачи *<input id="requestTitle" maxlength="150" placeholder="Например, исправить форму записи"></label>'+
 '<label>Инициатор *<input id="requestRequester" maxlength="120" placeholder="ФИО инициатора"></label>'+
-'<div class="form-grid"><label>Подразделение<input id="requestDepartment" maxlength="100" placeholder="Например, маркетинг"></label><label>От имени другого сотрудника<input id="requestOnBehalf" maxlength="120" placeholder="При необходимости"></label></div>'+
+'<label>От имени другого сотрудника<input id="requestOnBehalf" maxlength="120" placeholder="При необходимости"></label>'+
 '<label>Описание задачи *<small id="requestDescriptionHint">Что нужно создать или изменить, для кого и зачем.</small><textarea id="requestDescription" aria-describedby="requestDescriptionHint" rows="4" placeholder="Нужно обновить условия акции на лендинге: изменить скидку и продлить срок действия"></textarea></label>'+
 '<label>Ссылка на сайт или страницу<small id="requestUrlHint">Если задача касается существующей страницы, добавь ссылку. Если страницы еще нет или ты не знаешь адрес — оставь поле пустым.</small><input id="requestActualUrl" type="url" maxlength="2048" aria-describedby="requestUrlHint" placeholder="https://..."></label>'+
 '<label>Ожидаемый результат<textarea id="requestGoal" rows="2" placeholder="Какой результат нужен?"></textarea></label>'+
