@@ -8,20 +8,22 @@ modal.innerHTML='<form id="intakeForm" novalidate>'+
 '<input type="hidden" id="requestId">'+
 '<section class="intake-section"><h3>Запрос сотрудника</h3>'+
 '<label>Название задачи *<input id="requestTitle" maxlength="150" placeholder="Например, исправить форму записи"></label>'+
-'<div class="form-grid"><label>Где нужны изменения?<select id="requestProject"></select></label><label>Инициатор *<input id="requestRequester" maxlength="120" placeholder="ФИО инициатора"></label></div>'+
+'<label>Инициатор *<input id="requestRequester" maxlength="120" placeholder="ФИО инициатора"></label>'+
 '<div class="form-grid"><label>Подразделение<input id="requestDepartment" maxlength="100" placeholder="Например, маркетинг"></label><label>От имени другого сотрудника<input id="requestOnBehalf" maxlength="120" placeholder="При необходимости"></label></div>'+
-'<label>Описание задачи *<small id="requestDescriptionHint">Что нужно создать или изменить, для кого и зачем. Если речь о существующей странице, добавь ссылку.</small><textarea id="requestDescription" aria-describedby="requestDescriptionHint" rows="4" placeholder="Нужно обновить условия акции на лендинге: изменить скидку и продлить срок действия"></textarea></label>'+
+'<label>Описание задачи *<small id="requestDescriptionHint">Что нужно создать или изменить, для кого и зачем.</small><textarea id="requestDescription" aria-describedby="requestDescriptionHint" rows="4" placeholder="Нужно обновить условия акции на лендинге: изменить скидку и продлить срок действия"></textarea></label>'+
+'<label>Ссылка на сайт или страницу<small id="requestUrlHint">Если задача касается существующей страницы, добавь ссылку. Если страницы еще нет или ты не знаешь адрес — оставь поле пустым.</small><input id="requestActualUrl" type="url" maxlength="2048" aria-describedby="requestUrlHint" placeholder="https://..."></label>'+
 '<label>Ожидаемый результат<textarea id="requestGoal" rows="2" placeholder="Какой результат нужен?"></textarea></label>'+
 '<div class="form-grid"><label>Желаемый срок<small>Это пожелание, не срок разработки</small><input id="requestDesired" type="date"></label><label>Ссылка на материалы<input id="requestMaterials" type="url" placeholder="https://..."></label></div>'+
 '<label>Обсуждение в Express<input id="requestExpress" type="url" placeholder="https://..."></label></section>'+
 '<section class="intake-section"><h3>Страница сайта (если применимо)</h3>'+
 '<label>Действие<select id="requestPageAction"><option value="">Не относится к страницам</option><option value="new">Новая страница</option><option value="close">Закрытие страницы</option></select></label>'+
-'<div id="pageRequestFields" hidden><div class="form-grid"><label>Планируемый адрес<input id="requestPlannedUrl" type="url" placeholder="https://..."></label><label>Фактический адрес<input id="requestActualUrl" type="url" placeholder="Заполнить после запуска"></label></div>'+
+'<div id="pageRequestFields" hidden><div class="form-grid"><label>Планируемый адрес<input id="requestPlannedUrl" type="url" placeholder="https://..."></label></div>'+
 '<label>Назначение страницы<textarea id="requestPagePurpose" rows="2"></textarea></label>'+
 '<div class="form-grid"><label>Ответственный за страницу<input id="requestPageOwner" maxlength="120"></label><label>Акция действует до<input id="requestPromotionEnd" type="date"></label></div>'+
 '<label id="redirectLabel" hidden>Куда направлять после закрытия<input id="requestRedirectTo" type="url" placeholder="https://..."></label></div></section>'+
 '<section class="intake-section" id="pmReviewFields" hidden><h3>Обработка заявки PM</h3>'+
 '<p class="sub">Это статус обработки запроса, а не статус разработки в Kaiten.</p>'+
+'<label>Проект<select id="requestProject"></select></label>'+
 '<label>Этап обработки<select id="requestStatus"><option value="Новая">Новая</option><option value="Уточнение">Уточнение</option></select></label>'+
 '</section>'+
 '<div class="modal-actions"><button type="button" class="button secondary" id="cancelIntake">Отмена</button><button type="button" class="button secondary" id="saveDraft">Черновик</button><button type="submit" class="button primary" id="submitIntake">Подать заявку</button></div></form>';
@@ -58,11 +60,11 @@ function submit(draft){
   document.getElementById(!title?"requestTitle":!requester?"requestRequester":"requestDescription").focus();return
  }
  for(const key of ["Materials","Express","PlannedUrl","ActualUrl","RedirectTo"]){
-  if(!validUrl(key)){notify("Проверь адрес в поле "+key+": нужна ссылка http:// или https://");return}
+  if(!validUrl(key)){notify(key==="ActualUrl"?"Проверь ссылку на сайт или страницу: нужна ссылка http:// или https://":"Проверь адрес в поле "+key+": нужна ссылка http:// или https://");return}
  }
  if(!draft&&get("PageAction")){
-  if(!get("Project")||!get("PagePurpose")||!get("PageOwner")||(!get("PlannedUrl")&&!get("ActualUrl"))||(get("PageAction")==="close"&&!get("RedirectTo"))){
-   notify("Для страницы укажи проект, назначение, ответственного, адрес и при закрытии — редирект");return
+  if(!get("PagePurpose")||!get("PageOwner")||(!get("PlannedUrl")&&!get("ActualUrl"))||(get("PageAction")==="close"&&!get("RedirectTo"))){
+   notify("Для страницы укажи назначение, ответственного, адрес и при закрытии — редирект");return
   }
  }
  const id=old?.id||"REQ-"+(Math.max(100,...data.map(t=>Number(String(t.id).split("-")[1])||0))+1);
@@ -71,6 +73,7 @@ function submit(draft){
  // Never duplicate development task status, owner, priority or schedule from Kaiten.
  const priorStatus=old?.status||"Новая";
  const isPm=window.FitUser?.role==="admin";
+ if(!isPm)payload.project=old?.project||"";
  payload.status=draft?"Черновик":(isPm&&old?get("Status"):priorStatus==="Черновик"?"Новая":priorStatus);
  if(old)Object.assign(old,payload);
  else data.unshift({id,created:iso(new Date()),start:iso(new Date()),...payload});
