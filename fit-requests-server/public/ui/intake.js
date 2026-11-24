@@ -4,13 +4,13 @@ const modal=document.getElementById("requestDialog");
 const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const mappings={Title:"title",Project:"project",Requester:"requester",Department:"department",OnBehalf:"onBehalf",Description:"description",Goal:"goal",Desired:"desiredDue",Materials:"materials",Express:"express",PageAction:"pageAction",PlannedUrl:"plannedUrl",ActualUrl:"actualUrl",PagePurpose:"pagePurpose",PageOwner:"pageOwner",PromotionEnd:"promotionEnd",RedirectTo:"redirectTo"};
 modal.innerHTML='<form id="intakeForm" novalidate>'+
-'<div class="modal-head"><div><small>FIT REQUESTS</small><h2 id="dialogTitle">Подать заявку</h2><p class="sub">Опиши потребность. После уточнения PM направит заявку в Kaiten.</p></div><button class="close" type="button" id="closeIntake" aria-label="Закрыть">×</button></div>'+
+'<div class="modal-head"><div><small>FIT REQUESTS</small><h2 id="dialogTitle">Новая заявка</h2><p class="sub">Расскажи, что нужно изменить или запустить и какого результата ты ожидаешь. Если понадобятся уточнения, менеджер проекта свяжется с тобой.</p></div><button class="close" type="button" id="closeIntake" aria-label="Закрыть">×</button></div>'+
 '<input type="hidden" id="requestId">'+
 '<section class="intake-section"><h3>Запрос сотрудника</h3>'+
-'<label>Что нужно сделать? *<input id="requestTitle" maxlength="150" placeholder="Например, исправить форму записи"></label>'+
+'<label>Название задачи *<input id="requestTitle" maxlength="150" placeholder="Например, исправить форму записи"></label>'+
 '<div class="form-grid"><label>Где нужны изменения?<select id="requestProject"></select></label><label>Инициатор *<input id="requestRequester" maxlength="120" placeholder="ФИО инициатора"></label></div>'+
 '<div class="form-grid"><label>Подразделение<input id="requestDepartment" maxlength="100" placeholder="Например, маркетинг"></label><label>От имени другого сотрудника<input id="requestOnBehalf" maxlength="120" placeholder="При необходимости"></label></div>'+
-'<label>Описание потребности *<textarea id="requestDescription" rows="4" placeholder="Что требуется изменить и почему?"></textarea></label>'+
+'<label>Описание задачи *<small id="requestDescriptionHint">Что нужно создать или изменить, для кого и зачем. Если речь о существующей странице, добавь ссылку.</small><textarea id="requestDescription" aria-describedby="requestDescriptionHint" rows="4" placeholder="Нужно обновить условия акции на лендинге: изменить скидку и продлить срок действия"></textarea></label>'+
 '<label>Ожидаемый результат<textarea id="requestGoal" rows="2" placeholder="Какой результат нужен?"></textarea></label>'+
 '<div class="form-grid"><label>Желаемый срок<small>Это пожелание, не срок разработки</small><input id="requestDesired" type="date"></label><label>Ссылка на материалы<input id="requestMaterials" type="url" placeholder="https://..."></label></div>'+
 '<label>Обсуждение в Express<input id="requestExpress" type="url" placeholder="https://..."></label></section>'+
@@ -35,7 +35,7 @@ document.getElementById("requestPageAction").addEventListener("change",syncPageF
 function intakeOpen(id){
  const t=data.find(x=>x.id===id),form=document.getElementById("intakeForm");
  form.reset();put("Id",t?.id);
- document.getElementById("dialogTitle").textContent=t?"Редактирование заявки":"Подать заявку";
+ document.getElementById("dialogTitle").textContent=t?"Редактирование заявки":"Новая заявка";
  document.getElementById("requestProject").innerHTML='<option value="">Не определено</option>'+projects.map(p=>'<option value="'+safe(p.id)+'">'+safe(p.name)+'</option>').join("");
  for(const [control,key] of Object.entries(mappings))put(control,t?.[key]);
  const isPm=window.FitUser?.role==="admin";
