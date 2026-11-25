@@ -1,94 +1,63 @@
-"use strict";
-(()=>{
-const modal=document.getElementById("requestDialog");
-const safe=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const mappings={Title:"title",Project:"project",Requester:"requester",OnBehalf:"onBehalf",Description:"description",Goal:"goal",Desired:"desiredDue",Materials:"materials",Express:"express",PageAction:"pageAction",PlannedUrl:"plannedUrl",ActualUrl:"actualUrl",PagePurpose:"pagePurpose",PageOwner:"pageOwner",PromotionEnd:"promotionEnd",RedirectTo:"redirectTo"};
-modal.innerHTML='<form id="intakeForm" novalidate>'+
-'<div class="modal-head"><div><small>FIT REQUESTS</small><h2 id="dialogTitle">Новая заявка</h2><p class="sub">Расскажи, что нужно изменить или запустить и какого результата ты ожидаешь. Если понадобятся уточнения, менеджер проекта свяжется с тобой.</p></div><button class="close" type="button" id="closeIntake" aria-label="Закрыть">×</button></div>'+
-'<input type="hidden" id="requestId">'+
-'<section class="intake-section"><h3>Запрос сотрудника</h3>'+
-'<label>Название задачи *<input id="requestTitle" maxlength="150" placeholder="Например, исправить форму записи"></label>'+
-'<label>Инициатор *<input id="requestRequester" maxlength="120" placeholder="ФИО инициатора"></label>'+
-'<label>От имени другого сотрудника<input id="requestOnBehalf" maxlength="120" placeholder="При необходимости"></label>'+
-'<label>Описание задачи *<small id="requestDescriptionHint">Что нужно создать или изменить, для кого и зачем.</small><textarea id="requestDescription" aria-describedby="requestDescriptionHint" rows="4" placeholder="Нужно обновить условия акции на лендинге: изменить скидку и продлить срок действия"></textarea></label>'+
-'<label>Ссылка на сайт или страницу<small id="requestUrlHint">Если задача касается существующей страницы, добавь ссылку. Если страницы еще нет или ты не знаешь адрес — оставь поле пустым.</small><input id="requestActualUrl" type="url" maxlength="2048" aria-describedby="requestUrlHint" placeholder="https://..."></label>'+
-'<label>Ожидаемый результат<textarea id="requestGoal" rows="2" placeholder="Какой результат нужен?"></textarea></label>'+
-'<div class="form-grid"><label>Желаемый срок<small>Это пожелание, не срок разработки</small><input id="requestDesired" type="date"></label><label>Ссылка на материалы<input id="requestMaterials" type="url" placeholder="https://..."></label></div>'+
-'<label>Обсуждение в Express<input id="requestExpress" type="url" placeholder="https://..."></label></section>'+
-'<section class="intake-section"><h3>Страница сайта (если применимо)</h3>'+
-'<label>Действие<select id="requestPageAction"><option value="">Не относится к страницам</option><option value="new">Новая страница</option><option value="close">Закрытие страницы</option></select></label>'+
-'<div id="pageRequestFields" hidden><div class="form-grid"><label>Планируемый адрес<input id="requestPlannedUrl" type="url" placeholder="https://..."></label></div>'+
-'<label>Назначение страницы<textarea id="requestPagePurpose" rows="2"></textarea></label>'+
-'<div class="form-grid"><label>Ответственный за страницу<input id="requestPageOwner" maxlength="120"></label><label>Акция действует до<input id="requestPromotionEnd" type="date"></label></div>'+
-'<label id="redirectLabel" hidden>Куда направлять после закрытия<input id="requestRedirectTo" type="url" placeholder="https://..."></label></div></section>'+
-'<section class="intake-section" id="pmReviewFields" hidden><h3>Обработка заявки PM</h3>'+
-'<p class="sub">Это статус обработки запроса, а не статус разработки в Kaiten.</p>'+
-'<label>Проект<select id="requestProject"></select></label>'+
-'<label>Этап обработки<select id="requestStatus"><option value="Новая">Новая</option><option value="Уточнение">Уточнение</option></select></label>'+
-'</section>'+
-'<div class="modal-actions"><button type="button" class="button secondary" id="cancelIntake">Отмена</button><button type="button" class="button secondary" id="saveDraft">Черновик</button><button type="submit" class="button primary" id="submitIntake">Подать заявку</button></div></form>';
-const get=k=>(document.getElementById("request"+k)?.value||"").trim();
-const put=(k,v)=>{const el=document.getElementById("request"+k);if(el)el.value=v||""};
-function syncPageFields(){
- const action=get("PageAction");document.getElementById("pageRequestFields").hidden=!action;
- document.getElementById("redirectLabel").hidden=action!=="close";
+import {requestKinds, requestFields, activeFields, fieldLabel, validateRequestFields} from './request-fields.js';
+const modal=document.getElementById('requestDialog');
+const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const control=key=>'request'+key[0].toUpperCase()+key.slice(1);
+const get=key=>(document.getElementById(control(key))?.value||'').trim();
+const put=(key,value)=>{const el=document.getElementById(control(key));if(el)el.value=value||''};
+let kind='other';
+const hints={express:'Если по проекту есть отдельный чат, добавь ссылку.',counter:'Укажи, нужен ли счетчик и до какой даты. Если не нужен — напиши «Не нужен».',otherPromotions:'Укажи акции для блока или напиши «Не нужен».',desiredDue:'Это пожелание, не срок разработки'};
+const fieldMarkup=([key,label,type,kinds,required,max])=>`<label data-field="${key}"><span data-label="${key}">${safe(label)}${required?' *':''}</span>${type==='textarea'?`<textarea id="${control(key)}" rows="3" maxlength="${max}"></textarea>`:`<input id="${control(key)}" type="${type}" maxlength="${max}" ${type==='url'?'placeholder="https://..."':''}>`}${hints[key]?`<small>${hints[key]}</small>`:''}</label>`;
+modal.innerHTML=`<form id="intakeForm" novalidate>
+<div class="modal-head"><div><small>FIT REQUESTS</small><h2 id="dialogTitle">Новая заявка</h2><p class="sub">Выбери тип заявки и заполни поля. Незавершенную заявку можно сохранить в черновик.</p></div><button class="close" type="button" id="closeIntake" aria-label="Закрыть">×</button></div>
+<input type="hidden" id="requestId">
+<section class="intake-section"><h3>Тип заявки</h3><div class="request-kind-switch" role="group" aria-label="Тип заявки">${Object.entries(requestKinds).map(([key,label])=>`<button type="button" class="mode-button" data-kind="${key}" aria-pressed="false">${label}</button>`).join('')}</div><p class="sub">Поля со звездочкой обязательны.</p>${requestFields.map(fieldMarkup).join('')}</section>
+<section class="intake-section" id="pmReviewFields" hidden><h3>Обработка заявки PM</h3><label>Проект<select id="requestProject"></select></label><label>Этап обработки<select id="requestStatus"><option>Новая</option><option>Уточнение</option></select></label></section>
+<div class="modal-actions"><button type="button" class="button secondary request-delete" id="deleteIntake" hidden>Удалить</button><button type="button" class="button secondary" id="cancelIntake">Отмена</button><button type="button" class="button secondary" id="saveDraft">Черновик</button><button type="submit" class="button primary" id="submitIntake">Подать заявку</button></div></form>`;
+function syncKind(next){
+ kind=Object.hasOwn(requestKinds,next)?next:'other';
+ document.querySelectorAll('[data-kind]').forEach(b=>{const active=b.dataset.kind===kind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
+ const visible=new Set(activeFields(kind).map(f=>f[0]));
+ for(const field of requestFields){const [key,,,,required]=field,el=document.getElementById(control(key));el.closest('label').hidden=!visible.has(key);el.disabled=!visible.has(key);el.required=visible.has(key)&&required;document.querySelector('[data-label="'+key+'"]').textContent=fieldLabel(field,kind)+(required?' *':'')}
 }
-document.getElementById("requestPageAction").addEventListener("change",syncPageFields);
-function intakeOpen(id){
- const t=data.find(x=>x.id===id),form=document.getElementById("intakeForm");
- form.reset();put("Id",t?.id);
- document.getElementById("dialogTitle").textContent=t?"Редактирование заявки":"Новая заявка";
- document.getElementById("requestProject").innerHTML='<option value="">Не определено</option>'+projects.map(p=>'<option value="'+safe(p.id)+'">'+safe(p.name)+'</option>').join("");
- for(const [control,key] of Object.entries(mappings))put(control,t?.[key]);
- const isPm=window.FitUser?.role==="admin";
- const pmArea=document.getElementById("pmReviewFields");
- pmArea.hidden=!(isPm&&t);
- if(isPm&&t)put("Status",["Уточнение"].includes(t.status)?t.status:"Новая");
- document.getElementById("saveDraft").hidden=Boolean(t&&t.status!=="Черновик");
- document.getElementById("submitIntake").textContent=t?"Сохранить изменения":"Подать заявку";
- syncPageFields();modal.showModal();document.getElementById("requestTitle").focus();
-}
-function validUrl(k){
- const v=get(k);if(!v)return true;
- try{const u=new URL(v);return ["https:","http:"].includes(u.protocol)&&!u.username&&!u.password}catch{return false}
-}
+openForm=function(id){
+ const t=data.find(x=>x.id===id);document.getElementById('intakeForm').reset();put('id',t?.id);
+ for(const [key] of requestFields)put(key,t?.[key]);
+ put('owner',t?.owner||t?.pageOwner||t?.requester||window.FitUser?.displayName||'');
+ syncKind(t?.requestKind||(t?.pageAction==='new'?'new':'other'));
+ document.getElementById('dialogTitle').textContent=t?'Редактирование заявки':'Новая заявка';
+ document.getElementById('requestProject').innerHTML='<option value="">Не определено</option>'+projects.map(p=>'<option value="'+safe(p.id)+'">'+safe(p.name)+'</option>').join('');put('project',t?.project);
+ document.getElementById('pmReviewFields').hidden=!(window.FitUser?.role==='admin'&&t);
+ put('status',t?.status==='Уточнение'?'Уточнение':'Новая');
+ document.getElementById('saveDraft').hidden=Boolean(t&&t.status!=='Черновик');
+ const remove=document.getElementById('deleteIntake');remove.hidden=!window.FitRequestPersistence?.canDelete(t);remove.textContent=t?.status==='Черновик'?'Удалить черновик':'Удалить заявку';
+ document.getElementById('submitIntake').textContent=t?'Сохранить изменения':'Подать заявку';
+ modal.showModal();document.getElementById('requestTitle').focus();
+};
 function submit(draft){
- const old=data.find(t=>t.id===get("Id"));
- const title=get("Title"),description=get("Description"),requester=get("Requester");
- if(!draft&&(!title||!description||!requester)){
-  notify("Для подачи нужны название, инициатор и описание");
-  document.getElementById(!title?"requestTitle":!requester?"requestRequester":"requestDescription").focus();return
- }
- for(const key of ["Materials","Express","PlannedUrl","ActualUrl","RedirectTo"]){
-  if(!validUrl(key)){notify(key==="ActualUrl"?"Проверь ссылку на сайт или страницу: нужна ссылка http:// или https://":"Проверь адрес в поле "+key+": нужна ссылка http:// или https://");return}
- }
- if(!draft&&get("PageAction")){
-  if(!get("PagePurpose")||!get("PageOwner")||(!get("PlannedUrl")&&!get("ActualUrl"))||(get("PageAction")==="close"&&!get("RedirectTo"))){
-   notify("Для страницы укажи назначение, ответственного, адрес и при закрытии — редирект");return
-  }
- }
- const id=old?.id||"REQ-"+(Math.max(100,...data.map(t=>Number(String(t.id).split("-")[1])||0))+1);
- const payload={...Object.fromEntries(Object.entries(mappings).map(([key,value])=>[value,get(key)])),
-  mode:"employee",updatedAt:new Date().toISOString()};
- // Never duplicate development task status, owner, priority or schedule from Kaiten.
- const priorStatus=old?.status||"Новая";
- const isPm=window.FitUser?.role==="admin";
- if(!isPm)payload.project=old?.project||"";
- payload.status=draft?"Черновик":(isPm&&old?get("Status"):priorStatus==="Черновик"?"Новая":priorStatus);
- if(old)Object.assign(old,payload);
- else data.unshift({id,created:iso(new Date()),start:iso(new Date()),...payload});
- save();modal.close();detailId=null;page="requests";render();
- notify(draft?"Черновик сохраняется":old?"Изменения сохраняются":"Заявка сохраняется");
+ if(!window.FitUser||!window.FitRequestPersistence){notify('Дождись загрузки профиля и заявок');return}
+ const old=data.find(t=>t.id===get('id'));
+ const payload={requestKind:kind,...Object.fromEntries(activeFields(kind).map(([key])=>[key,get(key)]))};
+ const error=validateRequestFields(payload,{draft});if(error){notify(error.message);document.getElementById(control(error.key))?.focus();return}
+ const id=old?.id||'REQ-'+(Math.max(100,...data.map(t=>Number(String(t.id).split('-')[1])||0))+1);
+ payload.requester=old?.requester||window.FitUser.displayName||window.FitUser.telegramId;
+ payload.project=window.FitUser.role==='admin'?get('project'):(old?.project||'');
+ payload.mode='employee';payload.updatedAt=new Date().toISOString();
+ payload.status=draft?'Черновик':window.FitUser.role==='admin'&&old?get('status'):old?.status&&old.status!=='Черновик'?old.status:'Новая';
+ if(old)Object.assign(old,payload);else data.unshift({id,created:iso(new Date()),...payload});
+ save();modal.close();detailId=null;page='requests';render();notify('Заявка сохраняется');
 }
-document.getElementById("intakeForm").addEventListener("submit",e=>{e.preventDefault();submit(false)});
-document.getElementById("saveDraft").addEventListener("click",()=>submit(true));
-document.getElementById("closeIntake").addEventListener("click",()=>modal.close());
-document.getElementById("cancelIntake").addEventListener("click",()=>modal.close());
-openForm=intakeOpen;
+document.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>syncKind(b.dataset.kind)));
+document.getElementById('intakeForm').addEventListener('submit',e=>{e.preventDefault();submit(false)});
+document.getElementById('saveDraft').onclick=()=>submit(true);
+document.getElementById('cancelIntake').onclick=document.getElementById('closeIntake').onclick=()=>modal.close();
+document.getElementById('deleteIntake').onclick=()=>window.FitRequestPersistence?.remove(get('id'));
 const originalRender=render;
 render=function(){
  originalRender();
- document.querySelectorAll('[data-action="new"]').forEach(b=>b.textContent="＋ Подать заявку");
+ if(!detailId)return;
+ const t=data.find(x=>x.id===detailId),root=document.querySelector('#main .detail-layout .stack');if(!t||!root)return;
+ const requestKind=Object.hasOwn(requestKinds,t.requestKind)?t.requestKind:'other';
+ const section=document.createElement('section');section.className='panel request-details';
+ section.innerHTML='<div class="panel-header"><h2>'+safe(requestKinds[requestKind])+'</h2></div><div class="panel-body kv">'+activeFields(requestKind).filter(([key])=>!['title','description'].includes(key)).map(field=>'<div class="kv-row"><span>'+safe(fieldLabel(field,requestKind))+'</span><b>'+safe(t[field[0]]||'—')+'</b></div>').join('')+'</div>';root.prepend(section);
 };
 render();
-})();

@@ -6,7 +6,7 @@ import {makeDb,setupDb} from "./db.js";
 import {makeSync} from "./sync.js";
 import {initAuth,telegramAuth} from "./auth.js";
 import {initBotAuth,makeBotLogin} from "./bot-login.js";
-import {initRequests,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
+import {initRequests,deleteRequest,listRequests,createRequest,updateRequest,importRequests,searchKaitenCards,updateKaitenParent,getKaitenParentId} from "./requests.js";
 import {initCardCreation,boardCandidates,boardDetails,createParentCard,fixedPmDestination} from "./kaiten-create.js";
 import {initRegistry,registrySnapshot,saveRegistry,dismissCandidate,restoreCandidate,makeRegistryMonitor} from "./registry.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
@@ -73,7 +73,7 @@ const server=http.createServer(async(req,res)=>{
     html(res,200,await dashboard(me));return
   }
   if(path.startsWith("/ui/")&&req.method==="GET"){
-    const asset=path.slice(4),mime={"registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
+    const asset=path.slice(4),mime={"registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","request-fields.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
     if(!mime){send(res,404,{error:"not_found"});return}
     if(!["favicon.svg","brand-dark.svg","brand-light.svg"].includes(asset)){const me=await auth.user(req);if(!me){send(res,401,{error:"unauthorized"});return}}
     const content=await readFile(new URL("../public/ui/"+asset,import.meta.url));
@@ -184,6 +184,17 @@ const server=http.createServer(async(req,res)=>{
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
     try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){send(res,400,{error:err.message})}return
+  }
+  if(path.startsWith("/api/requests/")&&req.method==="DELETE"){
+    if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+    const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req,2048);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{const result=await deleteRequest(pool,me,id,body);
+      if(result.notFound)send(res,404,{error:"Заявка не найдена"});
+      else if(result.forbidden)send(res,403,{error:"Можно удалить только свою заявку"});
+      else if(result.conflict)send(res,409,{error:"Заявка изменена. Обнови страницу перед удалением."});
+      else if(result.pending)send(res,409,{error:"Отправка в Kaiten еще не завершена. Дождись ее результата."});
+      else send(res,200,{ok:true});
+    }catch(err){send(res,400,{error:err.message})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="PUT"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}

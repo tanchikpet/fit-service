@@ -1,9 +1,12 @@
+import {requestFields, validateRequestFields} from "../public/ui/request-fields.js";
 // FIT Requests: PostgreSQL-backed request service. Never trust permissions or IDs supplied by the browser.
 const baseFields=["title","description","project","requester","department","onBehalf","goal","desiredDue","materials","express","pageAction","plannedUrl","actualUrl","pagePurpose","pageOwner","promotionEnd","redirectTo","mode","type","priority","status","assignee","due","kaiten","created","start","updatedAt"];
 const pmFields=["type","priority","status","assignee","due","kaiten"];
 const urls=["materials","express","plannedUrl","actualUrl","redirectTo","kaiten"];
 const statuses=new Set(["Черновик","Новая","Уточнение","Запланирована","Разработка","Тестирование","Демо","Готово"]);
 const maxLengths={title:150,description:10000,project:80,requester:120,department:100,onBehalf:120,goal:4000,desiredDue:20,materials:2048,express:2048,pageAction:40,plannedUrl:2048,actualUrl:2048,pagePurpose:1000,pageOwner:120,promotionEnd:20,redirectTo:2048,mode:20,type:80,priority:40,status:60,assignee:120,due:20,kaiten:2048,created:40,start:40,updatedAt:40};
+baseFields.push("requestKind", ...requestFields.map(f=>f[0]).filter(k=>!baseFields.includes(k)));
+Object.assign(maxLengths, Object.fromEntries(requestFields.map(f=>[f[0],f[5]])), {requestKind:20});
 const validDate=v=>!v||/^\d{4}-\d{2}-\d{2}$/.test(v);
 function inputPayload(input,role,{draft=false,legacy=false}={}){
  if(!input||typeof input!=="object"||Array.isArray(input))throw new Error("Неверный формат заявки");
@@ -22,7 +25,11 @@ function inputPayload(input,role,{draft=false,legacy=false}={}){
  }
  if(role!=="admin")delete payload.status;
  if(payload.status&&!(legacy?statuses:new Set(["Черновик","Новая","Уточнение"])).has(payload.status))throw new Error("Неверный этап обработки заявки");
- if(!legacy&&!draft&&(!payload.title||!payload.description||!payload.requester))throw new Error("Для подачи укажи название, описание и инициатора");
+ if(!legacy){
+  payload.requestKind=payload.requestKind||"other";
+  payload.owner=payload.owner||payload.pageOwner||payload.requester||"";
+  const error=validateRequestFields(payload,{draft});if(error)throw Error(error.message);
+ }
  if(payload.pageAction&&!["new","close"].includes(payload.pageAction))throw new Error("Неверное действие со страницей");
  return payload;
 }
@@ -112,6 +119,8 @@ export async function getKaitenParentId(pool,user,requestId){
 export async function createRequest(pool,user,body){
  const isDraft=body.status==="Черновик";
  const payload=inputPayload(body,user.role,{draft:isDraft});
+ payload.requester=payload.requester||user.display_name||user.telegram_id;
+ if(user.role!=="admin")payload.project="";
  if(user.role!=="admin"){payload.status=isDraft?"Черновик":"Новая"}
  const client=await pool.connect();try{
  await client.query("BEGIN");
@@ -125,7 +134,7 @@ export async function updateRequest(pool,user,id,body){
  if(!/^REQ-[0-9]{1,12}$/.test(id))throw Error("Неверный ID");
  const revision=body.revision;
  if(!Number.isSafeInteger(revision)||revision<1)throw Error("Требуется версия заявки");
- const payload=inputPayload(body,user.role,{draft:body.status==="Черновик"});
+
  const client=await pool.connect();try{
  await client.query("BEGIN");
  const cur=await client.query("SELECT * FROM fit_requests WHERE id=$1 FOR UPDATE",[id]);
@@ -133,7 +142,9 @@ export async function updateRequest(pool,user,id,body){
  const old=cur.rows[0];
  if(user.role!=="admin"&&old.created_by!==user.telegram_id){await client.query("ROLLBACK");return {forbidden:true}}
  if(old.revision!==revision){await client.query("ROLLBACK");return {conflict:true,currentRevision:old.revision}}
- if(user.role!=="admin"){for(const f of pmFields){if(old.payload[f]!==undefined)payload[f]=old.payload[f];else delete payload[f]}
+ const submitted={...old.payload,...body,requestKind:body.requestKind||old.payload.requestKind||"other"};
+ const payload=inputPayload(submitted,user.role,{draft:old.payload.status==="Черновик"&&body.status==="Черновик"});
+ if(user.role!=="admin"){payload.project=old.payload.project||"";for(const f of pmFields){if(old.payload[f]!==undefined)payload[f]=old.payload[f];else delete payload[f]}
  payload.mode=old.payload.mode||"employee";payload.status=old.payload.status==="Черновик"?(body.status==="Черновик"?"Черновик":"Новая"):old.payload.status}
  const merged={...old.payload,...payload,id:undefined};
  delete merged.id;delete merged.revision;delete merged.createdBy;delete merged.kaitenSync;delete merged.kaitenParent;delete merged.kaitenCards;merged.created=old.payload.created;
@@ -161,5 +172,26 @@ export async function importRequests(pool,user,body){
  }
  await client.query("SELECT setval('fit_request_seq', GREATEST((SELECT last_value FROM fit_request_seq),(SELECT COALESCE(MAX(SUBSTRING(id FROM 5)::bigint),0) FROM fit_requests)),true)");
  await client.query("COMMIT");return {imported,skipped,total:normalized.length};
+ }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
+}
+
+// Ownership and revision are checked under the same row lock as the deletion.
+// The audit keeps the request snapshot; Kaiten cards themselves are never deleted.
+export async function deleteRequest(pool,user,id,body){
+ if(!/^REQ-[0-9]{1,12}$/.test(id))throw Error("Неверный ID");
+ if(!Number.isSafeInteger(body?.revision)||body.revision<1)throw Error("Требуется версия заявки");
+ const client=await pool.connect();
+ try{
+  await client.query("BEGIN");
+  const result=await client.query("SELECT * FROM fit_requests WHERE id=$1 FOR UPDATE",[id]);
+  const row=result.rows[0];
+  if(!row){await client.query("ROLLBACK");return {notFound:true}}
+  if(String(row.created_by)!==String(user.telegram_id)){await client.query("ROLLBACK");return {forbidden:true}}
+  if(row.revision!==body.revision){await client.query("ROLLBACK");return {conflict:true}}
+  const attempt=await client.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[id]);
+  if(attempt.rows[0]?.status==="pending"){await client.query("ROLLBACK");return {pending:true}}
+  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'delete',$3,$4::jsonb)",[id,user.telegram_id,row.revision,JSON.stringify({...row.payload,kaitenCardId:row.kaiten_card_id})]);
+  await client.query("DELETE FROM fit_requests WHERE id=$1",[id]);
+  await client.query("COMMIT");return {ok:true};
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
 }

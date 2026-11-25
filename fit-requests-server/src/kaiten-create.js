@@ -1,3 +1,4 @@
+import {activeFields, requestKinds, fieldLabel} from "../public/ui/request-fields.js";
 import {normalizeCard} from "./kaiten.js";
 import {upsertCards} from "./db.js";
 const validId=v=>Number.isSafeInteger(Number(v))&&Number(v)>0&&String(Number(v))===String(v);
@@ -39,8 +40,9 @@ export async function fixedPmDestination(config){
 }
 function description(request){
  const p=request.payload;
- const lines=[["Описание",p.description],["Инициатор",p.requester],["Подразделение",p.department],["Цель",p.goal],["Желаемый срок",p.desiredDue],["Материалы",p.materials],["Обсуждение",p.express]];
- return ["Источник: FIT Requests "+request.id,...lines.filter(x=>x[1]).map(([a,b])=>a+":\n"+b)].join("\n\n").slice(0,32000);
+ const kind=p.requestKind||"other";
+ const lines=[["Тип заявки",requestKinds[kind]],...activeFields(kind).filter(([key])=>key!=="title").map(field=>[fieldLabel(field,kind),p[field[0]]]),["Инициатор",p.requester]];
+ return ["Источник: FIT Requests "+request.id,...lines.filter(x=>x[1]).map(([a,b])=>a+":\n"+b)].join("\n\n");
 }
 export async function createParentCard(pool,config,user,requestId,body){
  if(user.role!=="admin")return {forbidden:true};

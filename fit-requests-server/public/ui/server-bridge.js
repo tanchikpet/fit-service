@@ -1,6 +1,7 @@
 "use strict";
 (()=>{
  let known=new Map(),queue=Promise.resolve(),busy=false;
+ const deletedIds=new Set(),deletingIds=new Set();
  const fetchJson=async(path,options={})=>{const r=await fetch(path,{credentials:"same-origin",cache:"no-store",...options});const value=await r.json().catch(()=>({}));if(!r.ok)throw Error(value.error||("HTTP "+r.status));return value};
  const payload=t=>{const o={...t};delete o.kaitenSync;delete o.kaitenParent;delete o.kaitenCards;delete o.createdBy;delete o.revision;delete o.id;return o};
  const record=t=>JSON.stringify(payload(t));
@@ -10,6 +11,7 @@
   detailId=null;render();return response.items;
  }
  async function writeOne(item){
+  if(deletedIds.has(item.id))return;
   const existing=known.get(item.id);
   if(existing&&existing.record===record(item))return;
   const updated=existing
@@ -24,7 +26,7 @@
   render();
  }
  function save(snapshot){
-  const changed=snapshot.filter(x=>!known.has(x.id)||known.get(x.id).record!==record(x));
+  const changed=snapshot.filter(x=>!deletedIds.has(x.id)&&!deletingIds.has(x.id)&&(!known.has(x.id)||known.get(x.id).record!==record(x)));
   queue=queue.then(async()=>{if(!changed.length)return;for(const item of changed)await writeOne(item);notify("Сохранено в PostgreSQL")})
    .catch(err=>{notify("Не сохранено на сервере: "+err.message);showError(err.message)});
  }
@@ -40,6 +42,10 @@
   previousRender();
   if(!detailId)return;
   const t=data.find(x=>x.id===detailId);if(!t)return;
+  if(canDelete(t)){
+   const toolbar=document.querySelector('#main .toolbar-right');
+   if(toolbar&&!toolbar.querySelector('[data-delete-request]')){const b=document.createElement('button');b.type='button';b.className='button secondary request-delete';b.dataset.deleteRequest=t.id;b.textContent=t.status==='Черновик'?'Удалить черновик':'Удалить заявку';b.disabled=deletingIds.has(t.id);toolbar.append(b)}
+  }
   const parent=t.kaitenParent;
   const isPm=canManageKaiten();
   const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");if(!root)return;
@@ -130,7 +136,24 @@
    detailId=oldId;render();notify(action==="link"?"Основная карточка назначена":"Основная карточка отвязана");
   }catch(err){button.disabled=false;notify("Не удалось изменить связь: "+err.message)}
  });
- window.FitRequestPersistence={save,reload};
+ function canDelete(t){return Boolean(t&&window.FitUser?.telegramId&&String(t.createdBy)===String(window.FitUser.telegramId)&&known.has(t.id))}
+ function remove(id){
+  const item=data.find(x=>x.id===id);if(!canDelete(item)||deletingIds.has(id))return;
+  if(!confirm((item.status==='Черновик'?'Удалить черновик':'Удалить заявку')+' «'+(item.title||'Без названия')+'»? Заявка исчезнет из списка. Карточки Kaiten не удаляются.'))return;
+  deletingIds.add(id);
+  document.querySelectorAll('[data-delete-request],#deleteIntake').forEach(b=>b.disabled=true);
+  const operation=queue.then(async()=>{
+   const current=data.find(x=>x.id===id),saved=known.get(id);
+   if(!current||!saved||saved.record!==record(current))throw Error('Есть несохраненные изменения. Сначала сохрани заявку или обнови страницу.');
+   await fetchJson('/api/requests/'+encodeURIComponent(id),{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:saved.revision})});
+   deletedIds.add(id);known.delete(id);data=data.filter(x=>x.id!==id);
+   document.getElementById('requestDialog')?.close();detailId=null;page='requests';render();notify('Заявка удалена');
+  });
+  queue=operation.catch(err=>notify('Не удалось удалить: '+err.message)).finally(()=>{deletingIds.delete(id);document.querySelectorAll('[data-delete-request],#deleteIntake').forEach(b=>b.disabled=false)});
+  return queue;
+ }
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-delete-request]');if(b)remove(b.dataset.deleteRequest)});
+ window.FitRequestPersistence={save,reload,remove,canDelete};
  function renderCurrentUser(user){
   const name=document.getElementById("userDisplayName");
   const avatar=document.getElementById("userAvatar");
