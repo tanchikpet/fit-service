@@ -51,48 +51,14 @@ def main():
         page.on("pageerror", lambda e: errors.append(str(e)))
         page.route("https://api.github.com/**", api)
         page.route("https://fonts.googleapis.com/**", lambda r: r.abort())
+        # The former registry page now redirects to the production app.
+        # Intercept its destination: this test must never access production.
+        destination = "https://fit-requests-kaiten-api-production.up.railway.app/app/registry"
+        page.route(destination + "**", lambda r: r.fulfill(body="<h1>Registry destination</h1>", content_type="text/html"))
         page.goto(origin + "/registry.html")
-        page.wait_for_selector(".row", state="attached")
-        assert page.locator(".row").count() == 108
-        page.select_option("#scope", "archive")
-        assert page.locator(".row").count() == 178
-        page.select_option("#scope", "active")
-        page.click("#connect")
-        page.fill("#token", "test-token-not-real")
-        page.locator("#authForm button[type=submit]").click()
-        page.wait_for_function("!document.getElementById('auth').open")
-        page.click("#add")
-        page.fill("#ru", "https://test-created.fitauto.ru/")
-        page.fill("#project", "Тестовый проект")
-        page.fill("#description", "Новая тестовая страница")
-        page.fill("#owner", "Тестовый ответственный")
-        page.fill("#expires", "2026-11-30")
-        page.click("#saveEntry")
-        page.wait_for_function("!document.getElementById('editor').open")
-        assert len(files["data/registry.json"]["entries"]) == 287
-        # Editing survives a GitHub conflict without changing the saved record.
-        page.fill("#search", "test-created")
-        page.locator("button[data-edit]").click()
-        page.fill("#description", "Измененное описание")
-        conflict = True
-        page.click("#saveEntry")
-        page.wait_for_function("document.getElementById('editorError').textContent.includes('изменились')")
-        assert files["data/registry.json"]["entries"][-1]["description"] == "Новая тестовая страница"
-        conflict = False
-        page.click("#saveEntry")
-        page.wait_for_function("!document.getElementById('editor').open")
-        assert files["data/registry.json"]["entries"][-1]["description"] == "Измененное описание"
-        page.fill("#search", "")
-        page.select_option("#scope", "review")
-        page.locator("button[data-approve]").click()
-        page.fill("#project", "Проверенный проект")
-        page.fill("#description", "Подтвержденная страница")
-        page.click("#saveEntry")
-        page.wait_for_function("document.querySelectorAll('[data-approve]').length===0")
-        assert files["data/registry-candidates.json"]["items"][0]["state"] == "approved"
-        assert page.evaluate("localStorage.length") == 0
+        page.wait_for_url(destination)
+        assert page.locator("h1").inner_text() == "Registry destination"
         page.set_viewport_size({"width": 390, "height": 844})
-        assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
         # Existing FIT Requests and intake scripts must continue working together.
         page.goto(origin + "/fit-requests/")
         page.locator('[data-action="newpm"]').click()
@@ -100,22 +66,91 @@ def main():
         page.fill("#requestRequester", "Тестовый инициатор")
         page.fill("#requestDescription", "Создать страницу")
         page.select_option("#requestProject", "site")
-        page.select_option("#requestPageAction", "close")
-        page.fill("#requestActualUrl", "https://free.fitauto.ru/")
-        page.fill("#requestPagePurpose", "Тест закрытия страницы")
-        page.fill("#requestPageOwner", "Ответственный")
+        page.fill("#requestOwner", "Ответственный")
+        page.fill("#requestPageUrl", "https://free.fitauto.ru/")
+        page.click("#submitIntake")
+        page.wait_for_function("!document.getElementById('requestDialog').open")
+        page.reload()
+        page.locator('tr[data-id]').first.click()
+        assert "Ответственный" in page.locator("#main").inner_text()
+
+        # Each scenario validates only its own fields and restores saved values.
+        for kind in ["new", "update", "other"]:
+            page.locator('#main [data-page="requests"]').first.click()
+            page.locator('[data-action="new"]').click()
+            page.locator(f'[data-kind="{kind}"]').click()
+            page.click("#submitIntake")
+            assert page.locator("#requestDialog").evaluate("e=>e.open")
+            for control in page.locator("#intakeForm [required]").all():
+                input_type = control.get_attribute("type")
+                value = "https://test.fitauto.ru/" if input_type == "url" else "2026-12-01" if input_type == "date" else "Тест " + kind
+                control.fill(value)
+            page.fill("#requestExpress", "https://example.org/chat")
+            if kind == "new":
+                page.fill("#requestPromoCode", "TEST2026")
+                page.fill("#requestSourceId", "000000237")
+                page.fill("#requestCampaignEnd", "2026-11-01")
+                page.click("#submitIntake")
+                assert page.locator("#requestDialog").evaluate("e=>e.open")
+                page.fill("#requestCampaignEnd", "2026-12-31")
+            page.click("#submitIntake")
+            page.wait_for_function("!document.getElementById('requestDialog').open")
+            page.reload()
+            page.locator('tr[data-id]').first.click()
+            page.locator('[data-edit]').click()
+            assert page.locator(f'[data-kind="{kind}"]').get_attribute("aria-pressed") == "true"
+            assert page.locator("#requestExpress").input_value() == "https://example.org/chat"
+            if kind == "new":
+                assert page.locator("#requestSourceId").input_value() == "000000237"
+                assert page.locator("#requestPromoCode").input_value() == "TEST2026"
+            assert not page.evaluate("document.documentElement.scrollWidth > innerWidth")
+            page.click("#cancelIntake")
+
+        # Incomplete drafts survive reload and switching hides irrelevant requirements.
+        page.locator('#main [data-page="requests"]').first.click()
+        page.locator('[data-action="new"]').click()
+        page.locator('[data-kind="new"]').click()
+        page.fill("#requestTitle", "Черновик акции")
+        page.fill("#requestPromoCode", "KEEP")
+        page.click("#saveDraft")
+        page.wait_for_function("!document.getElementById('requestDialog').open")
+        page.reload()
+        page.locator('tr[data-id]').first.click()
+        page.locator('[data-edit]').click()
+        assert page.locator("#requestPromoCode").input_value() == "KEEP"
+        page.locator('[data-kind="other"]').click()
+        page.fill("#requestOwner", "Ответственный")
+        page.fill("#requestDescription", "Другая задача")
+        page.fill("#requestPageUrl", "javascript:alert(1)")
         page.click("#submitIntake")
         assert page.locator("#requestDialog").evaluate("e=>e.open")
-        page.fill("#requestRedirectTo", "https://fitauto.ru/")
-        page.select_option("#requestStatus", "Готово")
+        page.fill("#requestPageUrl", "https://fitauto.ru/")
         page.click("#submitIntake")
+        page.wait_for_function("!document.getElementById('requestDialog').open")
+
+        # Legacy page requests must still save and archive through the registry bridge.
+        legacy = {"id": "REQ-999", "title": "Закрытие существующей страницы",
+                  "description": "Тест закрытия страницы", "project": "site",
+                  "pageAction": "close", "actualUrl": "https://free.fitauto.ru/",
+                  "pagePurpose": "Тест закрытия страницы", "pageOwner": "Ответственный",
+                  "redirectTo": "https://fitauto.ru/", "status": "Готово",
+                  "created": "2026-11-25", "mode": "pm"}
+        page.evaluate("""task => {
+            const key = 'fit-requests-prototype-v1';
+            const tasks = JSON.parse(localStorage.getItem(key));
+            tasks.unshift(task);
+            localStorage.setItem(key, JSON.stringify(tasks));
+        }""", legacy)
+        page.reload()
+        page.locator('#main [data-page="requests"]').first.click()
+        page.locator('tr[data-id="REQ-999"]').click()
+        page.locator('[data-save-page]').click()
         page.wait_for_function("document.getElementById('pageGithubDialog').open")
         page.fill("#pageGithubToken", "test-token-not-real")
         page.locator("#pageGithubForm button[type=submit]").click()
         page.wait_for_function("!document.getElementById('pageGithubDialog').open")
         page.wait_for_function("document.getElementById('toast').textContent.includes('сохранены в GitHub')")
         assert files["data/page-requests.json"]["items"][0]["redirectTo"] == "https://fitauto.ru/"
-        page.locator('tr[data-id]').first.click()
         page.locator('[data-publish-page]').click()
         page.wait_for_function("document.getElementById('toast').textContent.includes('перенесена в архив')")
         entry = next(e for e in files["data/registry.json"]["entries"] if e["ru"] == "https://free.fitauto.ru/")
@@ -123,7 +158,7 @@ def main():
         assert not errors, errors
         browser.close()
     server.shutdown()
-    print("Browser checks passed: migration, create/edit, conflict, review, mobile, request fields, GitHub save, archive.")
+    print("Browser checks passed: registry redirect, campaign forms, required fields, dates, URLs, drafts, mobile, reload, legacy GitHub save and archive.")
 
 
 if __name__ == "__main__":
