@@ -58,6 +58,49 @@ def main():
         page.route('**/api/**',api)
         page.goto(f'http://127.0.0.1:{server.server_port}/ui/index.html')
         expect(page.locator('#userDisplayName')).to_have_text('Тестовый автор')
+        # Closing protects edits but does not warn for untouched or restored values.
+        warnings=[]
+        def reject_close(dialog):
+            warnings.append(dialog.message)
+            dialog.dismiss()
+        page.on('dialog',reject_close)
+        page.locator('[data-action="new"]').click()
+        expect(page.locator('#cancelIntake')).to_have_count(0)
+        expect(page.locator('.modal-actions button')).to_have_text(['Сохранить черновик','Подать заявку'])
+        page.locator('#closeIntake').click()
+        expect(page.locator('#requestDialog')).to_be_hidden()
+        assert not warnings
+        page.locator('[data-action="new"]').click()
+        page.locator('#requestTitle').fill('Несохраненная заявка')
+        page.locator('#closeIntake').click()
+        expect(page.locator('#requestDialog')).to_be_visible()
+        expect(page.locator('#requestTitle')).to_have_value('Несохраненная заявка')
+        page.keyboard.press('Escape')
+        expect(page.locator('#requestDialog')).to_be_visible()
+        assert warnings==['Закрыть без сохранения? Введенные изменения будут потеряны']*2
+        page.remove_listener('dialog',reject_close)
+        page.once('dialog',lambda dialog:dialog.accept())
+        page.locator('#closeIntake').click()
+        expect(page.locator('#requestDialog')).to_be_hidden()
+        assert not items
+        page.on('dialog',reject_close)
+        warnings.clear()
+        page.locator('[data-action="new"]').click()
+        expect(page.locator('#requestTitle')).to_have_value('')
+        page.locator('#requestTitle').fill('Вернуть исходное')
+        page.locator('#requestTitle').fill('')
+        page.keyboard.press('Escape')
+        expect(page.locator('#requestDialog')).to_be_hidden()
+        assert not warnings
+        page.locator('[data-action="new"]').click()
+        page.locator('[data-kind="new"]').click()
+        page.keyboard.press('Escape')
+        expect(page.locator('#requestDialog')).to_be_visible()
+        assert len(warnings)==1
+        page.locator('[data-kind="other"]').click()
+        page.locator('#closeIntake').click()
+        expect(page.locator('#requestDialog')).to_be_hidden()
+        page.remove_listener('dialog',reject_close)
         for kind,count in [('new',14),('update',10),('other',4)]:
             page.locator('[data-action="new"]').click()
             expect(page.locator('[data-kind]')).to_have_count(3)
@@ -83,7 +126,7 @@ def main():
             page.locator('[data-edit]').click()
             expect(page.locator(f'[data-kind="{kind}"]')).to_have_attribute('aria-pressed','true')
             expect(page.locator('#requestExpress')).to_have_value('https://example.org/project')
-            page.locator('#cancelIntake').click()
+            page.locator('#closeIntake').click()
             page.locator('#main [data-page="requests"]').click()
         # Draft is restored after reload; hidden campaign fields do not block another kind.
         page.locator('[data-action="new"]').click()

@@ -5,6 +5,12 @@ const control=key=>'request'+key[0].toUpperCase()+key.slice(1);
 const get=key=>(document.getElementById(control(key))?.value||'').trim();
 const put=(key,value)=>{const el=document.getElementById(control(key));if(el)el.value=value||''};
 let kind='other';
+let initialFormState='';
+const formState=()=>JSON.stringify([kind,...Array.from(modal.querySelectorAll('input,textarea,select'),el=>[el.id,el.value])]);
+function closeIntake(){
+ if(formState()!==initialFormState&&!window.confirm('Закрыть без сохранения? Введенные изменения будут потеряны'))return;
+ modal.close();
+}
 const hints={express:'Если по проекту есть отдельный чат, добавь ссылку.',counter:'Укажи, нужен ли счетчик и до какой даты. Если не нужен — напиши «Не нужен».',otherPromotions:'Укажи акции для блока или напиши «Не нужен».',desiredDue:'Это пожелание, не срок разработки'};
 const fieldMarkup=([key,label,type,kinds,required,max])=>`<label data-field="${key}"><span data-label="${key}">${safe(label)}${required?' *':''}</span>${type==='textarea'?`<textarea id="${control(key)}" rows="3" maxlength="${max}"></textarea>`:`<input id="${control(key)}" type="${type}" maxlength="${max}" ${type==='url'?'placeholder="https://..."':''}>`}${hints[key]?`<small>${hints[key]}</small>`:''}</label>`;
 modal.innerHTML=`<form id="intakeForm" novalidate>
@@ -12,7 +18,7 @@ modal.innerHTML=`<form id="intakeForm" novalidate>
 <input type="hidden" id="requestId">
 <section class="intake-section"><h3>Тип заявки</h3><div class="request-kind-switch" role="group" aria-label="Тип заявки">${Object.entries(requestKinds).map(([key,label])=>`<button type="button" class="mode-button" data-kind="${key}" aria-pressed="false">${label}</button>`).join('')}</div><p class="sub">Поля со звездочкой обязательны.</p>${requestFields.map(fieldMarkup).join('')}</section>
 <section class="intake-section" id="pmReviewFields" hidden><h3>Обработка заявки PM</h3><label>Проект<select id="requestProject"></select></label><label>Этап обработки<select id="requestStatus"><option>Новая</option><option>Уточнение</option></select></label></section>
-<div class="modal-actions"><button type="button" class="button secondary request-delete" id="deleteIntake" hidden>Удалить</button><button type="button" class="button secondary" id="cancelIntake">Отмена</button><button type="button" class="button secondary" id="saveDraft">Черновик</button><button type="submit" class="button primary" id="submitIntake">Подать заявку</button></div></form>`;
+<button type="button" class="button secondary request-delete" id="deleteIntake" hidden>Удалить</button><div class="modal-actions"><button type="button" class="button secondary" id="saveDraft">Сохранить черновик</button><button type="submit" class="button primary" id="submitIntake">Подать заявку</button></div></form>`;
 function syncKind(next){
  kind=Object.hasOwn(requestKinds,next)?next:'other';
  document.querySelectorAll('[data-kind]').forEach(b=>{const active=b.dataset.kind===kind;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
@@ -31,6 +37,7 @@ openForm=function(id){
  document.getElementById('saveDraft').hidden=Boolean(t&&t.status!=='Черновик');
  const remove=document.getElementById('deleteIntake');remove.hidden=!window.FitRequestPersistence?.canDelete(t);remove.textContent=t?.status==='Черновик'?'Удалить черновик':'Удалить заявку';
  document.getElementById('submitIntake').textContent=t?'Сохранить изменения':'Подать заявку';
+ initialFormState=formState();
  modal.showModal();document.getElementById('requestTitle').focus();
 };
 function submit(draft){
@@ -49,7 +56,8 @@ function submit(draft){
 document.querySelectorAll('[data-kind]').forEach(b=>b.addEventListener('click',()=>syncKind(b.dataset.kind)));
 document.getElementById('intakeForm').addEventListener('submit',e=>{e.preventDefault();submit(false)});
 document.getElementById('saveDraft').onclick=()=>submit(true);
-document.getElementById('cancelIntake').onclick=document.getElementById('closeIntake').onclick=()=>modal.close();
+document.getElementById('closeIntake').onclick=closeIntake;
+modal.addEventListener('cancel',event=>{event.preventDefault();closeIntake()});
 document.getElementById('deleteIntake').onclick=()=>window.FitRequestPersistence?.remove(get('id'));
 const originalRender=render;
 render=function(){
