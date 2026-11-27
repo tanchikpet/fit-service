@@ -136,6 +136,18 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
    assert.equal((await request("/app/analytics",{as})).status,403);
    assert.equal((await request("/exports/development.csv",{as})).status,403);
   }
+  for(const page of ["/app","/app/registry"]){
+   const anonymous=await request(page);
+   assert.equal(anonymous.status,303);
+   for(const as of ["one","two","admin"]){
+    const response=await request(page,{as});
+    assert.equal(response.status,200);
+    assert.equal((await response.text()).includes('href="/app/kaiten"'),as==="admin");
+   }
+  }
+  const dashboard=await request("/app/kaiten",{as:"admin"});
+  assert.equal(dashboard.status,200);
+  assert.match(await dashboard.text(),/Доступ сотрудников/);
   const admin=await (await request(path,{as:"admin"})).json();
   assert.equal(admin.items.length,2);
   assert.equal(admin.items.find(row=>row.id===draft.id).kaitenParent.estimateText,"8h");
