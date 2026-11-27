@@ -103,6 +103,14 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   expectPublic(draft,{status:"Черновик",title:customerFields.title});
   const other=await item(await request(path,{as:"two",method:"POST",body:{...customerFields,title:"Вторая заявка"}}),201);
   const scope=path+"/"+draft.id;
+  const adminDraft=await item(await request(path,{as:"admin",method:"POST",body:draftBody}),201);
+  const adminBeforeSubmit=await (await request(path,{as:"admin"})).json();
+  assert.deepEqual(adminBeforeSubmit.items.map(row=>row.id).sort(),[other.id,adminDraft.id].sort());
+  assert.equal((await request(scope,{as:"admin",method:"PUT",body:{revision:draft.revision,status:"Новая"}})).status,404);
+  assert.equal((await request(scope,{as:"admin",method:"DELETE",body:{revision:draft.revision}})).status,404);
+  assert.equal((await request(scope+"/kaiten",{as:"admin",method:"POST",body:{action:"link",cardId:"901"}})).status,404);
+  assert.equal((await request(scope+"/kaiten/create",{as:"admin",method:"POST",body:{laneId:"1"}})).status,404);
+  assert.equal((await request(path+"/"+adminDraft.id,{as:"admin",method:"DELETE",body:{revision:adminDraft.revision}})).status,200);
   const updateBody={...customerFields,status:"Новая",revision:draft.revision,operationId:randomUUID()};
   const submitted=await item(await request(scope,{as:"one",method:"PUT",body:updateBody}),200);
   expectPublic(submitted,{...customerFields,id:draft.id,status:"Новая",requester:"one"});

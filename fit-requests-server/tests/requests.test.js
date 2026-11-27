@@ -67,7 +67,7 @@ test('owner deletes own request with audit snapshot, never deletes a Kaiten card
 });
 for(const role of ['employee','admin'])test(role+' cannot delete somebody else’s request',async()=>{
  const db=database({...ownRow(),created_by:'222'});
- assert.deepEqual(await deleteRequest(db,{...user,role},'REQ-1001',{revision:3}),{forbidden:true});assert.ok(db.state.row);assert.equal(db.state.audit.length,0);
+ assert.deepEqual(await deleteRequest(db,{...user,role},'REQ-1001',{revision:3}),role==='admin'?{notFound:true}:{forbidden:true});assert.ok(db.state.row);assert.equal(db.state.audit.length,0);
 });
 test('missing record, stale revision and in-flight Kaiten creation do not delete',async()=>{
  assert.deepEqual(await deleteRequest(database(),user,'REQ-1001',{revision:3}),{notFound:true});

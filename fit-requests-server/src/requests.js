@@ -94,10 +94,11 @@ const select=`${requestColumns},
  k.id AS card_id,k.title AS card_title,k.state AS card_state,k.updated_at AS card_updated_at,k.estimate_raw,k.estimate_unit,k.estimate_text,k.member_ids,k.owner_id,k.children_count,k.children_done,k.data->>'due_date' AS card_due_date,k.data->>'planned_start' AS card_planned_start,k.data->>'planned_end' AS card_planned_end
  FROM fit_requests r LEFT JOIN kaiten_cards k ON k.id=r.kaiten_card_id`;
 const selectFor=user=>user.role==="admin"?select:requestColumns+" FROM fit_requests r";
+const submittedSql="r.payload->>'status' IS DISTINCT FROM 'Черновик'";
+export const isForeignDraft=(user,owner,status)=>status==="Черновик"&&owner!==user.telegram_id;
 export async function listRequests(pool,user){
- const params=user.role==="admin"?[]:[user.telegram_id];
- const filter=params.length?" WHERE r.created_by=$1":"";
- const q=await pool.query(selectFor(user)+filter+" ORDER BY r.updated_at DESC,r.id DESC LIMIT 3000",params);
+ const filter=user.role==="admin"?" WHERE r.created_by=$1 OR "+submittedSql:" WHERE r.created_by=$1";
+ const q=await pool.query(selectFor(user)+filter+" ORDER BY r.updated_at DESC,r.id DESC LIMIT 3000",[user.telegram_id]);
  return {items:q.rows.map(row=>toOutput(row,user)),limit:3000};
 }
 export async function searchKaitenCards(pool,user,search){
@@ -116,8 +117,9 @@ export async function updateKaitenParent(pool,user,requestId,cardId,action){
  const client=await pool.connect();
  try{
   await client.query("BEGIN");
-  const q=await client.query("SELECT kaiten_card_id,payload FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
+  const q=await client.query("SELECT kaiten_card_id,payload,created_by FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
   if(!q.rows.length){await client.query("ROLLBACK");return {notFound:true}}
+  if(isForeignDraft(user,q.rows[0].created_by,q.rows[0].payload.status)){await client.query("ROLLBACK");return {notFound:true}}
   if(action==="link"&&q.rows[0].payload.status==="Черновик"){await client.query("ROLLBACK");return {draft:true}}
   const current=q.rows[0].kaiten_card_id;
   if(action==="link"){
@@ -136,7 +138,7 @@ export async function updateKaitenParent(pool,user,requestId,cardId,action){
 }
 export async function getKaitenParentId(pool,user,requestId){
  if(user.role!=="admin"||!/^REQ-\d{1,12}$/.test(requestId))return null;
- const q=await pool.query("SELECT kaiten_card_id FROM fit_requests WHERE id=$1",[requestId]);
+ const q=await pool.query("SELECT r.kaiten_card_id FROM fit_requests r WHERE r.id=$1 AND (r.created_by=$2 OR "+submittedSql+")",[requestId,user.telegram_id]);
  return q.rows.length?q.rows[0].kaiten_card_id:null;
 }
 // Keep successful mutation keys in the existing audit trail, including after deletion.
@@ -158,7 +160,7 @@ async function replay(client,user,key,action,id=null){
  if(event.action!==action||(id&&event.request_id!==id)||event.payload._mutation.hash!==key.hash){
   throw Object.assign(Error("Эта попытка сохранения уже завершилась с другими данными. Проверь заявку в списке."),{status:409});
  }
- const current=await client.query(selectFor(user)+" WHERE r.id=$1 AND ($2='admin' OR r.created_by=$3)",[event.request_id,user.role,user.telegram_id]);
+ const current=await client.query(selectFor(user)+" WHERE r.id=$1 AND (r.created_by=$3 OR ($2='admin' AND "+submittedSql+"))",[event.request_id,user.role,user.telegram_id]);
  if(!current.rows.length)throw Object.assign(Error("Заявка уже удалена"),{status:409});
  return toOutput(current.rows[0],user);
 }
@@ -194,6 +196,7 @@ export async function updateRequest(pool,user,id,body){
  const cur=await client.query("SELECT * FROM fit_requests WHERE id=$1 FOR UPDATE",[id]);
  if(!cur.rows.length){await client.query("ROLLBACK");return {notFound:true}}
  const old=cur.rows[0];
+ if(user.role==="admin"&&isForeignDraft(user,old.created_by,old.payload.status)){await client.query("ROLLBACK");return {notFound:true}}
  if(user.role!=="admin"&&old.created_by!==user.telegram_id){await client.query("ROLLBACK");return {forbidden:true}}
  if(old.revision!==revision){await client.query("ROLLBACK");return {conflict:true,currentRevision:old.revision}}
  const wasDraft=old.payload.status==="Черновик";
@@ -250,6 +253,7 @@ export async function deleteRequest(pool,user,id,body){
   const result=await client.query("SELECT * FROM fit_requests WHERE id=$1 FOR UPDATE",[id]);
   const row=result.rows[0];
   if(!row){await client.query("ROLLBACK");return {notFound:true}}
+  if(user.role==="admin"&&isForeignDraft(user,row.created_by,row.payload.status)){await client.query("ROLLBACK");return {notFound:true}}
   if(String(row.created_by)!==String(user.telegram_id)){await client.query("ROLLBACK");return {forbidden:true}}
   if(row.revision!==body.revision){await client.query("ROLLBACK");return {conflict:true}}
   const attempt=await client.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[id]);
