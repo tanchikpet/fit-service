@@ -1,5 +1,9 @@
+import {readFile} from "node:fs/promises";
 import pg from "pg";
 export function makeDb(url){const pool=new pg.Pool({connectionString:url,max:5,connectionTimeoutMillis:10000});return pool}
+export async function setupHistory(pool){
+ await pool.query(await readFile(new URL("../migrations/001-kaiten-history.sql",import.meta.url),"utf8"));
+}
 export async function setupDb(pool){
  await pool.query(`
  CREATE TABLE IF NOT EXISTS kaiten_cards (
@@ -17,6 +21,7 @@ export async function setupDb(pool){
   last_error text, cards_seen integer NOT NULL DEFAULT 0, pages_seen integer NOT NULL DEFAULT 0
  );
  `);
+ await setupHistory(pool);
 }
 export async function upsertCards(client,cards){
  for(const c of cards){

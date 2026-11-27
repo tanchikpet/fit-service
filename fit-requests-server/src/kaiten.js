@@ -18,3 +18,69 @@ export async function listKaitenCards({base,token,spaceId,updatedAfter,fetcher=f
  }
  throw Error("Kaiten pagination safety limit exceeded: sync aborted; cursor not advanced");
 }
+
+const idPattern = /^[1-9][0-9]{0,18}$/;
+function locationId(value, optional = false) {
+ if (optional && value == null) return null;
+ if ((typeof value !== "string" && !Number.isSafeInteger(value)) ||
+     !idPattern.test(String(value)) || BigInt(value) > 9223372036854775807n) {
+  throw new Error("Invalid ID in Kaiten location history");
+ }
+ return String(value);
+}
+
+export function kaitenTimestamp(value) {
+ if (typeof value !== "string" || !/(?:Z|[+-]\d{2}:\d{2})$/i.test(value)) return null;
+ const date = new Date(value);
+ return Number.isFinite(date.getTime()) ? date : null;
+}
+
+// The documented endpoint returns a single array, with no pagination parameters.
+export async function listKaitenLocations({base, token, cardId, fetcher = fetch,
+ wait = ms => new Promise(resolve => setTimeout(resolve, ms))}) {
+ const url = new URL(base + "/api/latest/cards/" + locationId(cardId) + "/location-history");
+ for (let attempt = 0; ; attempt++) {
+  let response;
+  try {
+   response = await fetcher(url, {
+    headers: {Authorization: "Bearer " + token, Accept: "application/json"},
+    signal: AbortSignal.timeout(20000), redirect: "error"
+   });
+  } catch {
+   if (attempt === 3) throw new Error("Kaiten location history request failed");
+  }
+  if (response?.ok) {
+   const data = await response.json();
+   if (!Array.isArray(data) || response.status !== 200 || response.headers.has("content-range") ||
+       /rel\s*=\s*"?next\b/i.test(response.headers.get("link") || "")) {
+    throw new Error("Unexpected Kaiten location history response");
+   }
+   return data.map(event => {
+    const changed = kaitenTimestamp(event?.changed);
+    if (!changed || locationId(event.card_id) !== String(cardId) ||
+        (event.condition != null && !Number.isInteger(event.condition))) {
+     throw new Error("Invalid Kaiten location history event");
+    }
+    return {
+     event_id: locationId(event.id), changed_at: event.changed,
+     board_id: locationId(event.board_id, true), column_id: locationId(event.column_id, true),
+     subcolumn_id: locationId(event.subcolumn_id, true), lane_id: locationId(event.lane_id, true),
+     sprint_id: locationId(event.sprint_id, true), condition: event.condition ?? null
+    };
+   });
+  }
+  const status = response?.status;
+  const temporary = !response || status === 408 || status === 429 || status >= 500;
+  const retryAfter = response?.headers.get("retry-after");
+  const retryDelay = retryAfter == null ? 0 : /^\d+$/.test(retryAfter)
+   ? Number(retryAfter) * 1000 : Math.max(0, Date.parse(retryAfter) - Date.now()) || 0;
+  const reset = status === 429 ? Number(response.headers.get("x-ratelimit-reset")) * 1000 - Date.now() : 0;
+  const serverDelay = Math.max(0,retryDelay,reset || 0);
+  await response?.body?.cancel();
+  // Leave long throttling windows for a subsequent run.
+  if (!temporary || attempt === 3 || serverDelay > 60000) {
+   throw Object.assign(new Error("Kaiten location history HTTP " + status), {status});
+  }
+  await wait(Math.max(serverDelay, 500 * 2 ** attempt + Math.random() * 250));
+ }
+}
