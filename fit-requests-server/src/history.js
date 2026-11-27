@@ -1,8 +1,8 @@
 import {listKaitenLocations} from "./kaiten.js";
 
-const HISTORY_LOCK = 332384502;
+export const HISTORY_LOCK = 332384502;
 
-export async function loadCardHistory({pool, config, cardId, fetcher, wait}) {
+export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSaved}) {
  const {spaceId, kaitenBase: base, kaitenToken: token} = config;
  const attemptedAt = new Date();
  let events;
@@ -16,16 +16,18 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait}) {
   status = error.status ?? null;
   result = status === 403 ? "forbidden" : status === 404 ? "not_found" : "error";
  }
+ let inserted = 0;
  const client = await pool.connect();
  try {
   await client.query("BEGIN");
   if (events?.length) {
-   await client.query(`INSERT INTO kaiten_location_events
+   const saved = await client.query(`INSERT INTO kaiten_location_events
      (space_id,card_id,event_id,changed_at,board_id,column_id,subcolumn_id,lane_id,sprint_id,condition)
      SELECT $1,$2,e.* FROM jsonb_to_recordset($3) AS e
        (event_id bigint,changed_at timestamptz,board_id bigint,column_id bigint,
         subcolumn_id bigint,lane_id bigint,sprint_id bigint,condition integer)
      ON CONFLICT (space_id,card_id,event_id) DO NOTHING`, [spaceId,cardId,JSON.stringify(events)]);
+   inserted = saved.rowCount;
   }
   await client.query(`INSERT INTO kaiten_history_loads
      (space_id,card_id,last_attempt_at,last_success_at,result,http_status)
@@ -35,6 +37,7 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait}) {
        last_success_at=COALESCE(EXCLUDED.last_success_at,kaiten_history_loads.last_success_at),
        result=EXCLUDED.result,http_status=EXCLUDED.http_status`, [spaceId,cardId,Boolean(events),result,status,attemptedAt]);
   await client.query("COMMIT");
+  onSaved?.({inserted,received:events?.length ?? 0,status});
   return result;
  } catch (error) {
   await client.query("ROLLBACK");
@@ -45,7 +48,7 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait}) {
 }
 
 export async function refreshHistory({pool, config, mode = "pending", ids = [], fetcher = fetch,
- wait = ms => new Promise(resolve => setTimeout(resolve,ms))}) {
+ wait = ms => new Promise(resolve => setTimeout(resolve,ms)), shouldStop, onProgress}) {
  if (!["pending","all"].includes(mode)) throw new Error("Invalid history refresh mode");
  const lock = await pool.connect();
  let acquired = false;
@@ -61,7 +64,9 @@ export async function refreshHistory({pool, config, mode = "pending", ids = [], 
       OR h.result NOT IN ('loaded','empty') OR c.updated_at > h.last_attempt_at)))
     ORDER BY c.id`, [config.spaceId,mode,ids]);
   const totals = {selected: rows.length, loaded: 0, empty: 0, forbidden: 0, not_found: 0, error: 0};
+  onProgress?.({...totals,processed:0,inserted:0,received:0});
   let next = 0;
+  let processed = 0, inserted = 0, received = 0, failed = false;
   let nextRequestAt = 0;
   async function pacedFetch(url, options) {
    const now = performance.now();
@@ -71,10 +76,22 @@ export async function refreshHistory({pool, config, mode = "pending", ids = [], 
    return fetcher(url,options);
   }
   async function worker() {
-   while (next < rows.length) {
-    const {id: cardId} = rows[next++];
-    const result = await loadCardHistory({pool,config,cardId,fetcher:pacedFetch,wait});
-    totals[result]++;
+   try {
+    while (!failed && !shouldStop?.() && next < rows.length) {
+     const {id: cardId} = rows[next++];
+     let status;
+     const result = await loadCardHistory({pool,config,cardId,fetcher:pacedFetch,wait,onSaved: row => {
+      inserted += row.inserted;
+      received += row.received;
+      status = row.status;
+     }});
+     totals[result]++;
+     processed++;
+     onProgress?.({...totals,processed,inserted,received,status,result});
+    }
+   } catch (error) {
+    failed = true;
+    throw error;
    }
   }
   // Wait for both workers before releasing the cross-process lock, even on a database failure.
