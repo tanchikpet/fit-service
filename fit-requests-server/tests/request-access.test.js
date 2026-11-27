@@ -32,9 +32,16 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   const adminToken="local-test-admin-"+randomUUID();
   // Stub only outgoing Kaiten requests. HTTP routes, sessions and PostgreSQL are real.
   const kaitenFixture=`
-   globalThis.fetch=async input=>{
-    if(!String(input).startsWith("https://fixture.kaiten.ru/"))throw new Error("Unexpected upstream request");
-    return Response.json(String(input).includes("/children")
+   globalThis.fetch=async (input,options={})=>{
+    const url=new URL(input);
+    if(url.origin!=="https://fixture.kaiten.ru")throw new Error("Unexpected upstream request");
+    if(url.pathname.endsWith("/boards"))return Response.json([{id:20,title:"PM"}]);
+    if(url.pathname.endsWith("/boards/20"))return Response.json({id:20,columns:[{id:30,title:"Анализ"}],lanes:[{id:40,title:"Входящие"}]});
+    if(url.pathname.endsWith("/cards")&&options.method==="POST"){
+     const body=JSON.parse(options.body);
+     return Response.json({id:903,title:body.title,description:body.description,external_id:body.external_id,board_id:20,column_id:30,lane_id:40});
+    }
+    return Response.json(url.pathname.endsWith("/children")
      ? [{id:902,title:"Internal child",size_text:"8h",owner_id:777,members:[{id:888}]}] : []);
    };
   `;
@@ -80,7 +87,7 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
    actualUrl:"https://example.org/page",materials:"https://example.org/files",express:"https://example.org/chat",
    goal:"Результат",desiredDue:"2026-12-01",pageAction:"new",pageOwner:"Исторический ответственный"};
   const allowed=new Set([...requestFields.map(([key])=>key),"project","requester","department","pageAction","pageOwner",
-   "requestKind","id","revision","createdBy","created","updatedAt","status"]);
+   "requestKind","formVersion","formAnswers","id","revision","createdBy","created","updatedAt","status"]);
   function expectPublic(item,expected){
    assert.deepEqual(Object.keys(item).filter(key=>!allowed.has(key)),[]);
    for(const [key,value] of Object.entries(expected))assert.equal(item[key],value,key);
@@ -97,6 +104,13 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   assert.equal((await request(path)).status,401);
   for(const endpoint of denied)assert.equal((await request(endpoint)).status,401,endpoint);
 
+  assert.equal((await request("/api/form-types")).status,401);
+  assert.equal((await request("/api/admin/form-types",{as:"one"})).status,403);
+  assert.equal((await request("/api/admin/form-types",{as:"two",method:"POST",body:{action:"create",name:"Скрытый"}})).status,403);
+  assert.equal((await request("/app/form-types",{as:"one"})).status,403);
+  assert.equal((await request("/app/form-types",{as:"admin"})).status,200);
+  const catalog=await (await request("/api/form-types",{as:"one"})).json();
+  assert.deepEqual(catalog.items.map(row=>row.typeId),["new","update","other"]);
   const operationId=randomUUID();
   const draftBody={requestKind:"other",title:customerFields.title,status:"Черновик",operationId};
   const draft=await item(await request(path,{as:"one",method:"POST",body:draftBody}),201);
@@ -114,6 +128,8 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   const updateBody={...customerFields,status:"Новая",revision:draft.revision,operationId:randomUUID()};
   const submitted=await item(await request(scope,{as:"one",method:"PUT",body:updateBody}),200);
   expectPublic(submitted,{...customerFields,id:draft.id,status:"Новая",requester:"one"});
+  assert.equal(submitted.formVersion.id,draft.formVersion.id);
+  assert.equal(submitted.formAnswers.owner,customerFields.owner);
 
   await scoped.query(`INSERT INTO kaiten_cards(id, space_id, title, estimate_text, owner_id, member_ids, data)
    VALUES (901,123,'Internal parent','8h',777,'[888]','{}')`);
@@ -171,6 +187,37 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
    assert.equal(response.headers.get("referrer-policy"),"same-origin");
    assert.match(await response.text(),/<form action="\/auth\/logout" method="post"/);
   }
+  async function configure(body){
+   const response=await request("/api/admin/form-types",{as:"admin",method:"POST",body});
+   assert.equal(response.status,200);
+   return (await response.json()).items.find(row=>row.id===body.id||row.draft.name==="Тестовый тип");
+  }
+  let configured=await configure({action:"create",name:"Тестовый тип"});
+  const formSchema=structuredClone(configured.draft);
+  formSchema.sections[0].fields[0].label="Название интеграции";
+  formSchema.sections[0].fields.push({id:"field-enabled",type:"boolean",label:"Включить",required:true,defaultValue:false});
+  configured=await configure({action:"publish",id:configured.id,revision:configured.revision,schema:formSchema,position:10});
+  const beforeActivation=await (await request("/api/form-types",{as:"one"})).json();
+  assert.ok(!beforeActivation.items.some(version=>version.typeId===configured.id));
+  configured=await configure({action:"state",id:configured.id,revision:configured.revision,state:"active"});
+  const dynamic=await item(await request(path,{as:"one",method:"POST",body:{
+   requestKind:configured.id,formVersionId:configured.current_version_id,
+   formAnswers:{title:"Проверка API","field-enabled":false}
+  }}),201);
+  expectPublic(dynamic,{title:"Проверка API",requestKind:configured.id});
+  assert.equal(dynamic.formAnswers["field-enabled"],false);
+  assert.equal(dynamic.formVersion.schema.sections[0].fields[0].label,"Название интеграции");
+  assert.equal((await scoped.query("SELECT count(*)::int AS count FROM fit_kaiten_creation_attempts WHERE request_id=$1",[dynamic.id])).rows[0].count,0);
+  const renamed=structuredClone(formSchema);
+  renamed.sections[0].fields[1].label="Новая подпись";
+  await configure({action:"publish",id:configured.id,revision:configured.revision,schema:renamed,position:10});
+  const sent=await request(path+"/"+dynamic.id+"/kaiten/create",{as:"admin",method:"POST",body:{laneId:"40"}});
+  assert.equal(sent.status,201);
+  assert.equal((await sent.json()).cardId,"903");
+  const sentCard=(await scoped.query("SELECT data FROM kaiten_cards WHERE id=903")).rows[0].data;
+  assert.equal(sentCard.title,"Проверка API");
+  assert.match(sentCard.description,/Включить:\nНет/);
+  assert.doesNotMatch(sentCard.description,/Новая подпись/);
   for(const requestOrigin of ["null","https://other.example"]){
    assert.equal((await request("/auth/logout",{as:"one",method:"POST",body:{},requestOrigin})).status,403);
    assert.equal((await request("/api/me",{as:"one"})).status,200);

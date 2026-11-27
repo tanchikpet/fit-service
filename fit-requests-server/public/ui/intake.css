@@ -16,3 +16,6 @@
 #discardRequestDialog{width:min(480px,calc(100% - 24px));padding:24px}
 #discardRequestDialog h2{margin-top:0}
 #discardRequestDialog .modal-actions{flex-wrap:wrap}
+
+#requestDialog .configured-section+.configured-section{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+#obsoleteAnswers{margin-top:14px}

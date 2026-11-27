@@ -1,3 +1,5 @@
+import {allFields, printAnswer} from "../public/ui/form-schema.js";
+import {readVersion} from "./form-catalog.js";
 import {isForeignDraft} from "./requests.js";
 import {activeFields, requestKinds, fieldLabel, storedKind} from "../public/ui/request-fields.js";
 import {normalizeCard} from "./kaiten.js";
@@ -39,10 +41,15 @@ export async function fixedPmDestination(config){
  const lanes=board.lanes.filter(l=>l.title.trim()||board.lanes.length===1);
  return {boardId:board.id,boardTitle:board.title,columnId:columns[0].id,columnTitle:columns[0].title,lanes};
 }
-function description(request){
+export function description(request,version){
  const p=request.payload;
  const kind=storedKind(p);
- const lines=[["Тип заявки",requestKinds[kind]],...activeFields(kind).filter(([key])=>key!=="title").map(field=>[fieldLabel(field,kind),p[field[0]]]),["Инициатор",p.requester]];
+ const fields=version?allFields(version.schema).filter(field=>field.id!=="title").map(field=>{
+  const values=p.formAnswers||{};
+  const value=Object.hasOwn(values,field.id)?values[field.id]:p[field.id];
+  return [field.label,printAnswer(field,value)];
+ }):activeFields(kind).filter(([key])=>key!=="title").map(field=>[fieldLabel(field,kind),p[field[0]]]);
+ const lines=[["Тип заявки",version?.schema.name||requestKinds[kind]],...fields,["Инициатор",p.requester]];
  return ["Источник: FIT Requests "+request.id,...lines.filter(x=>x[1]).map(([a,b])=>a+":\n"+b)].join("\n\n");
 }
 export async function createParentCard(pool,config,user,requestId,body){
@@ -54,10 +61,10 @@ export async function createParentCard(pool,config,user,requestId,body){
  const destination=await fixedPmDestination(config);
  if(!destination.lanes.some(l=>l.id===String(body.laneId)))throw Error("Дорожка не принадлежит доске PM");
  const board={id:destination.boardId};
- const tx=await pool.connect();let request;
+ const tx=await pool.connect();let request,version;
  try{
   await tx.query("BEGIN");
-  const q=await tx.query("SELECT id,payload,kaiten_card_id,created_by FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
+  const q=await tx.query("SELECT id,payload,kaiten_card_id,created_by,form_version_id FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
   if(!q.rows.length){await tx.query("ROLLBACK");return {notFound:true}}request=q.rows[0];
   if(isForeignDraft(user,request.created_by,request.payload.status)){await tx.query("ROLLBACK");return {notFound:true}}
   if(request.payload.status==="Черновик"){await tx.query("ROLLBACK");return {draft:true}}
@@ -66,10 +73,11 @@ export async function createParentCard(pool,config,user,requestId,body){
   if(previous.rows.length&&previous.rows[0].status!=="rejected"){await tx.query("ROLLBACK");return {alreadyAttempted:true,status:previous.rows[0].status}}
   if(previous.rows[0]?.status==="rejected")await tx.query("DELETE FROM fit_kaiten_creation_attempts WHERE request_id=$1 AND status=\'rejected\'",[requestId]);
   if(!request.payload.title?.trim()){await tx.query("ROLLBACK");throw Error("Не заполнено название заявки")}
+  if(request.form_version_id)version=await readVersion(tx,request.form_version_id);
   await tx.query("INSERT INTO fit_kaiten_creation_attempts(request_id,status,board_id,column_id,lane_id,initiated_by) VALUES($1,'pending',$2,$3,$4,$5)",[requestId,destination.boardId,destination.columnId,body.laneId,user.telegram_id]);
   await tx.query("COMMIT");
  }catch(e){await tx.query("ROLLBACK").catch(()=>{});throw e}finally{tx.release()}
- const payload={title:String(request.payload.title).slice(0,1024),board_id:Number(destination.boardId),column_id:Number(destination.columnId),description:description(request),external_id:requestId,position:2};
+ const payload={title:String(request.payload.title).slice(0,1024),board_id:Number(destination.boardId),column_id:Number(destination.columnId),description:description(request,version),external_id:requestId,position:2};
  payload.lane_id=Number(body.laneId);
  // Do not translate date-only deadlines into a guessed UTC time.
  let card;

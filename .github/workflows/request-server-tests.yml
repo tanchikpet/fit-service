@@ -49,3 +49,4 @@ jobs:
       - run: pip install playwright==1.56.0
       - run: python -m playwright install --with-deps chromium
       - run: python tests/browser_intake.py
+      - run: python tests/browser_form_catalog.py

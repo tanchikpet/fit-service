@@ -1,5 +1,7 @@
 """Run with Python Playwright; all API calls use isolated fixtures, never production."""
 import functools
+import json
+import subprocess
 import http.server
 import os
 from pathlib import Path
@@ -8,6 +10,11 @@ from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 items = []
+schemas = json.loads(subprocess.check_output(
+    ['node','--input-type=module','-e',
+     "import {legacySchema,legacyKinds} from './public/ui/form-schema.js'; console.log(JSON.stringify(legacyKinds.map((typeId,i)=>({typeId,id:String(i+1),number:1,schema:legacySchema(typeId)}))))"],
+    cwd=ROOT, text=True))
+
 next_id = 1000
 delete_failure = False
 delete_calls = []
@@ -27,11 +34,15 @@ def api(route):
             return
     if path == 'me':
         route.fulfill(json={'telegramId':'111','displayName':'Тестовый автор','role':current_role})
+    elif path == 'form-types':
+        route.fulfill(json={'items':schemas})
     elif path == 'requests' and req.method == 'GET':
         route.fulfill(json={'items':items})
     elif path == 'requests' and req.method == 'POST':
         next_id += 1
-        item = {**req.post_data_json,'id':f'REQ-{next_id}','revision':1,'createdBy':'111'}
+        body = req.post_data_json
+        version = next(schema for schema in schemas if schema['id']==body['formVersionId'])
+        item = {**body,**body['formAnswers'],'formVersion':version,'id':f'REQ-{next_id}','revision':1,'createdBy':'111'}
         items.insert(0,item)
         route.fulfill(status=201,json={'item':item})
     elif path.endswith('/kaiten/children'):
@@ -51,6 +62,7 @@ def api(route):
                 route.fulfill(status=403,json={'error':'Нет доступа'})
         elif req.method == 'PUT' and item:
             item.update(req.post_data_json)
+            item.update(req.post_data_json.get('formAnswers',{}))
             item['revision'] += 1
             route.fulfill(json={'item':item})
         else:
@@ -134,7 +146,7 @@ def main():
             expect(page.locator('#requestExpress')).to_have_value('https://example.org/project')
             page.locator('#closeIntake').click()
             page.locator('#main [data-page="requests"]').click()
-        # Draft is restored after reload; hidden campaign fields do not block another kind.
+        # Draft is restored after reload with its original, locked type.
         page.locator('[data-action="new"]').click()
         page.locator('[data-kind="new"]').click()
         page.locator('#requestTitle').fill('Черновик')
@@ -156,14 +168,17 @@ def main():
         warning.get_by_role('button',name='Закрыть без сохранения',exact=True).click()
         page.locator('[data-edit]').click()
         expect(page.locator('#requestTitle')).to_have_value('Изменение черновика')
-        page.locator('[data-kind="other"]').click()
-        expect(page.locator('#requestTitle')).to_have_value('Изменение черновика')
-        page.locator('#requestOwner').fill('Ответственный')
-        page.locator('#requestActualUrl').fill('javascript:alert(1)')
-        page.locator('#requestDescription').fill('Описание')
+        expect(page.locator('[data-kind="new"]')).to_be_disabled()
+        expect(page.locator('[data-kind="other"]')).to_have_count(0)
+        for field in page.locator('#intakeForm [required]').all():
+            if field.input_value():
+                continue
+            typ=field.get_attribute('type')
+            field.fill('https://fitauto.ru/' if typ=='url' else '2026-12-01' if typ=='date' else 'Описание')
+        page.locator('#requestPlannedUrl').fill('javascript:alert(1)')
         page.locator('#submitIntake').click()
-        expect(page.locator('#requestActualUrlError')).to_be_visible()
-        page.locator('#requestActualUrl').fill('')
+        expect(page.locator('#requestPlannedUrlError')).to_be_visible()
+        page.locator('#requestPlannedUrl').fill('https://fitauto.ru/')
         save_error={'error':'Проверь ответственного','field':'owner'}
         page.locator('#submitIntake').click()
         expect(page.locator('#requestOwnerError')).to_contain_text('Проверь ответственного')
@@ -211,7 +226,7 @@ def main():
         page.locator('[data-edit]').click()
         expect(page.locator('#deleteIntake')).to_be_hidden()
         page.set_viewport_size({'width':390,'height':844})
-        expect(page.locator('[data-kind="new"]')).to_be_visible()
+        expect(page.locator('[data-kind="other"]')).to_be_visible()
         assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
         page.keyboard.press('Escape')
         expect(page.locator('#requestDialog')).to_be_hidden()
