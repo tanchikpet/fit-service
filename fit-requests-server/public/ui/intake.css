@@ -7,3 +7,12 @@
 .request-details .kv-row b{white-space:pre-wrap;overflow-wrap:anywhere}
 #requestDialog .modal-actions{flex-wrap:wrap}
 @media(max-width:590px){.request-kind-switch{grid-template-columns:1fr}#requestDialog .modal-actions .request-delete{margin-right:auto}}
+#requestDialog .intake-field{display:grid;gap:6px;margin-bottom:14px}
+#requestDialog .intake-field label{margin:0}
+#requestDialog .intake-field small{font-size:12px;color:var(--muted)}
+#requestDialog .intake-field .field-error,#intakeError{color:#b42318}
+#requestDialog [aria-invalid="true"]{border-color:#b42318}
+.intake-header-actions{display:flex;align-items:center;gap:8px}
+#discardRequestDialog{width:min(480px,calc(100% - 24px));padding:24px}
+#discardRequestDialog h2{margin-top:0}
+#discardRequestDialog .modal-actions{flex-wrap:wrap}

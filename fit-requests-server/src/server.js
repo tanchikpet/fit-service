@@ -156,6 +156,7 @@ const server=http.createServer(async(req,res)=>{
     const result=await createParentCard(pool,config,me,requestId,body);
     if(result.forbidden)send(res,403,{error:"Нет доступа"});
     else if(result.notFound)send(res,404,{error:"Заявка не найдена"});
+    else if(result.draft)send(res,409,{error:"Сначала подай заявку"});
     else if(result.alreadyLinked||result.alreadyAttempted)send(res,409,{error:"Основная карточка уже создана или попытка создания требует проверки. Новая карточка не отправлена."});
     else if(result.uncertain)send(res,409,{error:result.error});
     else if(result.rejected)send(res,422,{error:result.error});
@@ -174,6 +175,7 @@ const server=http.createServer(async(req,res)=>{
     try{const result=await updateKaitenParent(pool,me,requestId,body.cardId,body.action);
       if(result.forbidden)send(res,403,{error:"Нет доступа"});
       else if(result.notFound)send(res,404,{error:"Заявка не найдена"});
+      else if(result.draft)send(res,409,{error:"Сначала подай заявку"});
       else if(result.cardNotFound)send(res,404,{error:"Карточка Kaiten не найдена в синхронизированном пространстве"});
       else if(result.alreadyLinked)send(res,409,{error:"У заявки уже есть основная карточка Kaiten. Сначала отвяжи ее."});
       else send(res,200,result)
@@ -183,7 +185,7 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/api/requests"&&req.method==="POST"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){send(res,400,{error:err.message})}return
+    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="DELETE"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
@@ -194,18 +196,18 @@ const server=http.createServer(async(req,res)=>{
       else if(result.conflict)send(res,409,{error:"Заявка изменена. Обнови страницу перед удалением."});
       else if(result.pending)send(res,409,{error:"Отправка в Kaiten еще не завершена. Дождись ее результата."});
       else send(res,200,{ok:true});
-    }catch(err){send(res,400,{error:err.message})}return
+    }catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="PUT"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
     try{const item=await updateRequest(pool,me,id,body);if(item.notFound)send(res,404,{error:"Заявка не найдена"});else if(item.forbidden)send(res,403,{error:"Нет доступа"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
-    catch(err){send(res,400,{error:err.message})}return
+    catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
   }
   if(path==="/api/requests/import"&&req.method==="POST"){
     if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const raw=await collect(req,5242880);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{send(res,200,await importRequests(pool,me,body))}catch(err){send(res,400,{error:err.message})}return
+    try{send(res,200,await importRequests(pool,me,body))}catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
   }
   if(path==="/api/sync/status"&&req.method==="GET"){
    const {rows}=await pool.query("SELECT space_id,last_success_at,last_started_at,last_error,cards_seen,pages_seen FROM kaiten_sync_state WHERE space_id=$1",[config.spaceId]);

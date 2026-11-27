@@ -1,4 +1,4 @@
-import {activeFields, requestKinds, fieldLabel} from "../public/ui/request-fields.js";
+import {activeFields, requestKinds, fieldLabel, storedKind} from "../public/ui/request-fields.js";
 import {normalizeCard} from "./kaiten.js";
 import {upsertCards} from "./db.js";
 const validId=v=>Number.isSafeInteger(Number(v))&&Number(v)>0&&String(Number(v))===String(v);
@@ -40,13 +40,16 @@ export async function fixedPmDestination(config){
 }
 function description(request){
  const p=request.payload;
- const kind=p.requestKind||"other";
+ const kind=storedKind(p);
  const lines=[["Тип заявки",requestKinds[kind]],...activeFields(kind).filter(([key])=>key!=="title").map(field=>[fieldLabel(field,kind),p[field[0]]]),["Инициатор",p.requester]];
  return ["Источник: FIT Requests "+request.id,...lines.filter(x=>x[1]).map(([a,b])=>a+":\n"+b)].join("\n\n");
 }
 export async function createParentCard(pool,config,user,requestId,body){
  if(user.role!=="admin")return {forbidden:true};
  if(!requestIdOk(requestId)||!validId(body?.laneId))throw Error("Нужно выбрать дорожку Kaiten");
+ const stage=await pool.query("SELECT payload->>'status' AS status FROM fit_requests WHERE id=$1",[requestId]);
+ if(!stage.rows.length)return {notFound:true};
+ if(stage.rows[0].status==="Черновик")return {draft:true};
  const destination=await fixedPmDestination(config);
  if(!destination.lanes.some(l=>l.id===String(body.laneId)))throw Error("Дорожка не принадлежит доске PM");
  const board={id:destination.boardId};
@@ -55,6 +58,7 @@ export async function createParentCard(pool,config,user,requestId,body){
   await tx.query("BEGIN");
   const q=await tx.query("SELECT id,payload,kaiten_card_id FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
   if(!q.rows.length){await tx.query("ROLLBACK");return {notFound:true}}request=q.rows[0];
+  if(request.payload.status==="Черновик"){await tx.query("ROLLBACK");return {draft:true}}
   if(request.kaiten_card_id){await tx.query("ROLLBACK");return {alreadyLinked:true}}
   const previous=await tx.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[requestId]);
   if(previous.rows.length&&previous.rows[0].status!=="rejected"){await tx.query("ROLLBACK");return {alreadyAttempted:true,status:previous.rows[0].status}}
