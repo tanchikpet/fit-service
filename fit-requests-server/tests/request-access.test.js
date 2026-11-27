@@ -49,11 +49,11 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   });
   for(const stream of [server.stdout,server.stderr])stream.on("data",chunk=>{serverLog+=chunk});
   const caller={one:"111",two:"222",admin:"333"};
-  async function request(path,{as,method="GET",body,bearer}={}){
+  async function request(path,{as,method="GET",body,bearer,requestOrigin=origin}={}){
    return fetch(origin+path,{method,redirect:"manual",headers:{
     ...(as?{Cookie:"__Host-fit_session="+caller[as]}:{}),
     ...(bearer?{Authorization:"Bearer "+adminToken}:{}),
-    ...(body?{Origin:origin,"Content-Type":"application/json"}:{})
+    ...(body?{Origin:requestOrigin,"Content-Type":"application/json"}:{})
    },body:body&&JSON.stringify(body),signal:AbortSignal.timeout(3000)});
   }
   let ready=false;
@@ -145,6 +145,21 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   assert.equal((await request("/api/cards",{as:"admin"})).status,200);
   assert.equal((await request("/api/sync/status",{as:"admin"})).status,200);
   assert.equal((await request("/api/sync/status",{bearer:true})).status,200);
+  for(const page of ["/app","/app/registry"]){
+   const response=await request(page,{as:"one"});
+   assert.equal(response.status,200);
+   assert.equal(response.headers.get("referrer-policy"),"same-origin");
+   assert.match(await response.text(),/<form action="\/auth\/logout" method="post"/);
+  }
+  for(const requestOrigin of ["null","https://other.example"]){
+   assert.equal((await request("/auth/logout",{as:"one",method:"POST",body:{},requestOrigin})).status,403);
+   assert.equal((await request("/api/me",{as:"one"})).status,200);
+  }
+  const logout=await request("/auth/logout",{as:"one",method:"POST",body:{}});
+  assert.equal(logout.status,303);
+  assert.equal(logout.headers.get("location"),"/");
+  assert.equal((await request("/api/me",{as:"one"})).status,401);
+
  }finally{
   if(server&&server.exitCode===null&&server.signalCode===null){
    const exited=once(server,"exit");
