@@ -63,7 +63,10 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><img class="login-logo" src="/ui/brand-light.svg?v=brand-3" alt="FIT Requests"><p class="login-caption">Заявки на web-разработку</p><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
   if(["/app","/app/registry"].includes(path)&&req.method==="GET"){
     const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
-    const content=await readFile(new URL(path==="/app/registry"?"../public/ui/registry.html":"../public/ui/index.html",import.meta.url));
+    const template=await readFile(new URL(path==="/app/registry"?"../public/ui/registry.html":"../public/ui/index.html",import.meta.url),"utf8");
+    const kaitenNav=me.role==="admin"?
+      '<a class="nav-link" href="/app/kaiten" aria-label="Задачи Kaiten" title="Задачи Kaiten"><span class="nav-icon" aria-hidden="true">☑</span><span class="nav-label">Задачи Kaiten</span></a>':"";
+    const content=template.replace("<!-- admin-kaiten-nav -->",kaitenNav);
     // Native POST forms need the same-origin Origin header for the CSRF check.
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
   }
