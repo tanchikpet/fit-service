@@ -67,7 +67,8 @@ const server=http.createServer(async(req,res)=>{
     const kaitenNav=me.role==="admin"?
       '<a class="nav-link" href="/app/kaiten" aria-label="Задачи Kaiten" title="Задачи Kaiten"><span class="nav-icon" aria-hidden="true">☑</span><span class="nav-label">Задачи Kaiten</span></a>':"";
     const content=template.replace("<!-- admin-kaiten-nav -->",kaitenNav);
-    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(content);return
+    // Native POST forms need the same-origin Origin header for the CSRF check.
+    res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
   }
   if(["/app/analytics","/api/analytics","/api/analytics.xlsx"].includes(path)&&req.method==="GET"){
     const me=await auth.user(req);
