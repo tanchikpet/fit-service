@@ -136,6 +136,7 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/api/me"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,{telegramId:me.telegram_id,displayName:me.display_name,role:me.role});return}
   if(path.startsWith("/api/requests/")&&path.endsWith("/kaiten/children")&&req.method==="GET"){
    if(!me){send(res,401,{error:"unauthorized"});return}
+   if(me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
    const id=path.slice("/api/requests/".length,-"/kaiten/children".length);
    const parentId=await getKaitenParentId(pool,me,id);
    if(!parentId){send(res,200,{items:[],parentId:null});return}
@@ -207,24 +208,24 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/api/requests"&&req.method==="POST"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
+    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="DELETE"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req,2048);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
     try{const result=await deleteRequest(pool,me,id,body);
-      if(result.notFound)send(res,404,{error:"Заявка не найдена"});
+      if(result.notFound||(result.forbidden&&me.role!=="admin"))send(res,404,{error:"Заявка не найдена"});
       else if(result.forbidden)send(res,403,{error:"Можно удалить только свою заявку"});
       else if(result.conflict)send(res,409,{error:"Заявка изменена. Обнови страницу перед удалением."});
-      else if(result.pending)send(res,409,{error:"Отправка в Kaiten еще не завершена. Дождись ее результата."});
+      else if(result.pending)send(res,409,{error:me.role==="admin"?"Отправка в Kaiten еще не завершена. Дождись ее результата.":"Заявку пока нельзя удалить. Попробуй позже."});
       else send(res,200,{ok:true});
-    }catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
+    }catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="PUT"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{const item=await updateRequest(pool,me,id,body);if(item.notFound)send(res,404,{error:"Заявка не найдена"});else if(item.forbidden)send(res,403,{error:"Нет доступа"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
-    catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
+    try{const item=await updateRequest(pool,me,id,body);if(item.notFound||item.forbidden)send(res,404,{error:"Заявка не найдена"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
+    catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
   }
   if(path==="/api/requests/import"&&req.method==="POST"){
     if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
@@ -232,6 +233,7 @@ const server=http.createServer(async(req,res)=>{
     try{send(res,200,await importRequests(pool,me,body))}catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
   }
   if(path==="/api/sync/status"&&req.method==="GET"){
+   if(me?.role!=="admin"&&!authorized(req)){send(res,403,{error:"forbidden"});return}
    const {rows}=await pool.query("SELECT space_id,last_success_at,last_started_at,last_error,cards_seen,pages_seen FROM kaiten_sync_state WHERE space_id=$1",[config.spaceId]);
    send(res,200,{spaceId:config.spaceId,state:rows[0]||null});return
   }
