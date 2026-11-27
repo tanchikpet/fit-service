@@ -48,7 +48,7 @@ function tables(report) {
 
 const parentLabels = {all:"Все",yes:"С родителем",no:"Без родителя"};
 
-export function analyticsPage(report, escape) {
+export function analyticsPage(report, escape, historyPanel = "") {
  const {filters} = report;
  const option = (id,label,selected) =>
   `<option value="${escape(id)}"${id === selected ? " selected" : ""}>${escape(label)}</option>`;
@@ -60,7 +60,7 @@ export function analyticsPage(report, escape) {
    </section>`).join("");
  return `<header><a class="logo" href="/app"><img src="/ui/brand-dark.svg?v=brand-3" alt="FIT Requests"></a>
   <a href="/app">К заявкам</a></header>
-  <main><h1>Аналитика Kaiten</h1>
+  <main><h1>Аналитика Kaiten</h1>${historyPanel}
   <p>Сохранённая выборка FIT Requests. Последняя успешная синхронизация карточек — ${escape(at(report.currentAsOf))}.</p>
   <section class="card"><form class="report-filters" action="/app/analytics" method="get">
    <label>Начало периода <input type="month" name="from" value="${escape(filters.from)}" required></label>

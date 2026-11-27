@@ -12,6 +12,8 @@ import {initCardCreation,boardCandidates,boardDetails,createParentCard,fixedPmDe
 import {initRegistry,registrySnapshot,saveRegistry,dismissCandidate,restoreCandidate,makeRegistryMonitor} from "./registry.js";
 import {readReport,reportFilters} from "./analytics.js";
 import {analyticsPage,analyticsWorkbook} from "./analytics-view.js";
+import {historyAccess,makeHistoryAdmin} from "./history-admin.js";
+import {historyAdminPanel} from "./history-admin-view.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
@@ -24,6 +26,7 @@ const registryMonitor=makeRegistryMonitor(pool);
 registryMonitor.start();
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
+const historyAdmin=makeHistoryAdmin({pool,config});
 const botLogin=makeBotLogin({pool});
 const safeEqual=(a,b)=>{const x=Buffer.from(String(a||"")),y=Buffer.from(String(b||""));return x.length===y.length&&timingSafeEqual(x,y)};
 function send(res,status,value){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(JSON.stringify(value))}
@@ -31,7 +34,13 @@ function authorized(req){return safeEqual(req.headers.authorization,"Bearer "+co
 function sameOrigin(req){return Boolean(process.env.PUBLIC_ORIGIN)&&req.headers.origin===process.env.PUBLIC_ORIGIN}
 const escapeHtml=x=>String(x??"").replace(/[&<>"\x27]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","\x27":"&#39;"}[c]));
 function html(res,status,body){res.writeHead(status,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'none';img-src 'self';style-src 'unsafe-inline';form-action 'self';base-uri 'none';frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff"});res.end(body)}
-const shell=(content)=>`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FIT Requests</title><link rel="icon" type="image/svg+xml" href="/ui/favicon.svg?v=brand-3"><style>*{box-sizing:border-box}body{margin:0;background:#f7f8fa;color:#27303a;font:14px system-ui,Arial,sans-serif}header{background:#15191f;color:#fff;padding:18px 5%;display:flex;justify-content:space-between;gap:14px;align-items:center}.logo{display:inline-flex;flex-direction:column;align-items:flex-start;gap:8px}.brand-caption{font-size:12px;line-height:1.5;color:#B6BDC7}.login-caption{margin:0 auto 24px;color:#606874;font-size:15px}.logo img{display:block;width:210px;max-width:100%;height:auto}.login-logo{display:block;width:min(100%,370px);height:auto;margin:0 auto 8px}main{max-width:1160px;margin:32px auto;padding:0 16px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:24px;margin:18px 0}.muted{color:#747e89}a,.button{color:#fe5000}.button{display:inline-block;background:#fe5000;color:#fff;text-decoration:none;border:0;border-radius:9px;padding:11px 17px;font-weight:700;cursor:pointer}.toolbar{display:flex;gap:12px;align-items:center}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:13px;border-bottom:1px solid #eef0f3;max-width:470px}th{color:#7b8390;font-size:11px}input{padding:10px;border:1px solid #d9dfe6;border-radius:8px}.report-filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.report-filters label{display:grid;gap:6px}.report-filters select{padding:10px;border:1px solid #d9dfe6;border-radius:8px;max-width:100%}@media(max-width:600px){header{padding:12px}main{margin:18px auto}.card{padding:15px}td,th{padding:8px}}</style></head><body>${content}</body></html>`;
+function analyticsHtml(res,body){
+ res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store",
+  "Content-Security-Policy":"default-src 'none';img-src 'self';style-src 'unsafe-inline';script-src 'self';connect-src 'self';form-action 'self';base-uri 'none';frame-ancestors 'none'",
+  "X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});
+ res.end(body);
+}
+const shell=(content,script="")=>`<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FIT Requests</title><link rel="icon" type="image/svg+xml" href="/ui/favicon.svg?v=brand-3"><style>*{box-sizing:border-box}body{margin:0;background:#f7f8fa;color:#27303a;font:14px system-ui,Arial,sans-serif}header{background:#15191f;color:#fff;padding:18px 5%;display:flex;justify-content:space-between;gap:14px;align-items:center}.logo{display:inline-flex;flex-direction:column;align-items:flex-start;gap:8px}.brand-caption{font-size:12px;line-height:1.5;color:#B6BDC7}.login-caption{margin:0 auto 24px;color:#606874;font-size:15px}.logo img{display:block;width:210px;max-width:100%;height:auto}.login-logo{display:block;width:min(100%,370px);height:auto;margin:0 auto 8px}main{max-width:1160px;margin:32px auto;padding:0 16px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:24px;margin:18px 0}.muted{color:#747e89}a,.button{color:#fe5000}.button{display:inline-block;background:#fe5000;color:#fff;text-decoration:none;border:0;border-radius:9px;padding:11px 17px;font-weight:700;cursor:pointer}.toolbar{display:flex;gap:12px;align-items:center}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:13px;border-bottom:1px solid #eef0f3;max-width:470px}th{color:#7b8390;font-size:11px}input{padding:10px;border:1px solid #d9dfe6;border-radius:8px}.report-filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.report-filters label{display:grid;gap:6px}.report-filters select{padding:10px;border:1px solid #d9dfe6;border-radius:8px;max-width:100%}@media(max-width:600px){header{padding:12px}main{margin:18px auto}.card{padding:15px}td,th{padding:8px}}</style></head><body>${content}${script}</body></html>`;
 async function dashboard(user){const cards=await pool.query("SELECT id,title,state,updated_at FROM kaiten_cards WHERE space_id=$1 ORDER BY updated_at DESC NULLS LAST,id DESC LIMIT 100",[config.spaceId]);const count=await pool.query("SELECT count(*)::int AS n FROM kaiten_cards WHERE space_id=$1",[config.spaceId]);const syncState=await pool.query("SELECT last_success_at,last_error FROM kaiten_sync_state WHERE space_id=$1",[config.spaceId]);const t=syncState.rows[0];const admin=user.role==="admin"?`<section class="card"><h2>Доступ сотрудников</h2><p class="muted">Приглашение доступно только администратору. Проверяй Telegram ID сотрудника до выдачи доступа.</p><form method="post" action="/auth/invite"><input required pattern="[0-9]{4,20}" name="telegram_id" placeholder="Telegram ID сотрудника" inputmode="numeric"><button type="submit" class="button">Пригласить</button></form></section>`:"";const rows=cards.rows.map(c=>`<tr><td>${escapeHtml(c.id)}</td><td>${escapeHtml(c.title)}</td><td>${escapeHtml(c.state??"—")}</td><td>${escapeHtml(c.updated_at?new Date(c.updated_at).toLocaleString("ru-RU"):"—")}</td></tr>`).join("");return shell(`<header><div class="logo"><img src="/ui/brand-dark.svg?v=brand-3" alt="FIT Requests"><span class="brand-caption">Заявки на web-разработку</span></div><div class="toolbar">${escapeHtml(user.display_name||user.telegram_id)} · ${user.role==="admin"?"Администратор":"Сотрудник"} <form action="/auth/logout" method="post"><button class="button" type="submit">Выйти</button></form></div></header><main><h1>Задачи Kaiten</h1><p><a class="button" href="/exports/development.csv">Скачать CSV: Разработка · В работе / Тестирование / Демо</a></p><p class="muted">Защищенный просмотр синхронизированных задач. Старый прототип заявок пока работает отдельно.</p><section class="card"><b>Всего карточек: ${count.rows[0].n}</b><p>Последняя синхронизация: ${escapeHtml(t?.last_success_at?new Date(t.last_success_at).toLocaleString("ru-RU"):"нет данных")}</p>${t?.last_error?`<p class="muted">Последняя ошибка: ${escapeHtml(t.last_error)}</p>`:""}</section><section class="card"><h2>Последние 100 обновленных карточек</h2><div class="tablewrap"><table><thead><tr><th>ID</th><th>Название</th><th>Статус</th><th>Обновлено</th></tr></thead><tbody>${rows}</tbody></table></div></section>${admin}</main>`)}
 function csvCell(value){let s=String(value??"");if(/^[\\s]*[=+@-]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
 async function developmentCsv(res){
@@ -74,6 +83,23 @@ const server=http.createServer(async(req,res)=>{
     // Native POST forms need the same-origin Origin header for the CSRF check.
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
   }
+  if(path==="/app/analytics/history"){
+    const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
+    if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
+    if(req.method==="GET"){
+      html(res,200,historyAdminPanel(await historyAdmin.status(),escapeHtml));return
+    }
+    if(!req.headers["content-type"]?.startsWith("application/x-www-form-urlencoded")){
+      send(res,415,{error:"Недопустимый формат запроса"});return
+    }
+    const fields=new URLSearchParams(await collect(req,1024));
+    try{historyAdmin.start(fields.get("action"),{volumeChecked:fields.get("volumeChecked")==="yes"});}
+    catch(error){
+      if(!error.status)throw error;
+      html(res,error.status,shell(`<main><p>${escapeHtml(error.message)}</p><a href="/app/analytics#history-sync">Вернуться к аналитике</a></main>`));return
+    }
+    res.writeHead(303,{Location:"/app/analytics#history-sync","Cache-Control":"no-store"});res.end();return
+  }
   if(["/app/analytics","/api/analytics","/api/analytics.xlsx"].includes(path)&&req.method==="GET"){
     const me=await auth.user(req);
     if(!me&&path==="/app/analytics"){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
@@ -86,7 +112,7 @@ const server=http.createServer(async(req,res)=>{
       return
     }
     const report=await readReport(pool,config.spaceId,filters,now);
-    if(path==="/app/analytics"){html(res,200,shell(analyticsPage(report,escapeHtml)));return}
+    if(path==="/app/analytics"){analyticsHtml(res,shell(analyticsPage(report,escapeHtml,historyAdminPanel(await historyAdmin.status(),escapeHtml)),'<script src="/ui/history-progress.js" defer></script>'));return}
     if(path==="/api/analytics"){send(res,200,report);return}
     const workbook=await analyticsWorkbook(report);
     res.writeHead(200,{"Content-Type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -103,7 +129,7 @@ const server=http.createServer(async(req,res)=>{
     html(res,200,await dashboard(me));return
   }
   if(path.startsWith("/ui/")&&req.method==="GET"){
-    const asset=path.slice(4),mime={"form-admin.js":"application/javascript; charset=utf-8","form-schema.js":"application/javascript; charset=utf-8","form-render.js":"application/javascript; charset=utf-8","form-admin.css":"text/css; charset=utf-8","registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","request-fields.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
+    const asset=path.slice(4),mime={"history-progress.js":"application/javascript; charset=utf-8","form-admin.js":"application/javascript; charset=utf-8","form-schema.js":"application/javascript; charset=utf-8","form-render.js":"application/javascript; charset=utf-8","form-admin.css":"text/css; charset=utf-8","registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","request-fields.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
     if(!mime){send(res,404,{error:"not_found"});return}
     if(!["favicon.svg","brand-dark.svg","brand-light.svg"].includes(asset)){const me=await auth.user(req);if(!me){send(res,401,{error:"unauthorized"});return}}
     const content=await readFile(new URL("../public/ui/"+asset,import.meta.url));
@@ -285,5 +311,5 @@ server.listen(config.port,"0.0.0.0",()=>{
  botLogin.configureWebhook().catch(err=>console.error("Telegram webhook configuration failed:",err.message));
 });
 const timer=setInterval(()=>sync.run("scheduled").catch(()=>{}),config.intervalMs);
-async function shutdown(){clearInterval(timer);server.close();await pool.end();process.exit(0)}
+async function shutdown(){clearInterval(timer);server.close();historyAdmin.stop();await historyAdmin.settle();await pool.end();process.exit(0)}
 process.on("SIGTERM",shutdown);process.on("SIGINT",shutdown);
