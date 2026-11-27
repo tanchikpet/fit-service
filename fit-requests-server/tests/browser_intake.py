@@ -13,6 +13,8 @@ delete_failure = False
 delete_calls = []
 save_error = None
 write_calls = []
+child_calls = []
+current_role = 'employee'
 
 def api(route):
     global next_id
@@ -24,7 +26,7 @@ def api(route):
             route.fulfill(status=400,json=save_error)
             return
     if path == 'me':
-        route.fulfill(json={'telegramId':'111','displayName':'Тестовый автор','role':'employee'})
+        route.fulfill(json={'telegramId':'111','displayName':'Тестовый автор','role':current_role})
     elif path == 'requests' and req.method == 'GET':
         route.fulfill(json={'items':items})
     elif path == 'requests' and req.method == 'POST':
@@ -32,6 +34,9 @@ def api(route):
         item = {**req.post_data_json,'id':f'REQ-{next_id}','revision':1,'createdBy':'111'}
         items.insert(0,item)
         route.fulfill(status=201,json={'item':item})
+    elif path.endswith('/kaiten/children'):
+        child_calls.append(path)
+        route.fulfill(json={'items':[{'id':'902','title':'Дочерняя карточка','estimateText':'8h'}]})
     elif path.startswith('requests/'):
         ident = path.split('/')[1]
         item = next((x for x in items if x['id']==ident),None)
@@ -54,7 +59,7 @@ def api(route):
         route.fulfill(status=404,json={'error':'not_found'})
 
 def main():
-    global delete_failure, save_error
+    global delete_failure, save_error, current_role
     server = http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(http.server.SimpleHTTPRequestHandler,directory=ROOT/'public'))
     threading.Thread(target=server.serve_forever,daemon=True).start()
     with sync_playwright() as pw:
@@ -210,10 +215,31 @@ def main():
         assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
         page.keyboard.press('Escape')
         expect(page.locator('#requestDialog')).to_be_hidden()
+        page.set_viewport_size({'width':1280,'height':900})
+        linked = {'id':'REQ-9998','title':'Переданная заявка','createdBy':'111','revision':1,
+                  'status':'Передана в Kaiten','description':'Описание для заказчика','owner':'Автор акции'}
+        items.insert(0,linked)
+        page.reload()
+        page.locator('tr[data-id="REQ-9998"]').click()
+        expect(page.locator('.detail-desc')).to_have_text('Описание для заказчика')
+        expect(page.locator('.pill')).to_have_text('Передана в Kaiten')
+        expect(page.locator('#kaitenParentPanel,#kaitenChildrenPanel')).to_have_count(0)
+        assert not child_calls
+        page.locator('[data-edit]').click()
+        expect(page.locator('#requestOwner')).to_have_value('Автор акции')
+        page.keyboard.press('Escape')
+
+        current_role = 'admin'
+        linked.update(status='Новая',kaitenParent={'id':'901','title':'Основная карточка','estimateText':'8h'})
+        page.reload()
+        page.locator('tr[data-id="REQ-9998"]').click()
+        expect(page.locator('#kaitenParentPanel')).to_contain_text('8h')
+        expect(page.locator('#kaitenChildrenPanel')).to_contain_text('Дочерняя карточка')
+        assert len(child_calls)==1
         assert not errors,errors
         browser.close()
     server.shutdown()
-    print('Browser checks passed: all scenarios, persistence, drafts, deletion, cancel, failure, ownership, mobile.')
+    print('Browser checks passed: all scenarios, persistence, drafts, deletion, cancel, failure, ownership, mobile, employee/admin details.')
 
 if __name__=='__main__':
     main()
