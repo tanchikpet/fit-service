@@ -1,3 +1,4 @@
+import {isForeignDraft} from "./requests.js";
 import {activeFields, requestKinds, fieldLabel, storedKind} from "../public/ui/request-fields.js";
 import {normalizeCard} from "./kaiten.js";
 import {upsertCards} from "./db.js";
@@ -47,8 +48,8 @@ function description(request){
 export async function createParentCard(pool,config,user,requestId,body){
  if(user.role!=="admin")return {forbidden:true};
  if(!requestIdOk(requestId)||!validId(body?.laneId))throw Error("Нужно выбрать дорожку Kaiten");
- const stage=await pool.query("SELECT payload->>'status' AS status FROM fit_requests WHERE id=$1",[requestId]);
- if(!stage.rows.length)return {notFound:true};
+ const stage=await pool.query("SELECT payload->>'status' AS status,created_by FROM fit_requests WHERE id=$1",[requestId]);
+ if(!stage.rows.length||isForeignDraft(user,stage.rows[0].created_by,stage.rows[0].status))return {notFound:true};
  if(stage.rows[0].status==="Черновик")return {draft:true};
  const destination=await fixedPmDestination(config);
  if(!destination.lanes.some(l=>l.id===String(body.laneId)))throw Error("Дорожка не принадлежит доске PM");
@@ -56,8 +57,9 @@ export async function createParentCard(pool,config,user,requestId,body){
  const tx=await pool.connect();let request;
  try{
   await tx.query("BEGIN");
-  const q=await tx.query("SELECT id,payload,kaiten_card_id FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
+  const q=await tx.query("SELECT id,payload,kaiten_card_id,created_by FROM fit_requests WHERE id=$1 FOR UPDATE",[requestId]);
   if(!q.rows.length){await tx.query("ROLLBACK");return {notFound:true}}request=q.rows[0];
+  if(isForeignDraft(user,request.created_by,request.payload.status)){await tx.query("ROLLBACK");return {notFound:true}}
   if(request.payload.status==="Черновик"){await tx.query("ROLLBACK");return {draft:true}}
   if(request.kaiten_card_id){await tx.query("ROLLBACK");return {alreadyLinked:true}}
   const previous=await tx.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[requestId]);
