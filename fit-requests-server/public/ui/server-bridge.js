@@ -162,6 +162,8 @@
  document.addEventListener('click',e=>{const b=e.target.closest('[data-delete-request]');if(b)remove(b.dataset.deleteRequest)});
  window.FitRequestPersistence={submit,reload,remove,canDelete};
  function renderCurrentUser(user){
+  const analytics=document.getElementById("analyticsNav");
+  if(analytics&&user.role==="admin")analytics.style.removeProperty("display");
   const name=document.getElementById("userDisplayName");
   const avatar=document.getElementById("userAvatar");
   // /api/me is populated from the authenticated Telegram session, not editable browser data.

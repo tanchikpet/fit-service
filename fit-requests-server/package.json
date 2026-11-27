@@ -8,10 +8,12 @@
   },
   "scripts": {
     "start": "node src/server.js",
-    "test": "node --test"
+    "test": "node --test",
+    "history": "node src/history-cli.js"
   },
   "dependencies": {
-    "pg": "^8.13.1",
-    "jose": "^6.1.0"
+    "exceljs": "^4.4.0",
+    "jose": "^6.1.0",
+    "pg": "^8.13.1"
   }
 }
