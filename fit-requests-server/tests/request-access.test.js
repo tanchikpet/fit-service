@@ -32,9 +32,16 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   const adminToken="local-test-admin-"+randomUUID();
   // Stub only outgoing Kaiten requests. HTTP routes, sessions and PostgreSQL are real.
   const kaitenFixture=`
-   globalThis.fetch=async input=>{
-    if(!String(input).startsWith("https://fixture.kaiten.ru/"))throw new Error("Unexpected upstream request");
-    return Response.json(String(input).includes("/children")
+   globalThis.fetch=async (input,options={})=>{
+    const url=new URL(input);
+    if(url.origin!=="https://fixture.kaiten.ru")throw new Error("Unexpected upstream request");
+    if(url.pathname.endsWith("/boards"))return Response.json([{id:20,title:"PM"}]);
+    if(url.pathname.endsWith("/boards/20"))return Response.json({id:20,columns:[{id:30,title:"Анализ"}],lanes:[{id:40,title:"Входящие"}]});
+    if(url.pathname.endsWith("/cards")&&options.method==="POST"){
+     const body=JSON.parse(options.body);
+     return Response.json({id:903,title:body.title,description:body.description,external_id:body.external_id,board_id:20,column_id:30,lane_id:40});
+    }
+    return Response.json(url.pathname.endsWith("/children")
      ? [{id:902,title:"Internal child",size_text:"8h",owner_id:777,members:[{id:888}]}] : []);
    };
   `;
@@ -200,6 +207,17 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   expectPublic(dynamic,{title:"Проверка API",requestKind:configured.id});
   assert.equal(dynamic.formAnswers["field-enabled"],false);
   assert.equal(dynamic.formVersion.schema.sections[0].fields[0].label,"Название интеграции");
+  assert.equal((await scoped.query("SELECT count(*)::int AS count FROM fit_kaiten_creation_attempts WHERE request_id=$1",[dynamic.id])).rows[0].count,0);
+  const renamed=structuredClone(formSchema);
+  renamed.sections[0].fields[1].label="Новая подпись";
+  await configure({action:"publish",id:configured.id,revision:configured.revision,schema:renamed,position:10});
+  const sent=await request(path+"/"+dynamic.id+"/kaiten/create",{as:"admin",method:"POST",body:{laneId:"40"}});
+  assert.equal(sent.status,201);
+  assert.equal((await sent.json()).cardId,"903");
+  const sentCard=(await scoped.query("SELECT data FROM kaiten_cards WHERE id=903")).rows[0].data;
+  assert.equal(sentCard.title,"Проверка API");
+  assert.match(sentCard.description,/Включить:\nНет/);
+  assert.doesNotMatch(sentCard.description,/Новая подпись/);
   for(const requestOrigin of ["null","https://other.example"]){
    assert.equal((await request("/auth/logout",{as:"one",method:"POST",body:{},requestOrigin})).status,403);
    assert.equal((await request("/api/me",{as:"one"})).status,200);
