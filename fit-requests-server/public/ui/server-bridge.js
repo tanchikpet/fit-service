@@ -10,7 +10,7 @@
    throw Error("Нет связи с сервером. Проверь подключение и повтори попытку.");
   }
   const value=await response.json().catch(()=>({}));
-  if(!response.ok)throw Object.assign(Error(value.error||("HTTP "+response.status)),{field:value.field});
+  if(!response.ok)throw Object.assign(Error(value.error||("HTTP "+response.status)),{field:value.field,code:value.code,status:response.status});
   return value;
  };
  const payload=t=>{const o={...t};delete o.kaitenSync;delete o.kaitenParent;delete o.kaitenCards;delete o.createdBy;delete o.revision;delete o.id;return o};

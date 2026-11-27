@@ -1,3 +1,4 @@
+import {migrateFormCatalog,publicCatalog,adminCatalog,manageCatalog} from "./form-catalog.js";
 import http from "node:http";
 import {readFile} from "node:fs/promises";
 import {timingSafeEqual} from "node:crypto";
@@ -16,6 +17,7 @@ await setupDb(pool);
 await initAuth(pool);
 await initBotAuth(pool);
 await initRequests(pool);
+await migrateFormCatalog(pool);
 await initCardCreation(pool);
 await initRegistry(pool);
 const registryMonitor=makeRegistryMonitor(pool);
@@ -61,11 +63,13 @@ const server=http.createServer(async(req,res)=>{
   if(path==="/auth/logout"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}await auth.logout(req,res);return}
   if(path==="/auth/invite"&&req.method==="POST"){if(!sameOrigin(req)){send(res,403,{error:"forbidden"});return}const body=await collect(req,2048);await auth.invite(req,res,new URLSearchParams(body).get("telegram_id"));return}
   if(path==="/"&&req.method==="GET"){const me=await auth.user(req);if(me){res.writeHead(303,{Location:"/app","Cache-Control":"no-store"});res.end();return}html(res,200,shell(`<main><section class="card" style="max-width:520px;margin:10vh auto;text-align:center"><img class="login-logo" src="/ui/brand-light.svg?v=brand-3" alt="FIT Requests"><p class="login-caption">Заявки на web-разработку</p><p class="muted">Закрытый доступ для приглашенных пользователей</p><a class="button" href="/auth/bot/start">Войти через Telegram-бота</a></section></main>`));return}
-  if(["/app","/app/registry"].includes(path)&&req.method==="GET"){
+  if(["/app","/app/registry","/app/form-types"].includes(path)&&req.method==="GET"){
     const me=await auth.user(req);if(!me){res.writeHead(303,{Location:"/","Cache-Control":"no-store"});res.end();return}
-    const template=await readFile(new URL(path==="/app/registry"?"../public/ui/registry.html":"../public/ui/index.html",import.meta.url),"utf8");
+    if(path==="/app/form-types"&&me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+    const pageFile={"/app":"index.html","/app/registry":"registry.html","/app/form-types":"form-admin.html"}[path];
+    const template=await readFile(new URL("../public/ui/"+pageFile,import.meta.url),"utf8");
     const kaitenNav=me.role==="admin"?
-      '<a class="nav-link" href="/app/kaiten" aria-label="Задачи Kaiten" title="Задачи Kaiten"><span class="nav-icon" aria-hidden="true">☑</span><span class="nav-label">Задачи Kaiten</span></a>':"";
+      '<a class="nav-link" href="/app/kaiten" aria-label="Задачи Kaiten" title="Задачи Kaiten"><span class="nav-icon" aria-hidden="true">☑</span><span class="nav-label">Задачи Kaiten</span></a><a class="nav-link" href="/app/form-types" aria-label="Типы заявок" title="Типы заявок"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">Типы заявок</span></a>':"";
     const content=template.replace("<!-- admin-kaiten-nav -->",kaitenNav);
     // Native POST forms need the same-origin Origin header for the CSRF check.
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
@@ -99,7 +103,7 @@ const server=http.createServer(async(req,res)=>{
     html(res,200,await dashboard(me));return
   }
   if(path.startsWith("/ui/")&&req.method==="GET"){
-    const asset=path.slice(4),mime={"registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","request-fields.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
+    const asset=path.slice(4),mime={"form-admin.js":"application/javascript; charset=utf-8","form-schema.js":"application/javascript; charset=utf-8","form-render.js":"application/javascript; charset=utf-8","form-admin.css":"text/css; charset=utf-8","registry.js":"application/javascript; charset=utf-8","registry.css":"text/css; charset=utf-8","app.js":"application/javascript; charset=utf-8","intake.js":"application/javascript; charset=utf-8","request-fields.js":"application/javascript; charset=utf-8","server-bridge.js":"application/javascript; charset=utf-8","style.css":"text/css; charset=utf-8","intake.css":"text/css; charset=utf-8","favicon.svg":"image/svg+xml","brand-dark.svg":"image/svg+xml","brand-light.svg":"image/svg+xml"}[asset];
     if(!mime){send(res,404,{error:"not_found"});return}
     if(!["favicon.svg","brand-dark.svg","brand-light.svg"].includes(asset)){const me=await auth.user(req);if(!me){send(res,401,{error:"unauthorized"});return}}
     const content=await readFile(new URL("../public/ui/"+asset,import.meta.url));
@@ -208,11 +212,28 @@ const server=http.createServer(async(req,res)=>{
       else send(res,200,result)
     }catch(err){send(res,400,{error:err.message})}return
   }
+  if(path==="/api/form-types"&&req.method==="GET"){
+   if(!me){send(res,401,{error:"unauthorized"});return}
+   send(res,200,{items:await publicCatalog(pool)});return
+  }
+  if(path==="/api/admin/form-types"){
+   if(me?.role!=="admin"){send(res,403,{error:"Нет доступа"});return}
+   if(req.method==="GET"){send(res,200,{items:await adminCatalog(pool)});return}
+   if(req.method==="POST"){
+    if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
+    const raw=await collect(req,6291456);
+    let body;
+    try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{send(res,200,{items:await manageCatalog(pool,me,body)})}
+    catch(error){if(!error.status)throw error;send(res,error.status,{error:error.message})}
+    return
+   }
+  }
   if(path==="/api/requests"&&req.method==="GET"){if(!me){send(res,401,{error:"unauthorized"});return}send(res,200,await listRequests(pool,me));return}
   if(path==="/api/requests"&&req.method==="POST"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
-    const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{send(res,201,{item:await createRequest(pool,me,body)})}catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
+    const raw=await collect(req,4194304);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{send(res,201,{item:await createRequest(pool,me,body, {catalog:true})})}catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field,code:err.code})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="DELETE"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
@@ -223,18 +244,18 @@ const server=http.createServer(async(req,res)=>{
       else if(result.conflict)send(res,409,{error:"Заявка изменена. Обнови страницу перед удалением."});
       else if(result.pending)send(res,409,{error:me.role==="admin"?"Отправка в Kaiten еще не завершена. Дождись ее результата.":"Заявку пока нельзя удалить. Попробуй позже."});
       else send(res,200,{ok:true});
-    }catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
+    }catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field,code:err.code})}return
   }
   if(path.startsWith("/api/requests/")&&req.method==="PUT"){
     if(!me){send(res,401,{error:"unauthorized"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
-    const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{const item=await updateRequest(pool,me,id,body);if(item.notFound||item.forbidden)send(res,404,{error:"Заявка не найдена"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
-    catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field})}return
+    const id=decodeURIComponent(path.slice("/api/requests/".length));const raw=await collect(req,4194304);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
+    try{const item=await updateRequest(pool,me,id,body, {catalog:true});if(item.notFound||item.forbidden)send(res,404,{error:"Заявка не найдена"});else if(item.conflict)send(res,409,{error:"Заявка изменена в другой вкладке. Обнови страницу."});else send(res,200,{item})}
+    catch(err){if(!err.status)throw err;send(res,err.status,{error:err.message,field:err.field,code:err.code})}return
   }
   if(path==="/api/requests/import"&&req.method==="POST"){
     if(!me||me.role!=="admin"){send(res,403,{error:"Нет доступа"});return}if(!sameOrigin(req)){send(res,403,{error:"bad_origin"});return}
     const raw=await collect(req,5242880);let body;try{body=JSON.parse(raw)}catch{send(res,400,{error:"Неверный JSON"});return}
-    try{send(res,200,await importRequests(pool,me,body))}catch(err){send(res,err.status||400,{error:err.message,field:err.field})}return
+    try{send(res,200,await importRequests(pool,me,body, {catalog:true}))}catch(err){send(res,err.status||400,{error:err.message,field:err.field,code:err.code})}return
   }
   if(path==="/api/sync/status"&&req.method==="GET"){
    if(me?.role!=="admin"&&!authorized(req)){send(res,403,{error:"forbidden"});return}

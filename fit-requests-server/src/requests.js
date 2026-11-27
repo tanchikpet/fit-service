@@ -1,3 +1,5 @@
+import {allFields, legacyKinds, validateAnswers} from "../public/ui/form-schema.js";
+import {formError, lockType, readVersion, versionIdValid} from "./form-catalog.js";
 import {createHash} from "node:crypto";
 import {requestFields, storedKind, validateRequestFields} from "../public/ui/request-fields.js";
 // FIT Requests: PostgreSQL-backed request service. Never trust permissions or IDs supplied by the browser.
@@ -7,7 +9,7 @@ const urls=["materials","express","plannedUrl","actualUrl","redirectTo","kaiten"
 const statuses=new Set(["Черновик","Новая","Уточнение","Запланирована","Разработка","Тестирование","Демо","Готово"]);
 const maxLengths={title:150,description:10000,project:80,requester:120,department:100,onBehalf:120,goal:4000,desiredDue:20,materials:2048,express:2048,pageAction:40,plannedUrl:2048,actualUrl:2048,pagePurpose:1000,pageOwner:120,promotionEnd:20,redirectTo:2048,mode:20,type:80,priority:40,status:60,assignee:120,due:20,kaiten:2048,created:40,start:40,updatedAt:40};
 baseFields.push("requestKind", ...requestFields.map(f=>f[0]).filter(k=>!baseFields.includes(k)));
-Object.assign(maxLengths, Object.fromEntries(requestFields.map(f=>[f[0],f[5]])), {requestKind:20});
+Object.assign(maxLengths, Object.fromEntries(requestFields.map(f=>[f[0],f[5]])), {requestKind:64});
 const requestFieldKeys=new Set(requestFields.map(([key])=>key));
 const requestError=(message,field)=>Object.assign(new Error(message),{status:400,field});
 const employeeFields=[
@@ -28,7 +30,7 @@ function employeeOutput(row){
   updatedAt:row.updated_at,status:status!=="Черновик"&&row.kaiten_card_id!=null?"Передана в Kaiten":status};
 }
 const validDate=v=>!v||/^\d{4}-\d{2}-\d{2}$/.test(v);
-function inputPayload(input,role,{draft=false,legacy=false}={}){
+function inputPayload(input,role,{draft=false,legacy=false,versioned=false}={}){
  if(!input||typeof input!=="object"||Array.isArray(input))throw requestError("Неверный формат заявки");
  const payload={};
  for(const key of baseFields){
@@ -47,7 +49,7 @@ function inputPayload(input,role,{draft=false,legacy=false}={}){
  if(payload.status&&!(legacy?statuses:new Set(["Черновик","Новая","Уточнение"])).has(payload.status))throw requestError("Неверный этап обработки заявки");
  if(!legacy){
   payload.requestKind=payload.requestKind||"other";
-  const error=validateRequestFields(payload,{draft});if(error)throw requestError(error.message,error.key);
+  if(!versioned){const error=validateRequestFields(payload,{draft});if(error)throw requestError(error.message,error.key)}
  }
  if(payload.pageAction&&!["new","close"].includes(payload.pageAction))throw requestError("Неверное действие со страницей");
  return payload;
@@ -57,12 +59,69 @@ function extractKaitenId(link){
  try{const u=new URL(link);if(u.protocol!=="https:"||!u.hostname.endsWith(".kaiten.ru"))return null;
  const m=u.pathname.match(/\/(?:card|cards)\/(\d+)(?:\/|$)/);return m?m[1]:null}catch{return null}
 }
+function formOutput(row){
+ if(!row.form_schema)return {};
+ const schema=row.form_schema;
+ return {formVersion:{id:String(row.form_version_id),typeId:row.form_type_id,number:row.form_number,schema,state:row.form_state},
+  formAnswers:Object.fromEntries(allFields(schema).flatMap(({id})=>{
+   const value=storedAnswer(row.payload,id);
+   return value===undefined?[]:[[id,value]];
+  }))};
+}
+function storedAnswer(payload,id){
+ if(Object.hasOwn(payload.formAnswers||{},id))return payload.formAnswers[id];
+ return requestFieldKeys.has(id)&&Object.hasOwn(payload,id)?payload[id]:id==="owner"?payload.pageOwner:undefined;
+}
 function toOutput(r,user){
- if(user.role!=="admin")return employeeOutput(r);
- const v={...r.payload,id:r.id,revision:r.revision,createdBy:r.created_by,created:r.payload.created||r.created_at?.toISOString?.().slice(0,10),updatedAt:r.updated_at};
+ const form=formOutput(r);
+ if(user.role!=="admin")return {...employeeOutput(r),...form};
+ const v={...r.payload,id:r.id,revision:r.revision,createdBy:r.created_by,created:r.payload.created||r.created_at?.toISOString?.().slice(0,10),updatedAt:r.updated_at,...form};
  v.kaitenParent=null;
  if(r.card_id){v.kaitenParent={id:String(r.card_id),title:r.card_title,state:r.card_state,updatedAt:r.card_updated_at,estimateRaw:r.estimate_raw,estimateUnit:r.estimate_unit,estimateText:r.estimate_text,memberIds:r.member_ids,ownerId:r.owner_id,dueDate:r.card_due_date,plannedStart:r.card_planned_start,plannedEnd:r.card_planned_end,childrenCount:r.children_count,childrenDone:r.children_done}}
  return v;
+}
+async function prepareForm(db,body,old,draft){
+ const id=old?storedKind(old.payload):body.requestKind||"other";
+ const versionId=old?.form_version_id||body.formVersionId;
+ if(versionId&&!versionIdValid(String(versionId)))throw formError("Неверная версия формы");
+ const version=versionId?await readVersion(db,String(versionId)):null;
+ if(versionId&&!version)throw formError("Версия формы недоступна",409,{code:"form_changed"});
+ const type=await lockType(db,version?.typeId||id);
+ if(!old&&(!type||type.state!=="active"||!type.current_version_id))throw formError("Тип заявки недоступен",409,{code:"form_changed"});
+ const current=version||await readVersion(db,String(type?.current_version_id));
+ if(!current)throw formError("Версия формы недоступна",409,{code:"form_changed"});
+ if(!old&&body.requestKind&&body.requestKind!==current.typeId)throw formError("Тип и версия формы не совпадают");
+ if(!old&&(current.id!==String(type.current_version_id)||!body.formVersionId&&(current.number!==1||!legacyKinds.includes(current.typeId)))){
+  throw formError("Форма изменилась. Проверь новые поля.",409,{code:"form_changed"});
+ }
+ if(old&&(body.formVersionId&&String(body.formVersionId)!==current.id||body.requestKind&&body.requestKind!==current.typeId)){
+  throw formError("Версия сохранённой заявки не меняется",409);
+ }
+ if(old?.payload.status==="Черновик"&&type.state==="archived")throw formError("Тип архивирован. Черновик доступен для просмотра.",409);
+ const fields=allFields(current.schema);
+ if(body.formAnswers!=null&&(typeof body.formAnswers!=="object"||Array.isArray(body.formAnswers)))throw formError("Некорректные ответы формы");
+ const incoming=body.formAnswers??Object.fromEntries(fields.filter(({id})=>Object.hasOwn(body,id)).map(({id})=>[id,body[id]]));
+ if(Object.keys(incoming).some(key=>!fields.some(field=>field.id===key)))throw formError("Обнаружено поле из другой версии формы");
+ const answers=Object.fromEntries(fields.flatMap(({id})=>{
+  const value=Object.hasOwn(incoming,id)?incoming[id]:old?storedAnswer(old.payload,id):undefined;
+  return value===undefined?[]:[[id,typeof value==="string"?value.trim():value]];
+ }));
+ // PM can route historical submissions even if old required fields were never collected.
+ const routingOnly=old&&old.payload.status!=="Черновик"&&Object.keys(incoming).length===0;
+ const error=routingOnly?null:validateAnswers(current.schema,answers,draft);
+ if(error)throw requestError(error.message,error.key);
+ return {...current,state:type.state,answers};
+}
+function attachForm(row,form){
+ return form?{...row,form_version_id:form.id,form_type_id:form.typeId,form_number:form.number,form_schema:form.schema,form_state:form.state}:row;
+}
+function applyForm(payload,form){
+ if(!form)return payload;
+ for(const key of requestFieldKeys){
+  if(Object.hasOwn(form.answers,key)&&typeof form.answers[key]==="string")payload[key]=form.answers[key];
+  else if(Object.hasOwn(form.answers,key))payload[key]="";
+ }
+ return {...payload,requestKind:form.typeId,formAnswers:form.answers};
 }
 export async function initRequests(pool){
  await pool.query(`
@@ -90,10 +149,12 @@ export async function initRequests(pool){
  // Legacy multi-links are retained for audit only; no automatic reattachment after unlink.
 }
 const requestColumns="SELECT r.id,r.payload,r.created_by,r.revision,r.created_at,r.updated_at,r.kaiten_card_id";
-const select=`${requestColumns},
+const versionColumns=",r.form_version_id,v.type_id AS form_type_id,v.number AS form_number,v.schema AS form_schema,t.state AS form_state";
+const versionJoin=" LEFT JOIN fit_form_versions v ON v.id=r.form_version_id LEFT JOIN fit_form_types t ON t.id=v.type_id";
+const select=`${requestColumns}${versionColumns},
  k.id AS card_id,k.title AS card_title,k.state AS card_state,k.updated_at AS card_updated_at,k.estimate_raw,k.estimate_unit,k.estimate_text,k.member_ids,k.owner_id,k.children_count,k.children_done,k.data->>'due_date' AS card_due_date,k.data->>'planned_start' AS card_planned_start,k.data->>'planned_end' AS card_planned_end
- FROM fit_requests r LEFT JOIN kaiten_cards k ON k.id=r.kaiten_card_id`;
-const selectFor=user=>user.role==="admin"?select:requestColumns+" FROM fit_requests r";
+ FROM fit_requests r LEFT JOIN kaiten_cards k ON k.id=r.kaiten_card_id${versionJoin}`;
+const selectFor=user=>user.role==="admin"?select:requestColumns+versionColumns+" FROM fit_requests r"+versionJoin;
 const submittedSql="r.payload->>'status' IS DISTINCT FROM 'Черновик'";
 export const isForeignDraft=(user,owner,status)=>status==="Черновик"&&owner!==user.telegram_id;
 export async function listRequests(pool,user){
@@ -165,11 +226,20 @@ async function replay(client,user,key,action,id=null){
  return toOutput(current.rows[0],user);
 }
 const auditPayload=(payload,key)=>JSON.stringify(key?{...payload,_mutation:key}:payload);
+async function writeAudit(db,id,user,action,revision,payload,key,versionId){
+ if(versionId){
+  await db.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload,form_version_id) VALUES($1,$2,$3,$4,$5::jsonb,$6)",
+   [id,user.telegram_id,action,revision,auditPayload(payload,key),versionId]);
+ }else{
+  await db.query(`INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'${action}',$3,$4::jsonb)`,
+   [id,user.telegram_id,revision,auditPayload(payload,key)]);
+ }
+}
 
-export async function createRequest(pool,user,body){
+export async function createRequest(pool,user,body,{catalog=false}={}){
  const key=mutation(body);
  const isDraft=body?.status==="Черновик";
- const payload=inputPayload(body,user.role,{draft:isDraft});
+ let payload=inputPayload(body,user.role,{draft:isDraft,versioned:catalog});
  payload.requester=user.display_name||user.telegram_id;
  if(user.role!=="admin")payload.project="";
  payload.status=isDraft?"Черновик":"Новая";
@@ -177,13 +247,16 @@ export async function createRequest(pool,user,body){
  await client.query("BEGIN");
  const existing=await replay(client,user,key,"create");
  if(existing){await client.query("COMMIT");return existing}
+ const form=catalog?await prepareForm(client,body,null,isDraft):null;
+ payload=applyForm(payload,form);
  const id="REQ-"+(await client.query("SELECT nextval('fit_request_seq') AS n")).rows[0].n;
  const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by) VALUES($1,$2::jsonb,$3,$3) RETURNING *",[id,JSON.stringify({...payload,created:new Date().toISOString().slice(0,10)}),user.telegram_id]);
- await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'create',1,$3::jsonb)",[id,user.telegram_id,auditPayload(q.rows[0].payload,key)]);
- await client.query("COMMIT");return toOutput(q.rows[0],user);
+ if(form)await client.query("UPDATE fit_requests SET form_version_id=$2 WHERE id=$1",[id,form.id]);
+ await writeAudit(client,id,user,"create",1,q.rows[0].payload,key,form?.id);
+ await client.query("COMMIT");return toOutput(attachForm(q.rows[0],form),user);
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
 }
-export async function updateRequest(pool,user,id,body){
+export async function updateRequest(pool,user,id,body,{catalog=false}={}){
  if(!/^REQ-[0-9]{1,12}$/.test(id))throw requestError("Неверный ID");
  const key=mutation(body);
  const revision=body?.revision;
@@ -205,7 +278,8 @@ export async function updateRequest(pool,user,id,body){
  // A PM review of a legacy submitted request can still change its routing and stage.
  const legacyReview=!wasDraft&&!old.payload.requestKind&&body.requestKind===undefined&&user.role==="admin"
   &&Object.keys(body).every(key=>["revision","operationId","project","status"].includes(key));
- const payload=inputPayload(submitted,user.role,{draft,legacy:legacyReview});
+ const form=catalog?await prepareForm(client,body,old,draft):null;
+ const payload=applyForm(inputPayload(catalog?body:submitted,user.role,{draft,legacy:legacyReview,versioned:catalog}),form);
  if(legacyReview)delete payload.requestKind;
  payload.requester=old.payload.requester||String(old.created_by);
  if(user.role!=="admin")payload.project=old.payload.project||"";
@@ -216,11 +290,12 @@ export async function updateRequest(pool,user,id,body){
  const merged={...old.payload,...payload,id:undefined};
  delete merged.id;delete merged.revision;delete merged.createdBy;delete merged.kaitenSync;delete merged.kaitenParent;delete merged.kaitenCards;merged.created=old.payload.created;
  const result=await client.query("UPDATE fit_requests SET payload=$2::jsonb,revision=revision+1,updated_at=now(),updated_by=$3 WHERE id=$1 RETURNING *",[id,JSON.stringify(merged),user.telegram_id]);
- await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'update',$3,$4::jsonb)",[id,user.telegram_id,result.rows[0].revision,auditPayload(merged,key)]);
- await client.query("COMMIT");return toOutput(result.rows[0],user);
+ if(form&&!old.form_version_id)await client.query("UPDATE fit_requests SET form_version_id=$2 WHERE id=$1",[id,form.id]);
+ await writeAudit(client,id,user,"update",result.rows[0].revision,merged,key,form?.id);
+ await client.query("COMMIT");return toOutput(attachForm(result.rows[0],form),user);
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
 }
-export async function importRequests(pool,user,body){
+export async function importRequests(pool,user,body,{catalog=false}={}){
  if(user.role!=="admin")throw Error("Только администратор может переносить заявки");
  const items=body?.items;if(!Array.isArray(items)||items.length>2000)throw Error("Ожидается массив не более 2000 заявок");
  const normalized=items.map(item=>{
@@ -234,7 +309,12 @@ export async function importRequests(pool,user,body){
  await client.query("BEGIN");
  for(const it of normalized){
  const q=await client.query("INSERT INTO fit_requests(id,payload,created_by,updated_by,source) VALUES($1,$2::jsonb,$3,$3,'import') ON CONFLICT(id) DO NOTHING RETURNING id",[it.id,JSON.stringify(it.payload),user.telegram_id]);
- if(q.rowCount){imported++;await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'import',1,$3::jsonb)",[it.id,user.telegram_id,JSON.stringify(it.payload)])}
+ if(q.rowCount){
+  imported++;
+  const version=catalog?(await client.query("UPDATE fit_requests SET form_version_id=(SELECT id FROM fit_form_versions WHERE type_id=$2 AND number=1) WHERE id=$1 RETURNING form_version_id",[it.id,storedKind(it.payload)])).rows[0]?.form_version_id:null;
+  if(catalog&&!version)throw formError("Исходный тип для "+it.id+" удалён",409);
+  await writeAudit(client,it.id,user,"import",1,it.payload,null,version);
+ }
  else skipped++;
  }
  await client.query("SELECT setval('fit_request_seq', GREATEST((SELECT last_value FROM fit_request_seq),(SELECT COALESCE(MAX(SUBSTRING(id FROM 5)::bigint),0) FROM fit_requests)),true)");
@@ -258,7 +338,7 @@ export async function deleteRequest(pool,user,id,body){
   if(row.revision!==body.revision){await client.query("ROLLBACK");return {conflict:true}}
   const attempt=await client.query("SELECT status FROM fit_kaiten_creation_attempts WHERE request_id=$1",[id]);
   if(attempt.rows[0]?.status==="pending"){await client.query("ROLLBACK");return {pending:true}}
-  await client.query("INSERT INTO fit_requests_audit(request_id,editor_id,action,revision,payload) VALUES($1,$2,'delete',$3,$4::jsonb)",[id,user.telegram_id,row.revision,JSON.stringify({...row.payload,kaitenCardId:row.kaiten_card_id})]);
+  await writeAudit(client,id,user,"delete",row.revision,{...row.payload,kaitenCardId:row.kaiten_card_id},null,row.form_version_id);
   await client.query("DELETE FROM fit_requests WHERE id=$1",[id]);
   await client.query("COMMIT");return {ok:true};
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}

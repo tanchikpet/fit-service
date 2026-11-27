@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+ <title>Типы заявок — FIT Requests</title>
+ <link rel="icon" href="/ui/favicon.svg">
+ <link rel="stylesheet" href="/ui/style.css">
+ <link rel="stylesheet" href="/ui/intake.css">
+ <link rel="stylesheet" href="/ui/form-admin.css">
+ <script type="module" src="/ui/form-admin.js"></script>
+</head>
+<body class="form-admin">
+ <div class="shell">
+  <aside class="sidebar">
+   <div class="brand"><img class="brand-logo" src="/ui/brand-dark.svg" alt="FIT Requests"><img class="brand-mark" src="/ui/favicon.svg" alt="FIT Requests"></div>
+   <nav aria-label="Главное меню">
+    <a class="nav-link" href="/app" title="Заявки"><span class="nav-icon" aria-hidden="true">☷</span><span class="nav-label">Заявки</span></a>
+    <a class="nav-link active" href="/app/form-types" aria-current="page" title="Типы заявок"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">Типы заявок</span></a>
+   </nav>
+  </aside>
+  <main class="main form-admin-main">
+   <div class="page-head"><div><h1>Типы заявок</h1><p class="sub">Настрой поля формы и опубликуй новую версию.</p></div></div>
+   <p id="catalogStatus" role="status" aria-live="polite"></p>
+   <div class="form-admin-layout">
+    <section class="panel type-browser" aria-label="Список типов заявок">
+     <button type="button" id="createType" class="button primary">＋ Новый тип</button>
+     <label class="archive-toggle"><input id="showArchived" type="checkbox"> Показать архив</label>
+     <div id="typeList"></div>
+    </section>
+    <section class="panel type-editor" aria-label="Настройки типа" id="typeEditor"></section>
+   </div>
+  </main>
+ </div>
+ <dialog id="formPreview" aria-labelledby="previewTitle">
+  <form method="dialog" novalidate>
+   <div class="modal-head"><div><h2 id="previewTitle"></h2><p id="previewDescription" class="sub"></p></div><button class="close" aria-label="Закрыть предпросмотр">×</button></div>
+   <div id="previewFields"></div>
+   <div class="modal-actions"><button class="button secondary">Закрыть предпросмотр</button></div>
+  </form>
+ </dialog>
+</body>
+</html>
