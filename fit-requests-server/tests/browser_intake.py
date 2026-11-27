@@ -1,7 +1,7 @@
 """Run with Python Playwright; all API calls use isolated fixtures, never production."""
 import functools
 import http.server
-import json
+import os
 from pathlib import Path
 import threading
 from playwright.sync_api import sync_playwright, expect
@@ -11,11 +11,18 @@ items = []
 next_id = 1000
 delete_failure = False
 delete_calls = []
+save_error = None
+write_calls = []
 
 def api(route):
     global next_id
     req = route.request
     path = req.url.split('/api/', 1)[1]
+    if req.method in ('POST', 'PUT'):
+        write_calls.append(req.post_data_json)
+        if save_error:
+            route.fulfill(status=400,json=save_error)
+            return
     if path == 'me':
         route.fulfill(json={'telegramId':'111','displayName':'Тестовый автор','role':'employee'})
     elif path == 'requests' and req.method == 'GET':
@@ -47,11 +54,11 @@ def api(route):
         route.fulfill(status=404,json={'error':'not_found'})
 
 def main():
-    global delete_failure
+    global delete_failure, save_error
     server = http.server.ThreadingHTTPServer(('127.0.0.1',0),functools.partial(http.server.SimpleHTTPRequestHandler,directory=ROOT/'public'))
     threading.Thread(target=server.serve_forever,daemon=True).start()
     with sync_playwright() as pw:
-        browser=pw.chromium.launch()
+        browser=pw.chromium.launch(executable_path=os.getenv("FIT_TEST_CHROMIUM"))
         page=browser.new_page(viewport={'width':1280,'height':900})
         errors=[]
         page.on('pageerror',lambda e:errors.append(str(e)))
@@ -59,55 +66,49 @@ def main():
         page.goto(f'http://127.0.0.1:{server.server_port}/ui/index.html')
         expect(page.locator('#userDisplayName')).to_have_text('Тестовый автор')
         # Closing protects edits but does not warn for untouched or restored values.
-        warnings=[]
-        def reject_close(dialog):
-            warnings.append(dialog.message)
-            dialog.dismiss()
-        page.on('dialog',reject_close)
+        warning=page.locator('#discardRequestDialog')
         page.locator('[data-action="new"]').click()
-        expect(page.locator('#cancelIntake')).to_have_count(0)
-        expect(page.locator('.modal-actions button')).to_have_text(['Сохранить черновик','Подать заявку'])
+        expect(page.locator('.modal-actions button').filter(visible=True)).to_have_text(['Сохранить черновик','Подать заявку'])
         page.locator('#closeIntake').click()
         expect(page.locator('#requestDialog')).to_be_hidden()
-        assert not warnings
+        expect(warning).to_be_hidden()
+
         page.locator('[data-action="new"]').click()
         page.locator('#requestTitle').fill('Несохраненная заявка')
         page.locator('#closeIntake').click()
-        expect(page.locator('#requestDialog')).to_be_visible()
+        expect(warning).to_be_visible()
+        expect(warning.locator('h2')).to_have_text('Закрыть без сохранения?')
+        expect(warning.get_by_role('button',name='Продолжить редактирование')).to_be_focused()
+        page.keyboard.press('Enter')
         expect(page.locator('#requestTitle')).to_have_value('Несохраненная заявка')
         page.keyboard.press('Escape')
+        expect(warning).to_be_visible()
+        page.keyboard.press('Escape')
+        expect(warning).to_be_hidden()
         expect(page.locator('#requestDialog')).to_be_visible()
-        assert warnings==['Закрыть без сохранения? Введенные изменения будут потеряны']*2
-        page.remove_listener('dialog',reject_close)
-        page.once('dialog',lambda dialog:dialog.accept())
         page.locator('#closeIntake').click()
+        warning.get_by_role('button',name='Закрыть без сохранения',exact=True).click()
         expect(page.locator('#requestDialog')).to_be_hidden()
         assert not items
-        page.on('dialog',reject_close)
-        warnings.clear()
+
         page.locator('[data-action="new"]').click()
         expect(page.locator('#requestTitle')).to_have_value('')
-        page.locator('#requestTitle').fill('Вернуть исходное')
-        page.locator('#requestTitle').fill('')
-        page.keyboard.press('Escape')
-        expect(page.locator('#requestDialog')).to_be_hidden()
-        assert not warnings
-        page.locator('[data-action="new"]').click()
         page.locator('[data-kind="new"]').click()
         page.keyboard.press('Escape')
-        expect(page.locator('#requestDialog')).to_be_visible()
-        assert len(warnings)==1
+        expect(warning).to_be_visible()
+        warning.get_by_role('button',name='Продолжить редактирование').click()
         page.locator('[data-kind="other"]').click()
-        page.locator('#closeIntake').click()
+        page.keyboard.press('Escape')
         expect(page.locator('#requestDialog')).to_be_hidden()
-        page.remove_listener('dialog',reject_close)
-        for kind,count in [('new',14),('update',10),('other',4)]:
+        expect(warning).to_be_hidden()
+        for kind,count in [('new',14),('update',10),('other',3)]:
             page.locator('[data-action="new"]').click()
             expect(page.locator('[data-kind]')).to_have_count(3)
             page.locator(f'[data-kind="{kind}"]').click()
             expect(page.locator('#intakeForm [required]')).to_have_count(count)
             page.locator('#submitIntake').click()
             expect(page.locator('#requestDialog')).to_be_visible()
+            expect(page.locator('#requestTitleError')).to_be_visible()
             for field in page.locator('#intakeForm [required]').all():
                 typ=field.get_attribute('type')
                 field.fill('https://fitauto.ru/' if typ=='url' else '2026-12-01' if typ=='date' else 'Тест '+kind)
@@ -119,7 +120,7 @@ def main():
                 expect(page.locator('#requestDialog')).to_be_visible()
                 page.locator('#requestCampaignEnd').fill('2026-12-31')
             page.locator('#submitIntake').click()
-            expect(page.locator('#toast')).to_have_text('Сохранено в PostgreSQL')
+            expect(page.locator('#toast')).to_have_text('Заявка подана')
             page.reload()
             page.locator('tr[data-id]').first.click()
             expect(page.locator('.request-details')).to_contain_text('Тест '+kind)
@@ -133,21 +134,43 @@ def main():
         page.locator('[data-kind="new"]').click()
         page.locator('#requestTitle').fill('Черновик')
         page.locator('#saveDraft').click()
-        expect(page.locator('#toast')).to_have_text('Сохранено в PostgreSQL')
+        expect(page.locator('#toast')).to_have_text('Черновик сохранён')
         page.reload()
         page.locator('tr[data-id]').first.click()
         page.locator('[data-edit]').click()
         expect(page.locator('[data-kind="new"]')).to_have_attribute('aria-pressed','true')
+        ident=items[0]['id']
+        page.locator('#requestTitle').fill('Изменение черновика')
+        page.locator('#saveDraft').click()
+        expect(page.locator('#toast')).to_have_text('Черновик сохранён')
+        assert items[0]['id']==ident
+        page.locator('tr[data-id]').first.click()
+        page.locator('[data-edit]').click()
+        page.locator('#requestTitle').fill('Локальное изменение')
+        page.keyboard.press('Escape')
+        warning.get_by_role('button',name='Закрыть без сохранения',exact=True).click()
+        page.locator('[data-edit]').click()
+        expect(page.locator('#requestTitle')).to_have_value('Изменение черновика')
         page.locator('[data-kind="other"]').click()
+        expect(page.locator('#requestTitle')).to_have_value('Изменение черновика')
+        page.locator('#requestOwner').fill('Ответственный')
         page.locator('#requestActualUrl').fill('javascript:alert(1)')
         page.locator('#requestDescription').fill('Описание')
         page.locator('#submitIntake').click()
-        expect(page.locator('#requestDialog')).to_be_visible()
-        page.locator('#requestActualUrl').fill('https://fitauto.ru/')
+        expect(page.locator('#requestActualUrlError')).to_be_visible()
+        page.locator('#requestActualUrl').fill('')
+        save_error={'error':'Проверь ответственного','field':'owner'}
         page.locator('#submitIntake').click()
-        expect(page.locator('#toast')).to_have_text('Сохранено в PostgreSQL')
+        expect(page.locator('#requestOwnerError')).to_contain_text('Проверь ответственного')
+        expect(page.locator('#requestDescription')).to_have_value('Описание')
+        expect(page.locator('#requestTitle')).to_have_value('Изменение черновика')
+        failed_key=write_calls[-1]['operationId']
+        save_error=None
+        page.locator('#submitIntake').click()
+        expect(page.locator('#toast')).to_have_text('Заявка подана')
+        assert write_calls[-1]['operationId']==failed_key
+        assert len(items)==4 and items[0]['id']==ident and items[0]['status']=='Новая'
         page.locator('tr[data-id]').first.click()
-        ident=items[0]['id']
         # Cancel leaves the request and sends no DELETE.
         page.once('dialog',lambda dialog:dialog.dismiss())
         page.locator('[data-delete-request]').click()
@@ -167,7 +190,7 @@ def main():
         # A draft can also be removed directly from the edit dialog.
         page.locator('[data-action="new"]').click()
         page.locator('#saveDraft').click()
-        expect(page.locator('#toast')).to_have_text('Сохранено в PostgreSQL')
+        expect(page.locator('#toast')).to_have_text('Черновик сохранён')
         page.locator('tr[data-id]').first.click()
         page.locator('[data-edit]').click()
         expect(page.locator('#deleteIntake')).to_have_text('Удалить черновик')
@@ -175,15 +198,18 @@ def main():
         page.locator('#deleteIntake').click()
         expect(page.locator('#toast')).to_have_text('Заявка удалена')
         # Even if another user's record is present in a response, no delete control is shown.
-        items.insert(0,{'id':'REQ-9999','title':'Чужая заявка','createdBy':'222','revision':1,'requestKind':'other','status':'Новая'})
+        items.insert(0,{'id':'REQ-9999','title':'Чужая заявка','createdBy':'222','revision':1,'status':'Новая','actualUrl':'https://example.org/old'})
         page.reload()
         page.locator('tr[data-id="REQ-9999"]').click()
+        expect(page.locator('.request-details')).to_contain_text('https://example.org/old')
         expect(page.locator('[data-delete-request]')).to_have_count(0)
         page.locator('[data-edit]').click()
         expect(page.locator('#deleteIntake')).to_be_hidden()
         page.set_viewport_size({'width':390,'height':844})
         expect(page.locator('[data-kind="new"]')).to_be_visible()
         assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
+        page.keyboard.press('Escape')
+        expect(page.locator('#requestDialog')).to_be_hidden()
         assert not errors,errors
         browser.close()
     server.shutdown()

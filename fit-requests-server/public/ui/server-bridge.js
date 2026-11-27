@@ -1,8 +1,18 @@
 "use strict";
 (()=>{
- let known=new Map(),queue=Promise.resolve(),busy=false;
- const deletedIds=new Set(),deletingIds=new Set();
- const fetchJson=async(path,options={})=>{const r=await fetch(path,{credentials:"same-origin",cache:"no-store",...options});const value=await r.json().catch(()=>({}));if(!r.ok)throw Error(value.error||("HTTP "+r.status));return value};
+ let known=new Map(),queue=Promise.resolve();
+ const deletingIds=new Set();
+ const fetchJson=async(path,options={})=>{
+  let response;
+  try{
+   response=await fetch(path,{credentials:"same-origin",cache:"no-store",...options});
+  }catch{
+   throw Error("Нет связи с сервером. Проверь подключение и повтори попытку.");
+  }
+  const value=await response.json().catch(()=>({}));
+  if(!response.ok)throw Object.assign(Error(value.error||("HTTP "+response.status)),{field:value.field});
+  return value;
+ };
  const payload=t=>{const o={...t};delete o.kaitenSync;delete o.kaitenParent;delete o.kaitenCards;delete o.createdBy;delete o.revision;delete o.id;return o};
  const record=t=>JSON.stringify(payload(t));
  async function reload(){
@@ -10,25 +20,21 @@
   data=response.items;known=new Map(response.items.map(x=>[x.id,{revision:x.revision,record:record(x)}]));
   detailId=null;render();return response.items;
  }
- async function writeOne(item){
-  if(deletedIds.has(item.id))return;
-  const existing=known.get(item.id);
-  if(existing&&existing.record===record(item))return;
-  const updated=existing
-   ?await fetchJson("/api/requests/"+encodeURIComponent(item.id),{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({...payload(item),revision:existing.revision})})
-   :await fetchJson("/api/requests",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload(item))});
-  const saved=updated.item;
-  if(!saved||!saved.id)throw Error("Сервер не вернул сохраненную заявку");
-  known.delete(item.id);
-  known.set(saved.id,{revision:saved.revision,record:record(saved)});
-  const i=data.findIndex(x=>x.id===item.id);
-  if(i>=0){data[i]={...data[i],...saved};if(detailId===item.id)detailId=saved.id}
-  render();
- }
- function save(snapshot){
-  const changed=snapshot.filter(x=>!deletedIds.has(x.id)&&!deletingIds.has(x.id)&&(!known.has(x.id)||known.get(x.id).record!==record(x)));
-  queue=queue.then(async()=>{if(!changed.length)return;for(const item of changed)await writeOne(item);notify("Сохранено в PostgreSQL")})
-   .catch(err=>{notify("Не сохранено на сервере: "+err.message);showError(err.message)});
+ function submit(item,fields,operationId){
+  const operation=queue.then(async()=>{
+   const path=item?"/api/requests/"+encodeURIComponent(item.id):"/api/requests";
+   const response=await fetchJson(path,{
+    method:item?"PUT":"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({...fields,operationId,...(item?{revision:item.revision}:{})})
+   });
+   const saved=response.item;
+   if(!saved?.id)throw Error("Сервер не вернул сохраненную заявку");
+   known.set(saved.id,{revision:saved.revision,record:record(saved)});
+   data=[saved,...data.filter(t=>t.id!==saved.id)];
+  });
+  queue=operation.catch(()=>{});
+  return operation;
  }
  function showError(message){
   let bar=document.getElementById("syncError");
@@ -46,6 +52,7 @@
    const toolbar=document.querySelector('#main .toolbar-right');
    if(toolbar&&!toolbar.querySelector('[data-delete-request]')){const b=document.createElement('button');b.type='button';b.className='button secondary request-delete';b.dataset.deleteRequest=t.id;b.textContent=t.status==='Черновик'?'Удалить черновик':'Удалить заявку';b.disabled=deletingIds.has(t.id);toolbar.append(b)}
   }
+  if(t.status==="Черновик")return;
   const parent=t.kaitenParent;
   const isPm=canManageKaiten();
   const root=document.querySelector("#main .detail-layout .stack")||document.querySelector("#main");if(!root)return;
@@ -139,21 +146,21 @@
  function canDelete(t){return Boolean(t&&window.FitUser?.telegramId&&String(t.createdBy)===String(window.FitUser.telegramId)&&known.has(t.id))}
  function remove(id){
   const item=data.find(x=>x.id===id);if(!canDelete(item)||deletingIds.has(id))return;
-  if(!confirm((item.status==='Черновик'?'Удалить черновик':'Удалить заявку')+' «'+(item.title||'Без названия')+'»? Заявка исчезнет из списка. Карточки Kaiten не удаляются.'))return;
+  if(!confirm((item.status==='Черновик'?'Удалить черновик':'Удалить заявку')+' «'+(item.title||'Без названия')+'»? '+(item.status==='Черновик'?'Черновик исчезнет из списка.':'Заявка исчезнет из списка. Связанная карточка Kaiten останется, если она была создана.')))return;
   deletingIds.add(id);
   document.querySelectorAll('[data-delete-request],#deleteIntake').forEach(b=>b.disabled=true);
   const operation=queue.then(async()=>{
    const current=data.find(x=>x.id===id),saved=known.get(id);
    if(!current||!saved||saved.record!==record(current))throw Error('Есть несохраненные изменения. Сначала сохрани заявку или обнови страницу.');
    await fetchJson('/api/requests/'+encodeURIComponent(id),{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:saved.revision})});
-   deletedIds.add(id);known.delete(id);data=data.filter(x=>x.id!==id);
+   known.delete(id);data=data.filter(x=>x.id!==id);
    document.getElementById('requestDialog')?.close();detailId=null;page='requests';render();notify('Заявка удалена');
   });
   queue=operation.catch(err=>notify('Не удалось удалить: '+err.message)).finally(()=>{deletingIds.delete(id);document.querySelectorAll('[data-delete-request],#deleteIntake').forEach(b=>b.disabled=false)});
   return queue;
  }
  document.addEventListener('click',e=>{const b=e.target.closest('[data-delete-request]');if(b)remove(b.dataset.deleteRequest)});
- window.FitRequestPersistence={save,reload,remove,canDelete};
+ window.FitRequestPersistence={submit,reload,remove,canDelete};
  function renderCurrentUser(user){
   const name=document.getElementById("userDisplayName");
   const avatar=document.getElementById("userAvatar");
