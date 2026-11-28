@@ -76,7 +76,12 @@ export function makeEnrichmentAdmin({pool,config,fetcher=fetch,wait,blocked=()=>
   GROUP BY s.source ORDER BY s.source`,[space,ids,CARD_SOURCES]);
   return rows;
  }
- async function start(kind,action,free){
+ async function datasetBytes(){
+  const {rows:[row]}=await pool.query(`SELECT (pg_total_relation_size('kaiten_dictionary_versions')+
+   pg_total_relation_size('kaiten_enrichment_sources'))::float8 AS bytes`);
+  return row.bytes;
+ }
+ async function start(kind,action,free,reviewed=false){
   if (!steps.includes(kind)||!["start","resume","retry","stop"].includes(action)) throw errorStatus(400,"Неизвестная операция.");
   if (action==="stop") {
    if (active?.kind!==kind) throw errorStatus(409,"Этот этап сейчас не выполняется.");
@@ -100,6 +105,8 @@ export function makeEnrichmentAdmin({pool,config,fetcher=fetch,wait,blocked=()=>
    if (action==="resume"&&!["running","stopped","failed"].includes(stage?.state))
     throw errorStatus(409,"Нет прерванной операции.");
    if (action==="retry"&&!stage) throw errorStatus(409,"Этот этап ещё не выполнялся.");
+   if ((groups[kind]||kind==="authors")&&!reviewed)
+    throw errorStatus(409,"Подтвердите проверку объёма пробной партии и ожидаемой нагрузки.");
    if (writes.has(kind)) {
     if (!Number.isInteger(free)||free<128||free>1000000) throw errorStatus(409,"Укажите свободное место тома PostgreSQL по Railway Metrics, минимум 128 МиБ.");
     await storageCheck(pool);
@@ -113,6 +120,8 @@ export function makeEnrichmentAdmin({pool,config,fetcher=fetch,wait,blocked=()=>
     groups[kind]?objects.total*groups[kind].length:kind==="authors"?objects.total:null;
    state.stages[kind]={state:"running",checkpoint,startedAt:after.toISOString(),expected,
     processed:action==="resume"?stage.processed:0,errors:action==="resume"?stage.errors:0,
+    requests:action==="resume"?stage.requests??0:0,
+    initialBytes:kind==="pilot"?(action==="resume"?stage.initialBytes:await datasetBytes()):null,
     lastSuccess:stage?.lastSuccess??null,mode:action==="resume"?stage.mode:action};
    // Changing a finished early stage requires reviewing the dependent gates again.
    if (action!=="resume" && ["dictionaries","pilot","repeat","verify","activity"].includes(kind))
@@ -158,6 +167,13 @@ export function makeEnrichmentAdmin({pool,config,fetcher=fetch,wait,blocked=()=>
      (SELECT count(*)::int FROM kaiten_location_events WHERE space_id=$1) AS events
      FROM kaiten_history_loads WHERE space_id=$1 AND authors_checked_at IS NOT NULL`,[space]);
     state.verification={kind,rows,history};
+    if (kind==="verify") {
+     const pilot=state.stages.pilot;
+     const {rows:[snapshot]}=await pool.query("SELECT count(*)::int AS cards FROM kaiten_cards WHERE space_id=$1",[space]);
+     const delta=Math.max(0,pilot.addedBytes??0);
+     state.pilotMeasurement={cards:state.ids.length,bytes:delta,requests:pilot.requests??0,
+      expectedRequests:Math.ceil((pilot.requests??0)*snapshot.cards/state.ids.length)};
+    }
     await onProgress("ok",200);
    } else if (kind==="activity") {
     state.activity=await probeTargetedActivity({pool,config,fetcher,wait,signal:AbortSignal.any([signal,AbortSignal.timeout(90000)])});
@@ -197,10 +213,12 @@ export function makeEnrichmentAdmin({pool,config,fetcher=fetch,wait,blocked=()=>
        stage.mode==="retry"?"errors":"pending",checkpoint:stage.checkpoint,limit:16,maxRequests:300,
        ids:pilot?state.ids:undefined,sources:groups[kind],onlyErrors:stage.mode==="retry",force:pilot&&stage.mode!=="retry"});
       if (result.skipped) throw Object.assign(new Error("Loader busy"),{busy:true});
+      stage.requests+=result.requests;
       hasMore=result.cards===16;
      }
     }
    }
+   if (kind==="pilot") stage.addedBytes=Math.max(0,(await datasetBytes())-stage.initialBytes);
    stage.state=signal.aborted?"stopped":"done";
   } catch(error) {
    stage.state=signal.aborted?"stopped":"failed";

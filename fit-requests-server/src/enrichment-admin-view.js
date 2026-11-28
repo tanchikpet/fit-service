@@ -8,8 +8,8 @@ const settings = new Intl.DateTimeFormat("ru-RU",{dateStyle:"short",timeStyle:"s
 const format=value=>value?settings.format(new Date(value))+" НСК":"—";
 
 export function enrichmentAdminPanel(state,escape){
- if (!state.available) return '<details class="card" id="kaiten-enrichment"><summary>Дополнительные источники Kaiten</summary><p>Загрузка доступна после отдельного применения миграции 002.</p></details>';
- const {stages,running,disk,ids,verification,property}=state;
+ if (!state.available) return '<details class="card" id="kaiten-enrichment"><summary>Дополнительные источники Kaiten</summary><p>Загрузка доступна после отдельного применения миграции 002.</p><form action="/app/analytics/enrichment-migration" method="post"><button class="button" name="action" value="prepare">Проверить готовность миграции 002</button></form></details>';
+ const {stages,running,disk,ids,verification,property,pilotMeasurement}=state;
  const next=steps.find(step=>stages[step]?.state!=="done");
  const action=(value,label)=>`<button type="submit" class="button" name="action" value="${value}">${label}</button>`;
  return `<details class="card" id="kaiten-enrichment"${Object.keys(stages).length?" open":""}>
@@ -18,6 +18,9 @@ export function enrichmentAdminPanel(state,escape){
  <p>Объём базы ${Math.ceil(disk.database/1048576)} МиБ, таблицы дополнений ${Math.ceil(disk.extra/1048576)} МиБ.
  Свободное место тома проверяется в Railway Metrics.</p>
  ${ids.length?`<p>Карточек в пробе: ${ids.length}.</p>`:""}
+ ${pilotMeasurement?`<p>Проба: ${pilotMeasurement.cards} карточек, ${pilotMeasurement.requests} запросов Kaiten, рост таблиц на
+ ${Math.ceil(pilotMeasurement.bytes/1024)} КиБ. Оценка по пробе для карточек — около ${pilotMeasurement.expectedRequests} запросов.
+ Авторы, дополнительные страницы и повторы могут увеличить итог.</p>`:""}
  <p><a href="/app/analytics#kaiten-enrichment">Обновить статус</a></p>
  ${steps.map((kind,index)=>{
   const stage=stages[kind];
@@ -35,6 +38,7 @@ export function enrichmentAdminPanel(state,escape){
     ${property[0].total>property.length?"Показаны первые 100 записей.":""}</details>`:""}
    ${eligible?`<form action="/app/analytics/enrichment" method="post" class="report-filters"><input type="hidden" name="kind" value="${kind}">
     ${hasWrites?'<label>Свободно на томе PostgreSQL, МиБ<input required type="number" inputmode="numeric" name="free" min="128" max="1000000"></label>':""}
+    ${["detail","comments","relations","blockers","authors"].includes(kind)?'<label><input type="checkbox" name="reviewed" value="yes" required> Проверены объём пробы, свободное место и нагрузка.</label>':""}
     ${!stage?action("start","Запустить"):
       interrupted||["stopped","failed"].includes(stage.state)?action("resume","Продолжить"):
       hasWrites&&stage.errors?action("retry","Повторить ошибки"):!hasWrites?action("start","Проверить снова"):""}
