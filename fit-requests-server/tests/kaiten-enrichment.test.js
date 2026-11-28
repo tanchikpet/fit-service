@@ -49,10 +49,10 @@ test("enrichment versions dictionaries, resumes changed sources and fills only m
  const admin=makeDb(process.env.ANALYTICS_TEST_DATABASE_URL);
  const schema="enrichment_test_"+process.pid;
  const scoped=new URL(process.env.ANALYTICS_TEST_DATABASE_URL);
- scoped.searchParams.set("options","-c search_path="+schema);
+ scoped.pathname="/"+schema;
  const pool=makeDb(scoped.href);
  try {
-  await admin.query("CREATE SCHEMA "+schema);
+  await admin.query("CREATE DATABASE "+schema);
   await setupDb(pool);
   await setupEnrichment(pool);
   await setupEnrichment(pool);
@@ -109,7 +109,7 @@ test("enrichment versions dictionaries, resumes changed sources and fills only m
   assert.deepEqual(activity.routes[0].examples,["20"]);
  } finally {
   await pool.end();
-  await admin.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await admin.query("DROP DATABASE IF EXISTS "+schema);
   await admin.end();
  }
 });
@@ -119,10 +119,10 @@ test("migration lock timeout rolls back the whole DDL and allows old-schema hist
  const admin=makeDb(process.env.ANALYTICS_TEST_DATABASE_URL);
  const schema="enrichment_lock_"+process.pid;
  const scoped=new URL(process.env.ANALYTICS_TEST_DATABASE_URL);
- scoped.searchParams.set("options","-c search_path="+schema);
+ scoped.pathname="/"+schema;
  const pool=makeDb(scoped.href);
  try {
-  await admin.query("CREATE SCHEMA "+schema);
+  await admin.query("CREATE DATABASE "+schema);
   await setupDb(pool);
   await pool.query("INSERT INTO kaiten_cards(id,space_id,title,data) VALUES(20,15,'Card','{}')");
   const {refreshHistory}=await import("../src/history.js");
@@ -142,7 +142,7 @@ test("migration lock timeout rolls back the whole DDL and allows old-schema hist
   assert.deepEqual(event,{event_id:"10",author_id:null});
  } finally {
   await pool.end();
-  await admin.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await admin.query("DROP DATABASE IF EXISTS "+schema);
   await admin.end();
  }
 });
@@ -153,10 +153,10 @@ test("admin workflow gates stages, preserves progress on stop, resumes and verif
  const admin=makeDb(process.env.ANALYTICS_TEST_DATABASE_URL);
  const schema="enrichment_workflow_"+process.pid;
  const scope=new URL(process.env.ANALYTICS_TEST_DATABASE_URL);
- scope.searchParams.set("options","-c search_path="+schema);
+ scope.pathname="/"+schema;
  const pool=makeDb(scope.href);
  try {
-  await admin.query("CREATE SCHEMA "+schema);
+  await admin.query("CREATE DATABASE "+schema);
   await setupDb(pool);
   const noSchema=makeEnrichmentAdmin({pool,config});
   assert.equal((await noSchema.status()).available,false);
@@ -202,7 +202,7 @@ test("admin workflow gates stages, preserves progress on stop, resumes and verif
   assert.equal((await pool.query("SELECT count(*)::int AS n FROM kaiten_enrichment_sources WHERE subject ~ '^[0-9]+$'")).rows[0].n,64);
  } finally {
   await pool.end();
-  await admin.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await admin.query("DROP DATABASE IF EXISTS "+schema);
   await admin.end();
  }
 });

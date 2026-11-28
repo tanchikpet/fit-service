@@ -21,13 +21,14 @@ async function localOrigin(){
 test("request and Kaiten HTTP responses respect the caller's role and ownership",
  {skip:!databaseUrl,timeout:20000},async()=>{
  const db=makeDb(databaseUrl);
+ // PostgreSQL advisory locks are shared across schemas.
  const schema="request_access_test_"+process.pid;
  const scopedUrl=new URL(databaseUrl);
- scopedUrl.searchParams.set("options","-c search_path="+schema);
+ scopedUrl.pathname="/"+schema;
  const scoped=makeDb(scopedUrl.href);
  let server,serverLog="";
  try{
-  await db.query("CREATE SCHEMA "+schema);
+  await db.query("CREATE DATABASE "+schema);
   const origin=await localOrigin();
   const adminToken="local-test-admin-"+randomUUID();
   // Stub only outgoing Kaiten requests. HTTP routes, sessions and PostgreSQL are real.
@@ -275,7 +276,7 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
    await exited;
   }
   await scoped.end();
-  await db.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await db.query("DROP DATABASE IF EXISTS "+schema);
   await db.end();
  }
 });
