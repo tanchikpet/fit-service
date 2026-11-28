@@ -65,7 +65,7 @@ export async function listKaitenLocations({base, token, cardId, fetcher = fetch,
      event_id: locationId(event.id), changed_at: event.changed,
      board_id: locationId(event.board_id, true), column_id: locationId(event.column_id, true),
      subcolumn_id: locationId(event.subcolumn_id, true), lane_id: locationId(event.lane_id, true),
-     sprint_id: locationId(event.sprint_id, true), author_id: locationId(event.author_id, true), condition: event.condition ?? null
+     sprint_id: locationId(event.sprint_id, true), author_id: locationId(event.author_id, true), author_field_present: Object.hasOwn(event,"author_id"), condition: event.condition ?? null
     };
    });
   }
@@ -79,7 +79,7 @@ export async function listKaitenLocations({base, token, cardId, fetcher = fetch,
   await response?.body?.cancel();
   // Leave long throttling windows for a subsequent run.
   if (!temporary || attempt === 3 || serverDelay > 60000) {
-   throw Object.assign(new Error("Kaiten location history HTTP " + status), {status});
+   throw Object.assign(new Error("Kaiten location history HTTP " + status), {status,retryAfter:serverDelay});
   }
   await wait(Math.max(serverDelay, 500 * 2 ** attempt + Math.random() * 250));
  }

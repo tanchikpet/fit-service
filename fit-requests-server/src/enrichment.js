@@ -9,6 +9,7 @@ const allowed=(obj,keys)=>Object.fromEntries(keys.filter(key=>Object.hasOwn(obj,
 const entity=(item,fields,parent={})=>({id:requireId(item.id ?? item.user_id),...allowed(item,fields),...parent});
 const idList=value=>Array.isArray(value) ? [...new Set(value.map(x=>requireId(typeof x==="object" ? x.id : x)))].sort():null;
 const common=["title","name","type","archived","condition"];
+const structure=[...common,"sort_order","wip_limit","capacity","rules","archive_after_days","default_card_type_id"];
 const isObject=value=>value && typeof value==="object" && !Array.isArray(value);
 const displayName=x=>x.full_name ?? x.name ?? null;
 const apiStatus=e=>e.status===403?"forbidden":e.status===404?"not_found":"error";
@@ -72,7 +73,12 @@ async function saveDictionary(pool,space,source,items,startedAt){
  });
 }
 
-export async function refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors}){
+export async function refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors,stopOnForbidden=false}){
+ let denied=0;
+ function stopForAuth(status){
+  if (status===403) denied++;
+  return [401,429].includes(status)||(stopOnForbidden&&denied>=8);
+ }
  const {rows:[observed]}=await pool.query(`SELECT ARRAY(
   SELECT DISTINCT regexp_replace(k,'^id_','') FROM kaiten_cards c,
   LATERAL jsonb_object_keys(CASE WHEN jsonb_typeof(data->'properties')='object' THEN data->'properties' ELSE '{}' END) k
@@ -99,7 +105,7 @@ export async function refreshDictionaries({pool,space,api,totals,checkpoint,sign
    await writeState(pool,{space,subject:"dictionary",source,payload:null,startedAt,result,status:error.status??null});
    totals[result]++;
    await onProgress?.(result,error.status);
-   if ([401,429].includes(error.status)) throw error;
+   if (stopForAuth(error.status)) throw error;
    return optional?[]:null;
   }
   await saveDictionary(pool,space,source,items,startedAt);
@@ -107,7 +113,7 @@ export async function refreshDictionaries({pool,space,api,totals,checkpoint,sign
   await onProgress?.(items.length?"ok":"empty",200);
   return items;
  }
- const boards=await load("boards","/spaces/"+space+"/boards","single",x=>entity(x,common));
+ const boards=await load("boards","/spaces/"+space+"/boards","single",x=>entity(x,structure));
  await load("users","/spaces/"+space+"/users","user",x=>({
   ...entity(x,["activated","role_id"]),name:displayName(x)
  }));
@@ -136,7 +142,7 @@ export async function refreshDictionaries({pool,space,api,totals,checkpoint,sign
     await writeState(pool,{space,subject:"dictionary",source,payload:null,startedAt,result,status:error.status??null});
     totals[result]++;
     await onProgress?.(result,error.status);
-    if ([401,429].includes(error.status)) throw error;
+    if (stopForAuth(error.status)) throw error;
    }
    if (item) {
     await saveDictionary(pool,space,source,[item],startedAt);
@@ -154,10 +160,10 @@ export async function refreshDictionaries({pool,space,api,totals,checkpoint,sign
  }
  for (const board of boards??[]) {
   const parent={board_id:board.id};
-  const columns=await load("columns:"+board.id,"/boards/"+board.id+"/columns","single",x=>entity(x,common,parent));
-  await load("lanes:"+board.id,"/boards/"+board.id+"/lanes","single",x=>entity(x,common,parent));
+  const columns=await load("columns:"+board.id,"/boards/"+board.id+"/columns","single",x=>entity(x,structure,parent));
+  await load("lanes:"+board.id,"/boards/"+board.id+"/lanes","single",x=>entity(x,structure,parent));
   for (const column of columns??[]) await load("subcolumns:"+column.id,"/columns/"+column.id+"/subcolumns","single",
-   x=>entity(x,common,{...parent,column_id:column.id}));
+   x=>entity(x,structure,{...parent,column_id:column.id}));
  }
 }
 
@@ -175,8 +181,14 @@ function cardSources(card,api){
   if (!isObject(detailResponse)||requireId(detailResponse.id)!==card.id) throw new Error("Unexpected Kaiten card");
   return detailResponse;
  }
- const checklists=lists=>lists.map(entry=>({...entity(entry,["name","title"]),
-  items:entry.items.map(item=>entity(item,["text","checked","checked_at","card_id"]))}));
+ function unavailableChecklist(){
+  return Object.assign(new Error("Checklist field unavailable"),{status:200});
+ }
+ const checklists=lists=>lists.map(entry=>{
+  if (!Array.isArray(entry?.items)) throw unavailableChecklist();
+  return {...entity(entry,["name","title"]),
+   items:entry.items.map(item=>entity(item,["text","checked","checked_at","card_id"]))};
+ });
  const roles=rows=>rows.map(x=>({id:requireId(x.user_id??x.id),...allowed(x,["type","role_id","responsible"])}));
  const linkRows=rows=>rows.map(x=>entity(x,["url","description","created","updated"]));
  const blockerRows=rows=>rows.map(x=>entity(x,
@@ -223,7 +235,7 @@ function cardSources(card,api){
     for (const id of refs) entries.push((await api.get(base+"/checklists/"+requireId(id))).data);
     return checklists(entries);
    }
-   if (!Array.isArray((await detail()).checklists)) throw new Error("Checklist field unavailable");
+   if (!Array.isArray((await detail()).checklists)) throw unavailableChecklist();
    const entries=[];
    for (const list of detailResponse.checklists)
     entries.push(Array.isArray(list.items)?list:(await api.get(base+"/checklists/"+requireId(list.id))).data);
@@ -235,9 +247,9 @@ function cardSources(card,api){
  };
 }
 
-export async function refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids=[],sources=CARD_SOURCES,checkpoint,signal,onProgress,force=false}){
+export async function refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids=[],sources=CARD_SOURCES,checkpoint,signal,onProgress,force=false,stopOnForbidden=false,scheduledPhase=null}){
  const {rows}=await pool.query(`WITH candidates AS(
-  SELECT id::text, id AS numeric_id,data,updated_at
+  SELECT id::text, id AS numeric_id,data,updated_at,synced_at
   FROM kaiten_cards WHERE space_id=$1 AND ($4::bigint IS NULL OR id=$4)
    AND (cardinality($6::bigint[])=0 OR id=ANY($6::bigint[]))
  ), source_keys AS (SELECT unnest($5::text[]) AS source)
@@ -246,14 +258,23 @@ export async function refreshCardSources({pool,space,api,totals,mode,limit,cardI
  ON e.space_id=$1 AND e.subject=c.id AND e.source=s.source
  LEFT JOIN kaiten_enrichment_sources d ON d.space_id=$1 AND d.subject=c.id AND d.source='detail'
  AND d.source_version=COALESCE(extract(epoch FROM c.updated_at)::text,'') AND d.last_success_at IS NOT NULL
- WHERE ($7::timestamptz IS NULL OR e.last_attempt_at IS NULL OR e.last_attempt_at<$7) AND (
+ WHERE ($7::timestamptz IS NULL OR e.last_attempt_at IS NULL OR e.last_attempt_at<$7) AND ($9::text IS NULL OR (
+   (e.http_status IS NULL OR e.http_status NOT IN (403,404) OR e.last_attempt_at < now()-interval '30 days')
+   AND CASE $9
+    WHEN 'checklists' THEN e.result='error' AND e.http_status IS NULL
+    WHEN 'reconcile' THEN e.last_attempt_at < now()-interval '14 days'
+    ELSE e.source IS NULL OR (e.source_version IS DISTINCT FROM COALESCE(extract(epoch FROM c.updated_at)::text,'') AND e.last_attempt_at<c.synced_at)
+      OR (e.result='error' AND e.http_status IS DISTINCT FROM 200)
+   END
+  )) AND (
   ($2='initial' AND (e.last_success_at IS NULL OR e.result NOT IN ('ok','empty')))
   OR ($2='pending' AND (e.last_success_at IS NULL OR e.result NOT IN ('ok','empty')
    OR e.source_version IS DISTINCT FROM COALESCE(extract(epoch FROM c.updated_at)::text,'')))
   OR ($2='errors' AND e.result IN ('error','forbidden','not_found'))
   OR $4::bigint IS NOT NULL OR $8::boolean)
  GROUP BY c.id,c.numeric_id,c.data,c.updated_at,d.payload
- ORDER BY min(e.last_attempt_at) NULLS FIRST,c.numeric_id LIMIT $3`,[space,mode,limit,cardId,sources,ids,checkpoint??null,force]);
+ ORDER BY min(e.last_attempt_at) NULLS FIRST,c.numeric_id LIMIT $3`,[space,mode,limit,cardId,sources,ids,checkpoint??null,force,scheduledPhase]);
+ let forbidden=0;
  for (const card of rows) {
   const operations=cardSources(card,api);
   for (const source of card.sources) {
@@ -271,7 +292,7 @@ export async function refreshCardSources({pool,space,api,totals,mode,limit,cardI
     await writeState(pool,{space,subject:card.id,source,startedAt,result,payload:null,status:error.status??null});
     totals[result]++;
     await onProgress?.(result,error.status,source);
-    if ([401,429].includes(error.status)) throw error;
+    if ([401,429].includes(error.status)||(stopOnForbidden&&error.status===403&&++forbidden>=8)) throw error;
     continue;
    }
    const result=Object.keys(payload).length?"ok":"empty";
@@ -297,7 +318,7 @@ export async function refreshCardSources({pool,space,api,totals,mode,limit,cardI
  return rows.length;
 }
 
-export async function runEnrichment({pool,config,mode,limit=25,cardId=null,fetcher,wait,ids,sources,checkpoint,signal,onProgress,force,maxRequests=1200,onlyErrors=false}){
+export async function runEnrichment({pool,config,mode,limit=25,cardId=null,fetcher,wait,ids,sources,checkpoint,signal,onProgress,force,maxRequests=1200,onlyErrors=false,stopOnForbidden=false,scheduledPhase=null}){
  const lock=await pool.connect();
  let acquired=false, discard=false;
  const totals={ok:0,empty:0,forbidden:0,not_found:0,error:0};
@@ -307,8 +328,8 @@ export async function runEnrichment({pool,config,mode,limit=25,cardId=null,fetch
   acquired=(await lock.query("SELECT pg_try_advisory_lock($1) AS acquired",[HISTORY_LOCK])).rows[0].acquired;
   if (!acquired) return {skipped:true};
   await storageCheck(pool);
-  if (mode==="dictionaries") await refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors});
-  else if (["initial","pending","errors"].includes(mode)) totals.cards=await refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids,sources,checkpoint,signal,onProgress,force});
+  if (mode==="dictionaries") await refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors,stopOnForbidden});
+  else if (["initial","pending","errors"].includes(mode)) totals.cards=await refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids,sources,checkpoint,signal,onProgress,force,stopOnForbidden,scheduledPhase});
   else throw new Error("Invalid enrichment mode");
   return {...totals,requests:api.count()};
  } finally {

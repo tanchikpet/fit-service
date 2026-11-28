@@ -3,7 +3,7 @@ const titles={dictionaries:"Справочники",pilot:"Пробная пар
  verify:"Проверка пробной партии",activity:"Целевая проверка активности",detail:"Детальные карточки, роли и теги",
  comments:"Комментарии",relations:"Связи и чек-листы",blockers:"Блокировки",
  authors:"Авторы перемещений",final:"Итоговая проверка"};
-const labels={done:"Завершено",running:"Выполняется",stopped:"Остановлено",failed:"Требуется внимание"};
+const labels={done:"Проход завершён",running:"Выполняется",stopped:"Остановлено",failed:"Требуется внимание"};
 const settings = new Intl.DateTimeFormat("ru-RU",{dateStyle:"short",timeStyle:"short",timeZone:"Asia/Novosibirsk"});
 const format=value=>value?settings.format(new Date(value))+" НСК":"—";
 
@@ -12,7 +12,7 @@ export function enrichmentAdminPanel(state,escape){
  const {stages,running,disk,ids,verification,property,pilotMeasurement}=state;
  const next=steps.find(step=>stages[step]?.state!=="done");
  const action=(value,label)=>`<button type="submit" class="button" name="action" value="${value}">${label}</button>`;
- return `<details class="card" id="kaiten-enrichment"${Object.keys(stages).length?" open":""}>
+ return `<details class="card" id="kaiten-enrichment">
  <summary><strong>Дополнительные источники Kaiten</strong></summary>
  <p>Выполняйте этапы по порядку. Можно закрыть вкладку. После перезапуска продолжайте прерванный этап.</p>
  <p>Объём базы ${Math.ceil(disk.database/1048576)} МиБ, таблицы дополнений ${Math.ceil(disk.extra/1048576)} МиБ.

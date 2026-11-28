@@ -58,7 +58,7 @@ export function makeEnrichmentApi({config,fetcher=fetch,wait=delay,maxRequests=1
    const resetMs=code===429 ? Math.max(0,Number(response.headers.get("x-ratelimit-reset")||0)*1000-Date.now()) : 0;
    const backoff=Math.max(retryMs,resetMs,code===429 ? 1200 : 500*2**attempt);
    await response?.body?.cancel().catch(()=>{});
-   if (attempt===2 || code && code!==408 && code!==429 && code<500 || backoff>30000) throw apiError(code);
+   if (attempt===2 || code && code!==408 && code!==429 && code<500 || backoff>30000) throw Object.assign(apiError(code),{retryAfter:Math.max(retryMs,resetMs)});
    await wait(backoff,undefined,{signal});
   }
  }

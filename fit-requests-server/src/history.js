@@ -9,24 +9,27 @@ async function authorSchema(db){
  return row.enabled;
 }
 
-export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSaved, authors}) {
+export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSaved, authors, observeAuthors}) {
  const {spaceId, kaitenBase: base, kaitenToken: token} = config;
  const attemptedAt = new Date();
  let events;
  let status;
  let result;
+ let retryAfter;
  try {
   events = await listKaitenLocations({base, token, cardId, fetcher, wait});
   status = 200;
   result = events.length ? "loaded" : "empty";
  } catch (error) {
   status = error.status ?? null;
+  retryAfter = error.retryAfter;
   result = status === 403 ? "forbidden" : status === 404 ? "not_found" : "error";
  }
  let inserted = 0;
  const client = await pool.connect();
  try {
   authors ??= await authorSchema(client);
+  observeAuthors ??= await hasAuthorObservation(client);
   await client.query("BEGIN");
   if (events?.length) {
    const saved = await client.query(`INSERT INTO kaiten_location_events
@@ -40,6 +43,13 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSa
     FROM jsonb_to_recordset($3) AS e(event_id bigint,author_id bigint)
     WHERE old.space_id=$1 AND old.card_id=$2 AND old.event_id=e.event_id
       AND old.author_id IS NULL AND e.author_id IS NOT NULL`,[spaceId,cardId,JSON.stringify(events)]);
+   if (observeAuthors) await client.query(`UPDATE kaiten_location_events old
+    SET author_checked_at=now(), author_field_present=COALESCE(old.author_field_present,false) OR e.author_field_present
+    FROM jsonb_to_recordset($3) AS e(event_id bigint,author_field_present boolean)
+    WHERE old.space_id=$1 AND old.card_id=$2 AND old.event_id=e.event_id
+      AND (old.author_checked_at IS NULL OR (e.author_field_present AND NOT old.author_field_present))`,
+    [spaceId,cardId,JSON.stringify(events)]);
+
   }
   await client.query(`INSERT INTO kaiten_history_loads
      (space_id,card_id,last_attempt_at,last_success_at,result,http_status${authors?",authors_checked_at":""})
@@ -50,7 +60,7 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSa
        ${authors?"authors_checked_at=COALESCE(EXCLUDED.authors_checked_at,kaiten_history_loads.authors_checked_at),":""}
        result=EXCLUDED.result,http_status=EXCLUDED.http_status`, [spaceId,cardId,Boolean(events),result,status,attemptedAt]);
   await client.query("COMMIT");
-  onSaved?.({inserted,received:events?.length ?? 0,status});
+  onSaved?.({inserted,received:events?.length ?? 0,status,retryAfter});
   return result;
  } catch (error) {
   await client.query("ROLLBACK");
@@ -60,8 +70,13 @@ export async function loadCardHistory({pool, config, cardId, fetcher, wait, onSa
  }
 }
 
+async function hasAuthorObservation(db){
+ const {rows:[row]}=await db.query("SELECT to_regclass('kaiten_reliability_runs') IS NOT NULL AS enabled");
+ return row.enabled;
+}
+
 export async function refreshHistory({pool, config, mode = "pending", ids = [], fetcher = fetch,
- wait = ms => new Promise(resolve => setTimeout(resolve,ms)), shouldStop, onProgress, limit=null, checkpoint=null, errorsOnly=false}) {
+ wait = ms => new Promise(resolve => setTimeout(resolve,ms)), shouldStop, onProgress, limit=null, checkpoint=null, errorsOnly=false, stopOnRateLimit=false}) {
  if (!["pending","all","authors"].includes(mode)) throw new Error("Invalid history refresh mode");
  const lock = await pool.connect();
  let acquired = false;
@@ -70,6 +85,7 @@ export async function refreshHistory({pool, config, mode = "pending", ids = [], 
   acquired = state.acquired;
   if (!acquired) return {skipped: "history refresh already running"};
   const authors=await authorSchema(lock);
+  const observeAuthors=await hasAuthorObservation(lock);
   if (mode==="authors"&&!authors) return {skipped:"enrichment migration required"};
   const {rows} = await lock.query(`SELECT c.id FROM kaiten_cards c
     LEFT JOIN kaiten_history_loads h ON h.space_id=c.space_id AND h.card_id=c.id
@@ -95,15 +111,17 @@ export async function refreshHistory({pool, config, mode = "pending", ids = [], 
    try {
     while (!failed && !shouldStop?.() && next < rows.length) {
      const {id: cardId} = rows[next++];
-     let status;
-     const result = await loadCardHistory({pool,config,cardId,fetcher:pacedFetch,wait,authors,onSaved: row => {
+     let status,retryAfter;
+     const result = await loadCardHistory({pool,config,cardId,fetcher:pacedFetch,wait,authors,observeAuthors,onSaved: row => {
       inserted += row.inserted;
       received += row.received;
       status = row.status;
+      retryAfter = row.retryAfter;
      }});
      totals[result]++;
+     if (stopOnRateLimit && [401,429].includes(status)) failed=true;
      processed++;
-     onProgress?.({...totals,processed,inserted,received,status,result});
+     onProgress?.({...totals,processed,inserted,received,status,result,retryAfter});
     }
    } catch (error) {
     failed = true;
