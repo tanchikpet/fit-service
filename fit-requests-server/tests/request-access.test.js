@@ -56,12 +56,12 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   });
   for(const stream of [server.stdout,server.stderr])stream.on("data",chunk=>{serverLog+=chunk});
   const caller={one:"111",two:"222",admin:"333"};
-  async function request(path,{as,method="GET",body,bearer,requestOrigin=origin}={}){
+  async function request(path,{as,method="GET",body,bearer,requestOrigin=origin,form=false}={}){
    return fetch(origin+path,{method,redirect:"manual",headers:{
     ...(as?{Cookie:"__Host-fit_session="+caller[as]}:{}),
     ...(bearer?{Authorization:"Bearer "+adminToken}:{}),
-    ...(body?{Origin:requestOrigin,"Content-Type":"application/json"}:{})
-   },body:body&&JSON.stringify(body),signal:AbortSignal.timeout(3000)});
+    ...(body?{Origin:requestOrigin,"Content-Type":form?"application/x-www-form-urlencoded":"application/json"}:{})
+   },body:body&&(form?new URLSearchParams(body):JSON.stringify(body)),signal:AbortSignal.timeout(3000)});
   }
   let ready=false;
   for(let attempt=0;attempt<100&&server.exitCode===null;attempt++){
@@ -109,6 +109,17 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   assert.equal((await request("/api/admin/form-types",{as:"two",method:"POST",body:{action:"create",name:"Скрытый"}})).status,403);
   assert.equal((await request("/app/form-types",{as:"one"})).status,403);
   assert.equal((await request("/app/form-types",{as:"admin"})).status,200);
+  const diagnostic="/app/analytics/diagnostics";
+  const diagnosticExcel="/api/analytics/diagnostics.xlsx";
+  assert.equal((await request(diagnostic,{method:"POST",body:{},form:true})).status,401);
+  assert.equal((await request(diagnostic,{as:"one",method:"POST",body:{},form:true})).status,403);
+  assert.equal((await request(diagnostic,{as:"admin",method:"POST",body:{},form:true,requestOrigin:"https://cross-origin.invalid"})).status,403);
+  assert.equal((await request(diagnostic,{as:"admin"})).status,405);
+  assert.equal((await request(diagnosticExcel,{as:"one"})).status,403);
+  assert.equal((await request(diagnosticExcel,{as:"admin"})).status,404);
+  assert.match(await (await request("/app/analytics",{as:"admin"})).text(),/Диагностика данных Kaiten/);
+  assert.equal((await request(diagnostic,{as:"admin",method:"POST",body:{},form:true})).status,303);
+  assert.equal((await request(diagnostic,{as:"admin",method:"POST",body:{},form:true})).status,409);
   const catalog=await (await request("/api/form-types",{as:"one"})).json();
   assert.deepEqual(catalog.items.map(row=>row.typeId),["new","update","other"]);
   const operationId=randomUUID();
