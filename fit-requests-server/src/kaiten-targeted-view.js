@@ -8,7 +8,6 @@ export function targetedActivityPanel({report,running,failed},escape){
   failed?"Проверку завершить не удалось.":report?"Проверка завершена.":"Проверка ещё не запускалась.";
  return `<details class="card" id="targeted-activity"${report||running||failed?" open":""}><summary><strong>Целевая проверка активности Kaiten</strong></summary>
  <p>Проверка только на чтение. Фильтрация API проверяется по actions. Совпадение по сущностям оценивается локально, поскольку для них не документирован отдельный фильтр.</p>
- <form action="/app/analytics/targeted-activity" method="post"><button class="button"${running?" disabled":""}>Проверить активность</button></form>
  <p>${status}</p>${report?`
  <p>Запросов ${report.requests}. Действия для пробы являются кандидатами. Пропуск или пустой результат не подтверждают отсутствие истории.</p>
  <h3>Ответы API</h3>

@@ -149,5 +149,5 @@ export function makeHistoryAdmin({pool,config,fetcher=fetch,check=readiness,refr
    job.finishedAt = Date.now();
   }
  }
- return {status,start,stop,settle:()=>task};
+ return {status,start,stop,busy:current,settle:()=>task};
 }

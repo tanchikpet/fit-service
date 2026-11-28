@@ -26,3 +26,8 @@ CREATE TABLE IF NOT EXISTS kaiten_enrichment_sources (
  http_status integer,
  PRIMARY KEY (space_id,subject,source)
 );
+
+CREATE TABLE IF NOT EXISTS kaiten_enrichment_workflow (
+ space_id bigint PRIMARY KEY,
+ state jsonb NOT NULL DEFAULT '{}'
+);

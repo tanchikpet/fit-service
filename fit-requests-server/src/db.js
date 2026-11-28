@@ -5,7 +5,16 @@ export async function setupHistory(pool){
  await pool.query(await readFile(new URL("../migrations/001-kaiten-history.sql",import.meta.url),"utf8"));
 }
 export async function setupEnrichment(pool){
- await pool.query(await readFile(new URL("../migrations/002-kaiten-enrichment.sql",import.meta.url),"utf8"));
+ const client=await pool.connect();
+ try {
+  await client.query("BEGIN");
+  await client.query("SET LOCAL lock_timeout='2s'; SET LOCAL statement_timeout='10s'");
+  await client.query(await readFile(new URL("../migrations/002-kaiten-enrichment.sql",import.meta.url),"utf8"));
+  await client.query("COMMIT");
+ } catch(error) {
+  await client.query("ROLLBACK").catch(()=>{});
+  throw error;
+ } finally {client.release();}
 }
 export async function setupDb(pool){
  await pool.query(`

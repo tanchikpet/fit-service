@@ -113,3 +113,96 @@ test("enrichment versions dictionaries, resumes changed sources and fills only m
   await admin.end();
  }
 });
+
+test("migration lock timeout rolls back the whole DDL and allows old-schema history",
+ {skip:!process.env.ANALYTICS_TEST_DATABASE_URL},async()=>{
+ const admin=makeDb(process.env.ANALYTICS_TEST_DATABASE_URL);
+ const schema="enrichment_lock_"+process.pid;
+ const scoped=new URL(process.env.ANALYTICS_TEST_DATABASE_URL);
+ scoped.searchParams.set("options","-c search_path="+schema);
+ const pool=makeDb(scoped.href);
+ try {
+  await admin.query("CREATE SCHEMA "+schema);
+  await setupDb(pool);
+  await pool.query("INSERT INTO kaiten_cards(id,space_id,title,data) VALUES(20,15,'Card','{}')");
+  const {refreshHistory}=await import("../src/history.js");
+  const fetcher=async()=>ok([{id:"10",card_id:20,board_id:88,column_id:77,
+   changed:"2026-01-01T00:00:00Z",condition:1,author_id:7}]);
+  assert.equal((await refreshHistory({pool,config,fetcher,wait})).loaded,1);
+  const lock=await pool.connect();
+  try {
+   await lock.query("BEGIN; LOCK TABLE kaiten_history_loads IN ACCESS SHARE MODE");
+   await assert.rejects(setupEnrichment(pool),{code:"55P03"});
+  } finally {await lock.query("ROLLBACK");lock.release();}
+  const {rows:[before]}=await pool.query("SELECT to_regclass('kaiten_enrichment_workflow') AS table");
+  assert.equal(before.table,null);
+  assert.equal((await pool.query("SELECT * FROM kaiten_location_events")).rows[0].author_id,undefined);
+  await setupEnrichment(pool);
+  const {rows:[event]}=await pool.query("SELECT event_id,author_id FROM kaiten_location_events");
+  assert.deepEqual(event,{event_id:"10",author_id:null});
+ } finally {
+  await pool.end();
+  await admin.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await admin.end();
+ }
+});
+
+test("admin workflow gates stages, preserves progress on stop, resumes and verifies pilot replay",
+ {skip:!process.env.ANALYTICS_TEST_DATABASE_URL},async()=>{
+ const {makeEnrichmentAdmin}=await import("../src/enrichment-admin.js");
+ const admin=makeDb(process.env.ANALYTICS_TEST_DATABASE_URL);
+ const schema="enrichment_workflow_"+process.pid;
+ const scope=new URL(process.env.ANALYTICS_TEST_DATABASE_URL);
+ scope.searchParams.set("options","-c search_path="+schema);
+ const pool=makeDb(scope.href);
+ try {
+  await admin.query("CREATE SCHEMA "+schema);
+  await setupDb(pool);
+  const noSchema=makeEnrichmentAdmin({pool,config});
+  assert.equal((await noSchema.status()).available,false);
+  await setupEnrichment(pool);
+  await pool.query("INSERT INTO kaiten_cards(id,space_id,title,data) SELECT n,15,'Card','{}' FROM generate_series(20,27) n");
+  let hold=true, boardCalls=0, entered;
+  const pausing=new Promise(resolve=>{entered=resolve;});
+  const fetcher=async(url,{signal})=>{
+   const p=url.pathname;
+   if (p.endsWith("/boards")) {boardCalls++;return ok([{id:4,title:"Board"}]);}
+   if (hold&&p.endsWith("/users")) {
+    entered();
+    await new Promise((resolve,reject)=>signal.addEventListener("abort",()=>reject(signal.reason),{once:true}));
+   }
+   if (p.endsWith("/custom-properties/428033")) return ok({id:428033,title:"Example",type:"select"});
+   if (/\/cards\/\d+$/.test(p)) return ok({id:Number(p.split("/").at(-1)),description:"",checklists:[],members:[],tag_ids:[],children_ids:[],external_links:[]});
+   return ok([]);
+  };
+  const mk=()=>makeEnrichmentAdmin({pool,config,fetcher,wait});
+  const ctl=mk();
+  await assert.rejects(ctl.start("pilot","start",200),{status:409});
+  await assert.rejects(ctl.start("dictionaries","start",20),{status:409});
+  await ctl.start("dictionaries","start",200);
+  await pausing;
+  await assert.rejects(mk().start("dictionaries","start",200),{status:409});
+  await ctl.start("dictionaries","stop");
+  await ctl.settle();
+  assert.equal((await ctl.status()).stages.dictionaries.state,"stopped");
+  hold=false;
+  const resumed=mk();
+  await resumed.start("dictionaries","resume",200);
+  await resumed.settle();
+  assert.equal(boardCalls,1);
+  assert.equal((await resumed.status()).stages.dictionaries.state,"done");
+  for (const step of ["pilot","repeat","verify"]) {
+   await resumed.start(step,"start",200);
+   await resumed.settle();
+   assert.equal((await resumed.status()).stages[step].state,"done");
+  }
+  const state=await resumed.status();
+  assert.equal(state.ids.length,8);
+  assert.ok(state.verification.rows.every(row=>row.recorded===8));
+  assert.equal((await pool.query("SELECT count(*)::int AS n FROM kaiten_enrichment_sources WHERE subject ~ '^[0-9]+$'")).rows[0].n,64);
+ } finally {
+  await pool.end();
+  await admin.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await admin.end();
+ }
+});

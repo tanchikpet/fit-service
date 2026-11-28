@@ -1,7 +1,8 @@
 import {isDeepStrictEqual} from "node:util";
+import {HISTORY_LOCK} from "./history.js";
 import {apiId,requireId,makeEnrichmentApi} from "./enrichment-api.js";
 
-const LOCK=332384503;
+export const CARD_SOURCES=["detail","members","tags","children","links","blockers","comments","checklists"];
 const STORAGE_LIMIT=64*1024*1024;
 const PAYLOAD_LIMIT=256*1024;
 const allowed=(obj,keys)=>Object.fromEntries(keys.filter(key=>Object.hasOwn(obj,key)).map(key=>[key,obj[key]]));
@@ -25,9 +26,10 @@ async function transaction(pool,fn){
  } finally {db.release();}
 }
 
-async function storageCheck(db){
+export async function storageCheck(db){
  const {rows:[row]}=await db.query(`SELECT
-  pg_total_relation_size('kaiten_dictionary_versions')+pg_total_relation_size('kaiten_enrichment_sources') AS bytes`);
+  pg_total_relation_size('kaiten_dictionary_versions')+pg_total_relation_size('kaiten_enrichment_sources')+
+    pg_total_relation_size('kaiten_enrichment_workflow') AS bytes`);
  if (Number(row.bytes)>=STORAGE_LIMIT) throw Object.assign(new Error("Enrichment storage limit"),{budget:true});
 }
 
@@ -70,26 +72,39 @@ async function saveDictionary(pool,space,source,items,startedAt){
  });
 }
 
-export async function refreshDictionaries({pool,space,api,totals}){
+export async function refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors}){
  const {rows:[observed]}=await pool.query(`SELECT ARRAY(
   SELECT DISTINCT regexp_replace(k,'^id_','') FROM kaiten_cards c,
   LATERAL jsonb_object_keys(CASE WHEN jsonb_typeof(data->'properties')='object' THEN data->'properties' ELSE '{}' END) k
   WHERE space_id=$1 AND k ~ '^(id_)?[1-9][0-9]{0,17}$'
  ) AS ids`,[space]);
+ async function saved(source){
+  if (!checkpoint) return null;
+  const {rows}=await pool.query(`SELECT v.value FROM kaiten_enrichment_sources e
+   LEFT JOIN kaiten_dictionary_versions v ON v.space_id=e.space_id AND v.source=e.source AND v.replaced_at IS NULL
+   WHERE e.space_id=$1 AND e.subject='dictionary' AND e.source=$2 AND ($4::boolean OR e.last_success_at>=$3)
+    AND e.result IN ('ok','empty') ORDER BY v.entity_id`,[space,source,checkpoint,Boolean(onlyErrors)]);
+  return rows.length?rows.map(row=>row.value).filter(Boolean):null;
+ }
  async function load(source,path,mode,project,query,optional=false){
+  signal?.throwIfAborted();
+  const prior=await saved(source);
+  if (prior) return prior;
   const startedAt=new Date();
   let items;
   try { items=(await api.list(path,mode,query)).map(project); }
   catch(error){
-   if (error.budget) throw error;
+   if (signal?.aborted||error.budget) throw error;
    const result=apiStatus(error);
    await writeState(pool,{space,subject:"dictionary",source,payload:null,startedAt,result,status:error.status??null});
    totals[result]++;
+   await onProgress?.(result,error.status);
    if ([401,429].includes(error.status)) throw error;
    return optional?[]:null;
   }
   await saveDictionary(pool,space,source,items,startedAt);
   totals[items.length?"ok":"empty"]++;
+  await onProgress?.(items.length?"ok":"empty",200);
   return items;
  }
  const boards=await load("boards","/spaces/"+space+"/boards","single",x=>entity(x,common));
@@ -102,21 +117,32 @@ export async function refreshDictionaries({pool,space,api,totals}){
  const byId=new Map((properties??[]).map(x=>[x.id,x]));
  for (const property of new Set(["428033",...observed.ids])) {
   if (!byId.has(property)) {
+   signal?.throwIfAborted();
+   const source="property:"+property;
+   const prior=await saved(source);
+   if (prior?.length) {
+    byId.set(property,prior[0]);
+    continue;
+   }
    const startedAt=new Date();
-   let response;
-   try {response=await api.get("/company/custom-properties/"+requireId(property));}
-   catch(error) {
-    if (error.budget) throw error;
+   let item;
+   try {
+    const {data}=await api.get("/company/custom-properties/"+requireId(property));
+    item=entity(data,common);
+    if (item.id!==property) throw new Error("Unexpected property");
+   } catch(error) {
+    if (signal?.aborted||error.budget) throw error;
     const result=apiStatus(error);
-    await writeState(pool,{space,subject:"dictionary",source:"property:"+property,payload:null,startedAt,result,status:error.status??null});
+    await writeState(pool,{space,subject:"dictionary",source,payload:null,startedAt,result,status:error.status??null});
     totals[result]++;
+    await onProgress?.(result,error.status);
     if ([401,429].includes(error.status)) throw error;
    }
-   if (response) {
-    const item=entity(response.data,common);
-    await saveDictionary(pool,space,"property:"+property,[item],startedAt);
+   if (item) {
+    await saveDictionary(pool,space,source,[item],startedAt);
     byId.set(property,item);
     totals.ok++;
+    await onProgress?.("ok",200);
    }
   }
  }
@@ -142,28 +168,46 @@ function difference(current,raw){
 function cardSources(card,api){
  const base="/cards/"+requireId(card.id);
  const raw=card.data;
- return {
+ const embedded={};
+ let detailResponse;
+ async function detail(){
+  detailResponse ??= (await api.get(base,{broken_api:false})).data;
+  if (!isObject(detailResponse)||requireId(detailResponse.id)!==card.id) throw new Error("Unexpected Kaiten card");
+  return detailResponse;
+ }
+ const checklists=lists=>lists.map(entry=>({...entity(entry,["name","title"]),
+  items:entry.items.map(item=>entity(item,["text","checked","checked_at","card_id"]))}));
+ const roles=rows=>rows.map(x=>({id:requireId(x.user_id??x.id),...allowed(x,["type","role_id","responsible"])}));
+ const linkRows=rows=>rows.map(x=>entity(x,["url","description","created","updated"]));
+ const blockerRows=rows=>rows.map(x=>entity(x,
+  ["reason","category_id","blocker_id","blocker_card_id","released","created","updated","released_at"]));
+ return {embedded,
   detail:async()=>{
-   const {data}=await api.get(base,{broken_api:false});
-   if (!isObject(data)||requireId(data.id)!==card.id||!Object.hasOwn(data,"description")) throw new Error("Unexpected Kaiten card");
+   const data=await detail();
+   if (!Object.hasOwn(data,"description")) throw new Error("Unexpected Kaiten card");
    const result=difference(allowed(data,["description","description_type"]),raw);
+   if (Array.isArray(data.members)&&data.members.every(x=>x && apiId(x.user_id??x.id)&&[1,2].includes(x.type)))
+    embedded.members=roles(data.members);
+   if (Array.isArray(data.tag_ids)) {
+    const ids=idList(data.tag_ids);
+    embedded.tags=isDeepStrictEqual(ids,idList(raw.tag_ids))?[]:ids;
+   }
+   if (Array.isArray(data.children_ids)) {
+    const ids=idList(data.children_ids);
+    embedded.children=isDeepStrictEqual(ids,idList(raw.children_ids))?[]:ids;
+   }
+   if (Array.isArray(data.external_links)&&data.external_links.every(x=>apiId(x?.id))) embedded.links=linkRows(data.external_links);
    const properties=isObject(data.properties)?difference(data.properties,raw.properties??{}):null;
    if (properties&&Object.keys(properties).length) result.properties=properties;
    if (Array.isArray(data.parents_ids)&&!isDeepStrictEqual(idList(data.parents_ids),idList(raw.parents_ids))) result.parents_ids=idList(data.parents_ids);
    if (Array.isArray(data.checklists)) {
-    const lists=[];
-    for (const list of data.checklists) {
-     const entry = Array.isArray(list.items) ? list : (await api.get(base+"/checklists/"+requireId(list.id))).data;
-     if (!Array.isArray(entry.items)) throw new Error("Missing checklist items");
-     lists.push({...entity(entry,["name","title"]),items:entry.items.map(item=>entity(item,["text","checked","checked_at","card_id"]))});
-    }
-    if ((!isDeepStrictEqual(data.checklists,raw.checklists) || data.checklists.some(list=>!Array.isArray(list.items))) && lists.length) result.checklists=lists;
+    if (data.checklists.every(entry=>Array.isArray(entry.items)))
+     embedded.checklists=isDeepStrictEqual(data.checklists,raw.checklists)?[]:checklists(data.checklists);
+    else result.checklist_refs=data.checklists.map(entry=>requireId(entry.id));
    }
    return result;
   },
-  members:async()=>(await api.list(base+"/members")).map(x=>({
-   id:requireId(x.user_id??x.id),...allowed(x,["type","role_id","responsible"])
-  })).filter(x=>Object.keys(x).length>1),
+  members:async()=>roles(await api.list(base+"/members")).filter(x=>Object.keys(x).length>1),
   tags:async()=>{
    const ids=idList(await api.list(base+"/tags"));
    return isDeepStrictEqual(ids,idList(raw.tag_ids))?[]:ids;
@@ -172,30 +216,49 @@ function cardSources(card,api){
    const ids=idList(await api.list(base+"/children","offset",{broken_api:false}));
    return isDeepStrictEqual(ids,idList(raw.children_ids))?[]:ids;
   },
-  links:async()=>(await api.list(base+"/external-links")).map(x=>entity(x,["url","description","created","updated"])),
-  blockers:async()=>(await api.list(base+"/blockers","offset",{broken_api:false})).map(x=>entity(x,
-   ["reason","category_id","blocker_id","blocker_card_id","released","created","updated","released_at"])),
+  checklists:async()=>{
+   const refs=card.detail_payload?.checklist_refs;
+   if (Array.isArray(refs)) {
+    const entries=[];
+    for (const id of refs) entries.push((await api.get(base+"/checklists/"+requireId(id))).data);
+    return checklists(entries);
+   }
+   if (!Array.isArray((await detail()).checklists)) throw new Error("Checklist field unavailable");
+   const entries=[];
+   for (const list of detailResponse.checklists)
+    entries.push(Array.isArray(list.items)?list:(await api.get(base+"/checklists/"+requireId(list.id))).data);
+   return checklists(entries);
+  },
+  links:async()=>linkRows(await api.list(base+"/external-links")),
+  blockers:async()=>blockerRows(await api.list(base+"/blockers","offset",{broken_api:false})),
   comments:async()=>(await api.list(base+"/comments","offset")).map(x=>entity(x,["text","created","updated","author_id","type"]))
  };
 }
 
-export async function refreshCardSources({pool,space,api,totals,mode,limit,cardId}){
+export async function refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids=[],sources=CARD_SOURCES,checkpoint,signal,onProgress,force=false}){
  const {rows}=await pool.query(`WITH candidates AS(
   SELECT id::text, id AS numeric_id,data,updated_at
   FROM kaiten_cards WHERE space_id=$1 AND ($4::bigint IS NULL OR id=$4)
- ), source_keys AS (SELECT unnest(ARRAY['detail','members','tags','children','links','blockers','comments']) AS source)
- SELECT c.id,c.data,c.updated_at,COALESCE(extract(epoch FROM c.updated_at)::text,'') AS version,array_agg(s.source ORDER BY s.source) AS sources
+   AND (cardinality($6::bigint[])=0 OR id=ANY($6::bigint[]))
+ ), source_keys AS (SELECT unnest($5::text[]) AS source)
+ SELECT c.id,c.data,c.updated_at,d.payload AS detail_payload,COALESCE(extract(epoch FROM c.updated_at)::text,'') AS version,array_agg(s.source ORDER BY (s.source<>'detail'),s.source) AS sources
  FROM candidates c CROSS JOIN source_keys s LEFT JOIN kaiten_enrichment_sources e
  ON e.space_id=$1 AND e.subject=c.id AND e.source=s.source
- WHERE ($2='initial' AND (e.last_success_at IS NULL OR e.result NOT IN ('ok','empty')))
+ LEFT JOIN kaiten_enrichment_sources d ON d.space_id=$1 AND d.subject=c.id AND d.source='detail'
+ AND d.source_version=COALESCE(extract(epoch FROM c.updated_at)::text,'') AND d.last_success_at IS NOT NULL
+ WHERE ($7::timestamptz IS NULL OR e.last_attempt_at IS NULL OR e.last_attempt_at<$7) AND (
+  ($2='initial' AND (e.last_success_at IS NULL OR e.result NOT IN ('ok','empty')))
   OR ($2='pending' AND (e.last_success_at IS NULL OR e.result NOT IN ('ok','empty')
    OR e.source_version IS DISTINCT FROM COALESCE(extract(epoch FROM c.updated_at)::text,'')))
-  OR $4::bigint IS NOT NULL
- GROUP BY c.id,c.numeric_id,c.data,c.updated_at
- ORDER BY min(e.last_attempt_at) NULLS FIRST,c.numeric_id LIMIT $3`,[space,mode,limit,cardId]);
+  OR ($2='errors' AND e.result IN ('error','forbidden','not_found'))
+  OR $4::bigint IS NOT NULL OR $8::boolean)
+ GROUP BY c.id,c.numeric_id,c.data,c.updated_at,d.payload
+ ORDER BY min(e.last_attempt_at) NULLS FIRST,c.numeric_id LIMIT $3`,[space,mode,limit,cardId,sources,ids,checkpoint??null,force]);
  for (const card of rows) {
   const operations=cardSources(card,api);
   for (const source of card.sources) {
+   signal?.throwIfAborted();
+   if (source!=="detail"&&Object.hasOwn(operations.embedded,source)) continue;
    await storageCheck(pool);
    const startedAt=new Date();
    let payload;
@@ -203,10 +266,11 @@ export async function refreshCardSources({pool,space,api,totals,mode,limit,cardI
     payload=await operations[source]();
     if (Buffer.byteLength(JSON.stringify(payload))>PAYLOAD_LIMIT) throw new Error("Source payload too large");
    } catch(error){
-    if (error.budget) throw error;
+    if (signal?.aborted||error.budget) throw error;
     const result=apiStatus(error);
     await writeState(pool,{space,subject:card.id,source,startedAt,result,payload:null,status:error.status??null});
     totals[result]++;
+    await onProgress?.(result,error.status,source);
     if ([401,429].includes(error.status)) throw error;
     continue;
    }
@@ -214,28 +278,42 @@ export async function refreshCardSources({pool,space,api,totals,mode,limit,cardI
    await writeState(pool,{space,subject:card.id,source,startedAt,result,payload,
     version:card.version,status:200});
    totals[result]++;
+   await onProgress?.(result,200,source);
+   if (source==="detail") {
+    for (const [key,value] of Object.entries(operations.embedded)) {
+     if (Buffer.byteLength(JSON.stringify(value))>PAYLOAD_LIMIT) {
+      delete operations.embedded[key];
+      continue;
+     }
+     await storageCheck(pool);
+     const kind=value.length?"ok":"empty";
+     await writeState(pool,{space,subject:card.id,source:key,startedAt,result:kind,payload:value,version:card.version,status:200});
+     totals[kind]++;
+     await onProgress?.(kind,200,key);
+    }
+   }
   }
  }
  return rows.length;
 }
 
-export async function runEnrichment({pool,config,mode,limit=25,cardId=null,fetcher,wait}){
+export async function runEnrichment({pool,config,mode,limit=25,cardId=null,fetcher,wait,ids,sources,checkpoint,signal,onProgress,force,maxRequests=1200,onlyErrors=false}){
  const lock=await pool.connect();
  let acquired=false, discard=false;
  const totals={ok:0,empty:0,forbidden:0,not_found:0,error:0};
  const space=requireId(config.spaceId);
- const api=makeEnrichmentApi({config,fetcher,wait,maxRequests:1200});
+ const api=makeEnrichmentApi({config,fetcher,wait,maxRequests,signal});
  try {
-  acquired=(await lock.query("SELECT pg_try_advisory_lock($1) AS acquired",[LOCK])).rows[0].acquired;
+  acquired=(await lock.query("SELECT pg_try_advisory_lock($1) AS acquired",[HISTORY_LOCK])).rows[0].acquired;
   if (!acquired) return {skipped:true};
   await storageCheck(pool);
-  if (mode==="dictionaries") await refreshDictionaries({pool,space,api,totals});
-  else if (["initial","pending"].includes(mode)) totals.cards=await refreshCardSources({pool,space,api,totals,mode,limit,cardId});
+  if (mode==="dictionaries") await refreshDictionaries({pool,space,api,totals,checkpoint,signal,onProgress,onlyErrors});
+  else if (["initial","pending","errors"].includes(mode)) totals.cards=await refreshCardSources({pool,space,api,totals,mode,limit,cardId,ids,sources,checkpoint,signal,onProgress,force});
   else throw new Error("Invalid enrichment mode");
   return {...totals,requests:api.count()};
  } finally {
   if (acquired) {
-   try {await lock.query("SELECT pg_advisory_unlock($1)",[LOCK]);}
+   try {await lock.query("SELECT pg_advisory_unlock($1)",[HISTORY_LOCK]);}
    catch {discard=true;}
   }
   lock.release(discard);
