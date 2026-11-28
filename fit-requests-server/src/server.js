@@ -16,6 +16,9 @@ import {historyAccess,makeHistoryAdmin} from "./history-admin.js";
 import {historyAdminPanel} from "./history-admin-view.js";
 import {makeDiagnostics} from "./kaiten-diagnostics.js";
 import {diagnosticsPanel,diagnosticsWorkbook} from "./kaiten-diagnostics-view.js";
+import {makeKaitenReliability} from "./kaiten-reliability.js";
+import {readKaitenCoverage} from "./kaiten-coverage.js";
+import {reliabilityPanel} from "./kaiten-reliability-view.js";
 import {makeEnrichmentAdmin} from "./enrichment-admin.js";
 import {enrichmentAdminPanel} from "./enrichment-admin-view.js";
 import {targetedActivityPanel} from "./kaiten-targeted-view.js";
@@ -34,9 +37,11 @@ const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const historyAdmin=makeHistoryAdmin({pool,config});
 const diagnostics=makeDiagnostics({pool,config});
-const enrichment=makeEnrichmentAdmin({pool,config,blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichmentMigration.busy()});
+const enrichment=makeEnrichmentAdmin({pool,config,blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichmentMigration.busy()||reliability.busy()});
 const enrichmentMigration=makeEnrichmentMigration({pool,space:config.spaceId,
  blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()});
+const reliability=makeKaitenReliability({pool,config,
+ blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()||enrichmentMigration.busy()});
 const botLogin=makeBotLogin({pool});
 const safeEqual=(a,b)=>{const x=Buffer.from(String(a||"")),y=Buffer.from(String(b||""));return x.length===y.length&&timingSafeEqual(x,y)};
 function send(res,status,value){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(JSON.stringify(value))}
@@ -93,6 +98,17 @@ const server=http.createServer(async(req,res)=>{
     // Native POST forms need the same-origin Origin header for the CSRF check.
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
   }
+  if(path==="/app/analytics/kaiten-sync"){
+    const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
+    if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
+    if(req.method!=="POST"){send(res,405,{error:"method_not_allowed"});return}
+    const state=await reliability.status();
+    if(!state.available||!state.resourceLimit||reliability.busy()){
+      send(res,409,{error:"Синхронизация занята или не готова к запуску"});return
+    }
+    reliability.start().catch(()=>{});
+    res.writeHead(303,{Location:"/app/analytics#kaiten-sync","Cache-Control":"no-store"});res.end();return
+  }
   if(path==="/app/analytics/enrichment-migration"){
     const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
     if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
@@ -138,7 +154,7 @@ const server=http.createServer(async(req,res)=>{
         send(res,415,{error:"Недопустимый формат запроса"});return
       }
       await collect(req,1024);
-      if(enrichment.busy()||enrichmentMigration.busy()||!diagnostics.start()){
+      if(enrichment.busy()||enrichmentMigration.busy()||reliability.busy()||!diagnostics.start()){
         html(res,409,shell('<main><p>Диагностика уже выполняется или недавно запускалась.</p><a href="/app/analytics#kaiten-diagnostics">Вернуться к аналитике</a></main>'));return
       }
       res.writeHead(303,{Location:"/app/analytics#kaiten-diagnostics","Cache-Control":"no-store"});res.end();return
@@ -162,7 +178,7 @@ const server=http.createServer(async(req,res)=>{
       send(res,415,{error:"Недопустимый формат запроса"});return
     }
     const fields=new URLSearchParams(await collect(req,1024));
-    if((enrichment.busy()||enrichmentMigration.busy())&&fields.get("action")!=="stop"){send(res,409,{error:"Выполняется загрузка дополнительных источников"});return}
+    if((enrichment.busy()||enrichmentMigration.busy()||reliability.busy())&&fields.get("action")!=="stop"){send(res,409,{error:"Выполняется загрузка дополнительных источников"});return}
     try{historyAdmin.start(fields.get("action"),{volumeChecked:fields.get("volumeChecked")==="yes"});}
     catch(error){
       if(!error.status)throw error;
@@ -184,7 +200,10 @@ const server=http.createServer(async(req,res)=>{
     const report=await readReport(pool,config.spaceId,filters,now);
     if(path==="/app/analytics"){
       const state=await enrichment.status();
-      const panels=historyAdminPanel(await historyAdmin.status(),escapeHtml)+diagnosticsPanel(diagnostics.status(),escapeHtml)+
+      const status=await reliability.status();
+      const coverage=state.available?await readKaitenCoverage(pool,config.spaceId).catch(()=>null):null;
+      const overview=reliabilityPanel(status,coverage,escapeHtml);
+      const panels=overview+historyAdminPanel(await historyAdmin.status(),escapeHtml)+diagnosticsPanel(diagnostics.status(),escapeHtml)+
        enrichmentAdminPanel(state,escapeHtml)+(state.activity?targetedActivityPanel({report:state.activity},escapeHtml):"");
       analyticsHtml(res,shell(analyticsPage(report,escapeHtml,panels),'<script src="/ui/history-progress.js" defer></script>'));return
     }
@@ -383,8 +402,9 @@ server.listen(config.port,"0.0.0.0",()=>{
  console.info("FIT Requests sync server started",{port:config.port,spaceId:config.spaceId});
  // Failures are visible in logs/status; startup does not block serving health endpoint.
  sync.run("startup").catch(()=>{});
+ reliability.schedule();
  botLogin.configureWebhook().catch(err=>console.error("Telegram webhook configuration failed:",err.message));
 });
 const timer=setInterval(()=>sync.run("scheduled").catch(()=>{}),config.intervalMs);
-async function shutdown(){clearInterval(timer);server.close();historyAdmin.stop();enrichment.stop();await Promise.allSettled([historyAdmin.settle(),enrichment.settle()]);await pool.end();process.exit(0)}
+async function shutdown(){clearInterval(timer);server.close();historyAdmin.stop();enrichment.stop();await Promise.allSettled([historyAdmin.settle(),enrichment.settle(),reliability.stop()]);await pool.end();process.exit(0)}
 process.on("SIGTERM",shutdown);process.on("SIGINT",shutdown);
