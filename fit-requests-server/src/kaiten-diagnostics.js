@@ -179,27 +179,35 @@ function shape(body,items) {
   envelope:sanitizedKeys(body).sort().join(", "),keys:keys.join(", ")};
 }
 
-export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),pause=ms=>new Promise(resolve=>setTimeout(resolve,ms))}) {
+export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),pause=ms=>new Promise(resolve=>setTimeout(resolve,ms)),clock=()=>performance.now()}) {
  const {summary,fields,units,samples,columns} = await diagnosticSnapshot(pool,config.spaceId);
  const probes = [], dictionaries = [], activity = {};
  let count = 0, throttled = false, denied = false;
  const report = {generatedAt:now.toISOString(),summary,fields,units,probes,dictionaries,columns:[],
   activity:[],earliest:null};
  const budget = 70;
+ const deadline = clock()+120000;
  async function get(name,path,query={},note="") {
   const entry = {name,endpoint:path.replace(/[0-9a-f]{8}-[0-9a-f-]{27}/gi,"{uid}").replace(/\/\d+(?=\/|$)/g,"/{id}"),
    status:null,result:"не проверено",note};
   probes.push(entry);
-  if (!path || count >= budget || throttled || denied) {
-   entry.result = throttled ? "остановлено после HTTP 429" : denied ? "остановлено после HTTP 401" : "нет образца или исчерпан лимит";
+  if (path && count && count<budget && !throttled && !denied && deadline>clock()) await pause(150);
+  const timeLeft=Math.floor(deadline-clock());
+  const skip=throttled ? "остановлено после HTTP 429" : denied ? "остановлено после HTTP 401" :
+   !path ? "нет подходящего образца" : count>=budget ? "исчерпан лимит запросов" :
+   timeLeft<1 ? "истёк общий лимит времени API" : null;
+  if (skip) {
+   entry.result=skip;
    return null;
   }
-  if (count++) await pause(150);
+  count++;
+  entry.attempted=true;
   const url = new URL(config.kaitenBase + PREFIX + path);
   for (const [key,value] of Object.entries(query)) url.searchParams.set(key,String(value));
   let response;
+  const signal=AbortSignal.timeout(Math.min(7000,timeLeft));
   try {
-   response = await fetcher(url,{method:"GET",redirect:"error",signal:AbortSignal.timeout(7000),
+   response = await fetcher(url,{method:"GET",redirect:"error",signal,
     headers:{Authorization:"Bearer "+config.kaitenToken,Accept:"application/json"}});
    entry.status = response.status;
    if (!response.ok) {
@@ -219,7 +227,8 @@ export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),p
    entry.latest = dates.at(-1) ?? null;
    return body;
   } catch {
-   entry.result = response ? "ответ превышает лимит или имеет неожиданный формат" : "ошибка сети или тайм-аут";
+   entry.result = signal.aborted ? "истёк лимит времени запроса" :
+    response ? "ответ превышает лимит или имеет неожиданный формат" : "ошибка сети";
    return null;
   }
  }
@@ -230,7 +239,7 @@ export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),p
  };
  const card = samples[0], id = numericId(card?.id);
  const space = numericId(config.spaceId);
- const detail = id && await get("Детальная карточка","/cards/"+id,{broken_api:false});
+ const detail = await get("Детальная карточка",id?"/cards/"+id:"",{broken_api:false});
  for (const field of ["owner_id","members","properties","checklists","parents_ids","children_ids","blocked","planned_start","estimate_workload","tag_ids","external_links","type_id"]) {
   const row = probes.find(probe=>probe.name==="Детальная карточка");
   if (detail && row) (row.fields ||= []).push(field+": "+(Object.hasOwn(detail,field) ? detail[field]===null ? "null" : "присутствует" : "ключ отсутствует"));
@@ -292,6 +301,10 @@ export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),p
   await readDictionary("Варианты свойства "+prop,"/company/custom-properties/"+prop+"/select-values");
   await readDictionary("Каталог свойства "+prop,"/company/custom-properties/"+prop+"/catalog-values");
  }
+ if (!propertyIds.length) {
+  await readDictionary("Варианты пользовательского поля","");
+  await readDictionary("Каталог пользовательского поля","");
+ }
  await readDictionary("Доски пространства","/spaces/"+space+"/boards");
  const board = numericId(card?.board_id), column = numericId(card?.column_id);
  await readDictionary("Дорожки",board?"/boards/"+board+"/lanes":"");
@@ -299,6 +312,10 @@ export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),p
 
  const boardColumns = new Map();
  const boards = [...new Set([board,...columns.map(x=>numericId(x.board))].filter(Boolean))].slice(0,8);
+ if (!boards.length) {
+  await get("Доска · проверка существования","");
+  await get("Колонки доски · текущие метаданные","");
+ }
  for (const currentBoard of boards) {
   await get("Доска · проверка существования","/boards/"+currentBoard,{},"Текущая доступность доски.");
   const body = await get("Колонки доски · текущие метаданные","/boards/"+currentBoard+"/columns",{limit:100,offset:0},
@@ -371,6 +388,11 @@ export async function runDiagnostics({pool,config,fetcher=fetch,now=new Date(),p
   category,events:activity[category]?.events ?? 0,beforeAfter:activity[category]?.beforeAfter ?? 0,
   windows:[...activity[category]?.windows ?? []].join("; ")
  }));
+ report.coverage={
+  checked:probes.filter(p=>p.attempted).length,
+  skipped:probes.filter(p=>!p.attempted).length,
+  failed:probes.filter(p=>p.attempted && p.count===undefined).length
+ };
  return report;
 }
 

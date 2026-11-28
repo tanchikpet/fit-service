@@ -7,7 +7,7 @@ const displayDate = input => !input ? missing : new Intl.DateTimeFormat("ru-RU",
 }).format(new Date(input))+" НСК";
 
 const notes = [
- ["Объём","Диагностика читает сохранённую выборку WEB. API проверяется на трёх карточках, ограниченных окнах и страницах. Максимум 70 GET, по одному за раз."],
+ ["Объём","Диагностика читает сохранённую выборку WEB. API проверяется на трёх карточках, ограниченных окнах и страницах. Максимум 70 GET, 7 секунд на запрос и 120 секунд на этап API."],
  ["Заполненность","Ноль учитывается отдельно и входит в процент непустых значений. False — значение. Используются ключи верхнего уровня JSON и числовые ID пользовательских полей. Вложенные списки профилируются как массивы, без выгрузки содержимого."],
  ["Недоступность","403 означает недостаток доступа. 404 может означать отсутствие или скрытый ресурс. 405/501 означают неподдерживаемый метод. Пустой результат относится к конкретному запросу."],
  ["История","Категории активности определяются по именам событий и полям изменений. Нулевой счётчик означает, что признак не встретился в проверенной выборке."],
@@ -24,13 +24,15 @@ function sections(report) {
    ["Истории с успешной загрузкой",report.summary.histories],["События перемещений",report.summary.events],
    ["Самая ранняя подтверждённая активность",displayDate(report.earliest.observed)],
    ["Граница поиска от",displayDate(report.earliest.lower)],["Граница поиска до",displayDate(report.earliest.upper)],
-   ["Ограничение",report.earliest.note]]],
+   ["Ограничение",report.earliest.note],
+   ["Проверок API выполнено",report.coverage.checked],["Из них с ошибкой",report.coverage.failed],
+   ["Проверок API пропущено",report.coverage.skipped]]],
   ["Поля",["Источник","Поле или ID","Карточек","Ключ есть","Ключ отсутствует","Null","Пусто","Ноль","Заполнено без нулей","Заполненность, %","Типы","Форматы","Неоднородное","Тип свойства Kaiten"],
    report.fields.map(f=>[f.scope,f.field,f.total,f.present,f.total-f.present,f.null,f.empty,f.zero,f.filled,
     f.total ? Number(((f.filled+f.zero)/f.total*100).toFixed(1)) : missing,value(f.types),value(f.formats),f.mixed?"Да":"Нет",value(f.definition)])],
   ["Единицы оценок",["Единица","Числовых оценок"],report.units.map(x=>[x.unit,x.cards])],
-  ["Проверки API",["Проверка","Метод GET","HTTP","Результат","Объектов","Обёртка","Ключи обёртки","Ключи записей","Отдельные поля","Есть следующий курсор","Раннее наблюдение","Позднее наблюдение","Ограничения"],
-   report.probes.map(p=>[p.name,p.endpoint,value(p.status),p.result,value(p.count),value(p.shape),p.envelope??"",p.keys??"",
+  ["Проверки API",["Проверка","Метод GET","HTTP","Попытка","Результат","Объектов","Обёртка","Ключи обёртки","Ключи записей","Отдельные поля","Есть следующий курсор","Раннее наблюдение","Позднее наблюдение","Ограничения"],
+   report.probes.map(p=>[p.name,p.endpoint,value(p.status),p.attempted?"Выполнена":"Пропущена",p.result,value(p.count),value(p.shape),p.envelope??"",p.keys??"",
     p.fields?.join("; ")??"",p.hasNext?"Да":p.hasNext===false?"Нет или не предусмотрен":missing,displayDate(p.earliest),displayDate(p.latest),p.note])],
   ["Справочники",["Источник","Записей в ответе"],report.dictionaries.map(d=>[d.name,value(d.count)])],
   ["Исторические изменения",["Категория","Событий с признаками","Явные пары до и после","Проверенные окна с совпадениями"],
@@ -52,7 +54,7 @@ export function diagnosticsPanel(status,escape) {
  </form>
  ${running?'<p>Выполняется. Можно закрыть вкладку.</p><p><a href="/app/analytics#kaiten-diagnostics">Обновить статус</a></p>':""}
  ${error?'<p>Последняя попытка не завершена. Повторите проверку позже.</p>':""}
- ${report?`<p>Готово · ${escape(displayDate(report.generatedAt))}</p><p><a class="button" href="/api/analytics/diagnostics.xlsx">Скачать диагностику Excel</a></p>
+ ${report?`<p>${report.coverage.skipped||report.coverage.failed?"Проверка завершена частично":"Готово"} · ${escape(displayDate(report.generatedAt))}</p><p><a class="button" href="/api/analytics/diagnostics.xlsx">Скачать диагностику Excel</a></p>
  ${sections(report).map(([title,headers,rows])=>`<details${title==="Сводка"?" open":""}><summary>${escape(title)}</summary>
  ${rows.length?`<div class="tablewrap"><table><thead><tr>${headers.map(h=>`<th scope="col">${escape(h)}</th>`).join("")}</tr></thead>
  <tbody>${rows.map(row=>`<tr>${row.map(x=>`<td>${escape(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`:"<p>Нет строк.</p>"}</details>`).join("")}`:""}

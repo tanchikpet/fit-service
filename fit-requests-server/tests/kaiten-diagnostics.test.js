@@ -118,3 +118,19 @@ test("aggregates all WEB cards with a read-only PostgreSQL transaction",
   await db.end();
  }
 });
+
+test("API deadline retains completed checks and explains skipped checks",async()=>{
+ let elapsed=0;
+ let calls=0;
+ const report=await runDiagnostics({pool:fakePool(),config,now,pause,clock:()=>elapsed,fetcher:async()=>{
+  calls++;
+  elapsed=120001;
+  return Response.json([]);
+ }});
+ assert.equal(calls,1);
+ assert.equal(report.coverage.checked,1);
+ assert.ok(report.coverage.skipped>0);
+ assert.equal(report.probes[0].result,"пустой ответ");
+ assert.match(report.probes.at(-1).result,/общий лимит времени/);
+ assert.match(diagnosticsPanel({report,running:false},String),/завершена частично/);
+});
