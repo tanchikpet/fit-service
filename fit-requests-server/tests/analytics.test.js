@@ -3,7 +3,7 @@ import test from "node:test";
 import ExcelJS from "exceljs";
 import {buildReport, localMonth, parentStatus, readReport, reportFilters, stageAt} from "../src/analytics.js";
 import {analyticsWorkbook} from "../src/analytics-view.js";
-import {makeDb, setupDb, upsertCards} from "../src/db.js";
+import {makeDb, setupDb, setupEnrichment, upsertCards} from "../src/db.js";
 import {refreshHistory} from "../src/history.js";
 import {listKaitenLocations, normalizeCard} from "../src/kaiten.js";
 
@@ -73,6 +73,7 @@ test("PostgreSQL history and report survive reloading, denied access and a parti
   await pool.query("CREATE SCHEMA " + schema);
   await setupDb(scoped);
   await setupDb(scoped);
+  await setupEnrichment(scoped);
   const initial = [
    {id:1,created:before,board_id:10,column_id:90,condition:1,parents_count:0},
    {id:2,created:edge,board_id:20,column_id:92,condition:2,parents_ids:[1,8],archived:true},

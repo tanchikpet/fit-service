@@ -109,6 +109,11 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   assert.equal((await request("/api/admin/form-types",{as:"two",method:"POST",body:{action:"create",name:"Скрытый"}})).status,403);
   assert.equal((await request("/app/form-types",{as:"one"})).status,403);
   assert.equal((await request("/app/form-types",{as:"admin"})).status,200);
+  const activity="/app/analytics/targeted-activity";
+  assert.equal((await request(activity,{method:"POST",body:{},form:true})).status,401);
+  assert.equal((await request(activity,{as:"one",method:"POST",body:{},form:true})).status,403);
+  assert.equal((await request(activity,{as:"admin",method:"POST",body:{},form:true,requestOrigin:"https://cross-origin.invalid"})).status,403);
+  assert.equal((await request(activity,{as:"admin"})).status,405);
   const diagnostic="/app/analytics/diagnostics";
   const diagnosticExcel="/api/analytics/diagnostics.xlsx";
   assert.equal((await request(diagnostic,{method:"POST",body:{},form:true})).status,401);

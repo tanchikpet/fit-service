@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "node --test",
-    "history": "node src/history-cli.js"
+    "history": "node src/history-cli.js",
+    "enrichment": "node src/enrichment-cli.js"
   },
   "dependencies": {
     "exceljs": "^4.4.0",

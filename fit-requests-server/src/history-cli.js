@@ -4,10 +4,11 @@ import {refreshHistory} from "./history.js";
 
 const args = process.argv.slice(2);
 const migrate = args.length === 1 && args[0] === "--migrate";
+const authors = args.length === 1 && args[0] === "--authors";
 const all = args.length === 1 && args[0] === "--all";
 const ids = args.filter(arg => /^--card=[1-9]\d{0,17}$/.test(arg)).map(arg => arg.slice(7));
-if (args.length && !migrate && !all && ids.length !== args.length) {
- console.error("Usage: npm run history -- [--migrate | --all | --card=ID ...]");
+if (args.length && !migrate && !all && !authors && ids.length !== args.length) {
+ console.error("Usage: npm run history -- [--migrate | --all | --authors | --card=ID ...]");
  process.exitCode = 2;
 } else {
  let pool;
@@ -20,7 +21,7 @@ if (args.length && !migrate && !all && ids.length !== args.length) {
   } else {
    const config = loadConfig();
    pool = makeDb(config.databaseUrl);
-   const totals = await refreshHistory({pool,config,mode:all ? "all" : "pending",ids});
+   const totals = await refreshHistory({pool,config,mode:all ? "all" : authors ? "authors" : "pending",ids});
    console.info(totals);
    if (totals.error || totals.forbidden || totals.not_found || totals.skipped) process.exitCode = 1;
   }

@@ -4,6 +4,9 @@ export function makeDb(url){const pool=new pg.Pool({connectionString:url,max:5,c
 export async function setupHistory(pool){
  await pool.query(await readFile(new URL("../migrations/001-kaiten-history.sql",import.meta.url),"utf8"));
 }
+export async function setupEnrichment(pool){
+ await pool.query(await readFile(new URL("../migrations/002-kaiten-enrichment.sql",import.meta.url),"utf8"));
+}
 export async function setupDb(pool){
  await pool.query(`
  CREATE TABLE IF NOT EXISTS kaiten_cards (
