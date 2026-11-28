@@ -14,6 +14,8 @@ import {readReport,reportFilters} from "./analytics.js";
 import {analyticsPage,analyticsWorkbook} from "./analytics-view.js";
 import {historyAccess,makeHistoryAdmin} from "./history-admin.js";
 import {historyAdminPanel} from "./history-admin-view.js";
+import {makeDiagnostics} from "./kaiten-diagnostics.js";
+import {diagnosticsPanel,diagnosticsWorkbook} from "./kaiten-diagnostics-view.js";
 const config=loadConfig();const pool=makeDb(config.databaseUrl);
 await setupDb(pool);
 await initAuth(pool);
@@ -27,6 +29,7 @@ registryMonitor.start();
 const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const historyAdmin=makeHistoryAdmin({pool,config});
+const diagnostics=makeDiagnostics({pool,config});
 const botLogin=makeBotLogin({pool});
 const safeEqual=(a,b)=>{const x=Buffer.from(String(a||"")),y=Buffer.from(String(b||""));return x.length===y.length&&timingSafeEqual(x,y)};
 function send(res,status,value){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(JSON.stringify(value))}
@@ -83,6 +86,28 @@ const server=http.createServer(async(req,res)=>{
     // Native POST forms need the same-origin Origin header for the CSRF check.
     res.writeHead(200,{"Content-Type":"text/html; charset=utf-8","Cache-Control":"no-store","Content-Security-Policy":"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'","X-Frame-Options":"DENY","X-Content-Type-Options":"nosniff","Referrer-Policy":"same-origin"});res.end(content);return
   }
+  if(path==="/app/analytics/diagnostics" || path==="/api/analytics/diagnostics.xlsx"){
+    const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
+    if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
+    if(path==="/app/analytics/diagnostics" && req.method==="POST"){
+      if(!req.headers["content-type"]?.startsWith("application/x-www-form-urlencoded")){
+        send(res,415,{error:"Недопустимый формат запроса"});return
+      }
+      await collect(req,1024);
+      if(!diagnostics.start()){
+        html(res,409,shell('<main><p>Диагностика уже выполняется или недавно запускалась.</p><a href="/app/analytics#kaiten-diagnostics">Вернуться к аналитике</a></main>'));return
+      }
+      res.writeHead(303,{Location:"/app/analytics#kaiten-diagnostics","Cache-Control":"no-store"});res.end();return
+    }
+    if(path!=="/api/analytics/diagnostics.xlsx" || req.method!=="GET"){send(res,405,{error:"method_not_allowed"});return}
+    const {report}=diagnostics.status();
+    if(!report){send(res,404,{error:"Отчёт ещё не сформирован"});return}
+    const workbook=await diagnosticsWorkbook(report);
+    res.writeHead(200,{"Content-Type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "Content-Disposition":'attachment; filename="kaiten-data-diagnostics.xlsx"', "Cache-Control":"no-store",
+      "X-Content-Type-Options":"nosniff"});
+    res.end(workbook);return
+  }
   if(path==="/app/analytics/history"){
     const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
     if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
@@ -112,7 +137,7 @@ const server=http.createServer(async(req,res)=>{
       return
     }
     const report=await readReport(pool,config.spaceId,filters,now);
-    if(path==="/app/analytics"){analyticsHtml(res,shell(analyticsPage(report,escapeHtml,historyAdminPanel(await historyAdmin.status(),escapeHtml)),'<script src="/ui/history-progress.js" defer></script>'));return}
+    if(path==="/app/analytics"){analyticsHtml(res,shell(analyticsPage(report,escapeHtml,historyAdminPanel(await historyAdmin.status(),escapeHtml) + diagnosticsPanel(diagnostics.status(),escapeHtml)),'<script src="/ui/history-progress.js" defer></script>'));return}
     if(path==="/api/analytics"){send(res,200,report);return}
     const workbook=await analyticsWorkbook(report);
     res.writeHead(200,{"Content-Type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
