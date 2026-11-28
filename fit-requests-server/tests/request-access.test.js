@@ -21,13 +21,14 @@ async function localOrigin(){
 test("request and Kaiten HTTP responses respect the caller's role and ownership",
  {skip:!databaseUrl,timeout:20000},async()=>{
  const db=makeDb(databaseUrl);
+ // PostgreSQL advisory locks are shared across schemas.
  const schema="request_access_test_"+process.pid;
  const scopedUrl=new URL(databaseUrl);
- scopedUrl.searchParams.set("options","-c search_path="+schema);
+ scopedUrl.pathname="/"+schema;
  const scoped=makeDb(scopedUrl.href);
  let server,serverLog="";
  try{
-  await db.query("CREATE SCHEMA "+schema);
+  await db.query("CREATE DATABASE "+schema);
   const origin=await localOrigin();
   const adminToken="local-test-admin-"+randomUUID();
   // Stub only outgoing Kaiten requests. HTTP routes, sessions and PostgreSQL are real.
@@ -109,6 +110,36 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
   assert.equal((await request("/api/admin/form-types",{as:"two",method:"POST",body:{action:"create",name:"Скрытый"}})).status,403);
   assert.equal((await request("/app/form-types",{as:"one"})).status,403);
   assert.equal((await request("/app/form-types",{as:"admin"})).status,200);
+  const enrichment="/app/analytics/enrichment";
+  const enrichmentBody={kind:"dictionaries",action:"start",free:"200"};
+  assert.equal((await request(enrichment,{method:"POST",body:enrichmentBody,form:true})).status,401);
+  assert.equal((await request(enrichment,{as:"one",method:"POST",body:enrichmentBody,form:true})).status,403);
+  assert.equal((await request(enrichment,{as:"admin",method:"POST",body:enrichmentBody,form:true,requestOrigin:"https://cross-origin.invalid"})).status,403);
+  assert.equal((await request(enrichment,{as:"admin",method:"POST",body:enrichmentBody,form:true})).status,409);
+  const migration="/app/analytics/enrichment-migration";
+  const prepare={action:"prepare"};
+  assert.equal((await request(migration,{method:"POST",body:prepare,form:true})).status,401);
+  assert.equal((await request(migration,{as:"one",method:"POST",body:prepare,form:true})).status,403);
+  assert.equal((await request(migration,{as:"admin",method:"POST",body:prepare,form:true,requestOrigin:"https://cross-origin.invalid"})).status,403);
+  assert.equal((await request(migration,{as:"admin"})).status,405);
+  assert.equal((await request(migration,{as:"admin",method:"POST",body:{action:"apply",confirmed:"yes"},form:true})).status,403);
+  const readyMigration=await request(migration,{as:"admin",method:"POST",body:prepare,form:true});
+  assert.equal(readyMigration.status,200);
+  const migrationToken=(await readyMigration.text()).match(/name="token" value="([^"]+)"/)?.[1];
+  assert.ok(migrationToken);
+  assert.equal((await scoped.query("SELECT to_regclass('kaiten_enrichment_workflow') AS present")).rows[0].present,null);
+  const applyMigration={action:"apply",token:migrationToken};
+  assert.equal((await request(migration,{as:"admin",method:"POST",body:applyMigration,form:true})).status,403);
+  const appliedMigration=await request(migration,{as:"admin",method:"POST",body:{...applyMigration,confirmed:"yes"},form:true});
+  assert.equal(appliedMigration.status,200);
+  assert.match(await appliedMigration.text(),/Миграция 002 применена/);
+  assert.equal((await request(migration,{as:"admin",method:"POST",body:{...applyMigration,confirmed:"yes"},form:true})).status,403);
+  assert.equal((await scoped.query("SELECT count(*)::int AS n FROM kaiten_enrichment_workflow")).rows[0].n,0);
+  const activity="/app/analytics/targeted-activity";
+  assert.equal((await request(activity,{method:"POST",body:{},form:true})).status,401);
+  assert.equal((await request(activity,{as:"one",method:"POST",body:{},form:true})).status,403);
+  assert.equal((await request(activity,{as:"admin",method:"POST",body:{},form:true,requestOrigin:"https://cross-origin.invalid"})).status,403);
+  assert.equal((await request(activity,{as:"admin"})).status,405);
   const diagnostic="/app/analytics/diagnostics";
   const diagnosticExcel="/api/analytics/diagnostics.xlsx";
   assert.equal((await request(diagnostic,{method:"POST",body:{},form:true})).status,401);
@@ -245,7 +276,7 @@ test("request and Kaiten HTTP responses respect the caller's role and ownership"
    await exited;
   }
   await scoped.end();
-  await db.query("DROP SCHEMA IF EXISTS "+schema+" CASCADE");
+  await db.query("DROP DATABASE IF EXISTS "+schema);
   await db.end();
  }
 });

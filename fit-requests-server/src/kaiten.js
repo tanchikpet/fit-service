@@ -65,7 +65,7 @@ export async function listKaitenLocations({base, token, cardId, fetcher = fetch,
      event_id: locationId(event.id), changed_at: event.changed,
      board_id: locationId(event.board_id, true), column_id: locationId(event.column_id, true),
      subcolumn_id: locationId(event.subcolumn_id, true), lane_id: locationId(event.lane_id, true),
-     sprint_id: locationId(event.sprint_id, true), condition: event.condition ?? null
+     sprint_id: locationId(event.sprint_id, true), author_id: locationId(event.author_id, true), condition: event.condition ?? null
     };
    });
   }
