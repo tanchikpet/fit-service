@@ -4,7 +4,15 @@ import {refreshHistory,HISTORY_LOCK} from "./history.js";
 const RUN_LOCK=332384507;
 const HOUR=3600000;
 const DAY=24*HOUR;
-const phases=["dictionaries","history","authors","changed","checklists","reconcile"];
+const urgentInterval=15*60000;
+const phases={
+ daily:["changed","history_changed","dictionaries","history","authors","checklists","reconcile"],
+ urgent:["changed","history_changed"],
+ manual:["changed","history_changed","dictionaries","reconcile"],
+ checklists:["checklists"],
+ authors:["authors"]
+};
+const historyPhase=phase=>["history","history_changed","authors"].includes(phase);
 
 export function dailySlot(now=new Date()){
  const boundary=Math.floor((now.getTime()+HOUR)/DAY)*DAY-HOUR;
@@ -38,17 +46,17 @@ async function captureSnapshots(db,space,ids){
  WHERE kaiten_observed_snapshots.value IS DISTINCT FROM excluded.value`,[space,ids]);
 }
 
-async function selectCards(db,space,phase,checkpoint){
- if (phase==="history" || phase==="authors") {
+async function selectCards(db,space,phase,checkpoint,limit=6){
+ if (historyPhase(phase)) {
   const {rows}=await db.query(`SELECT c.id FROM kaiten_cards c
    LEFT JOIN kaiten_history_loads h ON h.space_id=c.space_id AND h.card_id=c.id
    WHERE c.space_id=$1 AND (h.last_attempt_at IS NULL OR h.last_attempt_at<$2)
     AND (h.http_status IS NULL OR h.http_status NOT IN (403,404) OR h.last_attempt_at < now()-interval '30 days')
     AND (($3 AND EXISTS (SELECT FROM kaiten_location_events e WHERE e.space_id=c.space_id AND e.card_id=c.id
                           AND e.author_id IS NULL AND e.author_checked_at IS NULL))
-     OR (NOT $3 AND (h.last_success_at IS NULL OR h.result='error' OR c.synced_at>h.last_attempt_at
-                       OR h.last_success_at < now()-interval '30 days')))
-   ORDER BY h.last_attempt_at NULLS FIRST,c.id LIMIT 12`,[space,checkpoint,phase==="authors"]);
+     OR (NOT $3 AND (h.last_success_at IS NULL OR h.result='error' OR c.updated_at>h.last_success_at
+                       OR ($4 AND h.last_success_at < now()-interval '30 days'))))
+   ORDER BY h.last_attempt_at NULLS FIRST,c.id LIMIT $5`,[space,checkpoint,phase==="authors",phase==="history",limit]);
   return rows.map(row=>row.id);
  }
  const {rows}=await db.query(`SELECT c.id FROM kaiten_cards c
@@ -63,14 +71,16 @@ async function selectCards(db,space,phase,checkpoint){
    WHEN 'checklists' THEN e.result='error' AND e.http_status IS NULL
    ELSE e.last_attempt_at < now()-interval '14 days'
    END
-  GROUP BY c.id ORDER BY min(e.last_attempt_at) NULLS FIRST,c.id LIMIT 6`,
- [space,checkpoint,phase,phase==="checklists"?["checklists"]:CARD_SOURCES]);
+  GROUP BY c.id ORDER BY bool_or(e.source IS NULL OR e.last_attempt_at<c.synced_at) DESC,
+   min(e.last_attempt_at) NULLS FIRST,c.id LIMIT $5`,
+ [space,checkpoint,phase,phase==="checklists"?["checklists"]:CARD_SOURCES,limit]);
  return rows.map(row=>row.id);
 }
 
 export function makeKaitenReliability({pool,config,blocked=()=>false,
- enabled=process.env.KAITEN_SYNC_DAILY==="true",databaseLimit=Number(process.env.KAITEN_SYNC_DATABASE_LIMIT_BYTES),fetcher=fetch,wait}){
+ enabled=process.env.KAITEN_SYNC_DAILY==="true",databaseLimit=Number(process.env.KAITEN_SYNC_DATABASE_LIMIT_BYTES),fetcher=fetch,wait,urgentCards=Number(process.env.KAITEN_SYNC_URGENT_CARDS)}){
  const space=config.spaceId;
+ const urgentLimit=Number.isInteger(urgentCards)&&urgentCards>=6&&urgentCards<=12?urgentCards:6;
  let active;
  let timer;
  let stopping=false;
@@ -80,16 +90,21 @@ export function makeKaitenReliability({pool,config,blocked=()=>false,
  }
  async function status(){
   if (!await available()) return {available:false};
-  const {rows:[run]}=await pool.query("SELECT *,slot::text AS slot FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
-  return {available:true,enabled,next:enabled?dailySlot().next:null,run,busy:!!active,
+  const {rows:runs}=await pool.query(`SELECT *,slot::text AS slot,EXTRACT(EPOCH FROM
+   COALESCE(finished_at,clock_timestamp())-started_at)::int AS seconds FROM kaiten_reliability_runs
+   WHERE space_id=$1 ORDER BY started_at DESC`,[space]);
+  const run=runs.find(row=>!row.finished_at)??runs[0];
+  const [changed,history]=await Promise.all(["changed","history_changed"].map(phase=>
+   selectCards(pool,space,phase,new Date(),null).then(ids=>ids.length)));
+  return {available:true,enabled,next:enabled?dailySlot().next:null,run,runs,changed,history,urgentLimit,busy:!!active,
    resourceLimit:Number.isSafeInteger(databaseLimit)&&databaseLimit>0};
  }
- async function tick(manual=false){
+ async function tick(requested=null){
   if (active || blocked() || stopping) return;
-  active=execute(manual);
+  active=execute(requested);
   try {return await active;} finally {active=null;}
  }
- async function execute(manual){
+ async function execute(requested){
   const lock=await pool.connect();
   let acquired=false;
   let discard=false;
@@ -99,65 +114,78 @@ export function makeKaitenReliability({pool,config,blocked=()=>false,
    if (!acquired) return "busy";
    if (!Number.isSafeInteger(databaseLimit) || databaseLimit<=0) return "resource_limit_required";
    const {slot}=dailySlot();
-   const {rows:[existing]}=await lock.query("SELECT *,slot::text AS slot FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
-   if (!manual && existing?.finished_at && existing.slot===slot) return;
-   if (!existing || existing.finished_at) {
+   const {rows:runs}=await lock.query("SELECT *,slot::text AS slot FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
+   let run=runs.find(row=>!row.finished_at);
+   if (run && requested && run.kind!==requested) return "busy";
+   if (run && !requested && ["401","403"].includes(run.outcome?.paused)) return "authorization";
+   if (!run) {
+    const previousDaily=runs.find(row=>row.kind==="daily");
+    const previousUrgent=runs.find(row=>["urgent","daily"].includes(row.kind) && Date.now()-new Date(row.finished_at)<urgentInterval);
+    const kind=requested ?? (!enabled?null:previousDaily?.slot!==slot?"daily":previousUrgent?null:"urgent");
+    if (!kind) return;
     const {rows:[gate]}=await lock.query("SELECT pg_try_advisory_lock($1) AS free",[HISTORY_LOCK]);
     if (!gate.free) return "busy";
     await lock.query("SELECT pg_advisory_unlock($1)",[HISTORY_LOCK]);
-    await lock.query(`INSERT INTO kaiten_reliability_runs(space_id,slot,started_at) VALUES($1,$2,clock_timestamp())
-     ON CONFLICT(space_id) DO UPDATE SET slot=excluded.slot,started_at=excluded.started_at,phase=0,batches=0,finished_at=NULL,outcome='{}'`,[space,slot]);
+    ({rows:[run]}=await lock.query(`INSERT INTO kaiten_reliability_runs
+      (space_id,kind,slot,started_at,database_before) VALUES($1,$2,$3,clock_timestamp(),pg_database_size(current_database()))
+     ON CONFLICT(space_id,kind) DO UPDATE SET slot=excluded.slot,started_at=excluded.started_at,
+      phase=0,batches=0,finished_at=NULL,outcome='{}',requests=0,database_before=excluded.database_before,database_after=NULL
+     RETURNING *`,[space,kind,slot]));
    }
-   const {rows:[run]}=await lock.query("SELECT *,slot::text AS slot FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
    const {rows:[resources]}=await lock.query(`SELECT pg_database_size(current_database()) AS bytes,
     pg_total_relation_size('kaiten_observed_changes') + pg_total_relation_size('kaiten_observed_snapshots') AS observed_bytes,
     (SELECT count(*) FROM pg_stat_activity WHERE datname=current_database() AND state='active' AND pid<>pg_backend_pid()) AS active`);
    if (Number(resources.bytes)>=databaseLimit || Number(resources.active)>=5 || Number(resources.observed_bytes)>=64*1024*1024) {
-    await lock.query("UPDATE kaiten_reliability_runs SET outcome=outcome||jsonb_build_object('paused','resource_limit') WHERE space_id=$1",[space]);
+    await lock.query("UPDATE kaiten_reliability_runs SET outcome=outcome||jsonb_build_object('paused','resource_limit') WHERE space_id=$1 AND kind=$2",[space,run.kind]);
     return "resource_limit";
    }
    if (Number(run.outcome?.retryAfter)>Date.now()) return "deferred";
-   const phase=phases[run.phase];
+   const runPhases=phases[run.kind];
+   const phase=runPhases[run.phase];
+   let requests=0;
+   const countedFetch=(...args)=>{requests++;return fetcher(...args);};
    try {
     let outcome={};
     let selected=0;
     if (phase==="dictionaries") {
-     outcome=await runEnrichment({pool,config,mode:phase,fetcher,wait,checkpoint:run.started_at,maxRequests:90,stopOnForbidden:true});
+     outcome=await runEnrichment({pool,config,mode:phase,fetcher:countedFetch,wait,checkpoint:run.started_at,maxRequests:90,stopOnForbidden:true});
     } else {
-     const ids=await selectCards(lock,space,phase,run.started_at);
+     const ids=await selectCards(lock,space,phase,run.started_at,historyPhase(phase)?12:run.kind==="urgent"?urgentLimit:6);
      selected=ids.length;
-     if (ids.length && ["history","authors"].includes(phase)) {
+     if (ids.length && historyPhase(phase)) {
       let fatal;
       let retryAfter;
       let denied=0;
-      outcome=await refreshHistory({pool,config,ids,fetcher,wait,stopOnRateLimit:true,
+      outcome=await refreshHistory({pool,config,ids,fetcher:countedFetch,wait,stopOnRateLimit:true,
        shouldStop:()=>stopping||!!fatal,onProgress:state=>{
         if ([401,429].includes(state.status) || state.status===403&&++denied>=5) {fatal=state.status;retryAfter=state.retryAfter;}
        }});
       if (fatal) throw Object.assign(new Error("History API paused"),{status:fatal,retryAfter});
      } else if (ids.length) {
-      outcome=await runEnrichment({pool,config,ids,fetcher,wait,mode:"pending",force:phase!=="changed",
+      outcome=await runEnrichment({pool,config,ids,fetcher:countedFetch,wait,mode:"pending",force:phase!=="changed",
        sources:phase==="checklists"?["checklists"]:CARD_SOURCES,checkpoint:run.started_at,maxRequests:90,stopOnForbidden:true,scheduledPhase:phase});
       if (!outcome.skipped) await captureSnapshots(lock,space,ids);
      }
     }
     if (outcome.skipped) return "busy";
+    if (selected) outcome.selected=selected;
     const previous=run.outcome?.[phase]??{};
     for (const key of Object.keys(outcome)) outcome[key]+=previous[key]??0;
     outcome={...previous,...outcome};
-    const advance=phase==="dictionaries"||selected===0||run.batches>=3;
+    const advance=phase==="dictionaries"||selected===0||run.batches>=(run.kind==="urgent"?0:3);
     await lock.query(`UPDATE kaiten_reliability_runs SET phase=phase+$5::int,
      batches=CASE WHEN $5::int=1 THEN 0 ELSE batches+1 END,
+     requests=requests+$6, database_after=pg_database_size(current_database()),
      outcome=(outcome-'paused'-'retryAfter')||jsonb_build_object($2::text,COALESCE(outcome->$2::text,'{}')||$3::jsonb),
      finished_at=CASE WHEN phase=$4 AND $5::int=1 THEN clock_timestamp() END,
      last_success_at=CASE WHEN phase=$4 AND $5::int=1 AND NOT EXISTS(
       SELECT FROM jsonb_each(outcome||jsonb_build_object($2::text,$3::jsonb)) e
       WHERE COALESCE((e.value->>'error')::int,0)+COALESCE((e.value->>'forbidden')::int,0)+COALESCE((e.value->>'not_found')::int,0)>0) THEN clock_timestamp() ELSE last_success_at END
-     WHERE space_id=$1`,[space,phase,JSON.stringify(outcome),phases.length-1,advance?1:0]);
-    return advance&&run.phase===phases.length-1?"finished":"progress";
+     WHERE space_id=$1 AND kind=$7`,[space,phase,JSON.stringify(outcome),runPhases.length-1,advance?1:0,requests,run.kind]);
+    return advance&&run.phase===runPhases.length-1?"finished":"progress";
    } catch(error){
     const reason=[401,403,429].includes(error.status)?String(error.status):error.budget?"budget":"error";
-    await lock.query("UPDATE kaiten_reliability_runs SET outcome=outcome||jsonb_build_object('paused',$2::text,'retryAfter',$3::bigint) WHERE space_id=$1",[space,reason,Date.now()+Math.max(60000,error.retryAfter??0)]);
+    await lock.query("UPDATE kaiten_reliability_runs SET outcome=outcome||jsonb_build_object('paused',$2::text,'retryAfter',$3::bigint), requests=requests+$5,database_after=pg_database_size(current_database()) WHERE space_id=$1 AND kind=$4",[space,reason,Date.now()+Math.max(60000,error.retryAfter??0),run.kind,requests]);
     return reason;
    }
   } finally {
@@ -168,8 +196,9 @@ export function makeKaitenReliability({pool,config,blocked=()=>false,
    lock.release(discard);
   }
  }
- async function start(){
-  const result=await tick(true);
+ async function start(kind="manual"){
+  if (!["manual","checklists","authors"].includes(kind)) throw new Error("Invalid run kind");
+  const result=await tick(kind);
   if (!result) return "busy";
   return result;
  }
@@ -177,14 +206,5 @@ export function makeKaitenReliability({pool,config,blocked=()=>false,
   schedule(){timer=setInterval(()=>resume().catch(()=>{}),60000);resume().catch(()=>{});},
   async stop(){stopping=true;clearInterval(timer);await active;}
  };
- async function resume(){
-  if (!await available()) return;
-  if (!enabled) {
-   const {rows:[run]}=await pool.query("SELECT finished_at FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
-   if (!run || run.finished_at) return;
-  }
-  const {rows:[run]}=await pool.query("SELECT outcome FROM kaiten_reliability_runs WHERE space_id=$1",[space]);
-  if (["401","403"].includes(run?.outcome?.paused)) return;
-  await tick();
- }
+ async function resume(){await tick();}
 }

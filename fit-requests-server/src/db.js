@@ -4,13 +4,19 @@ export function makeDb(url){const pool=new pg.Pool({connectionString:url,max:5,c
 export async function setupHistory(pool){
  await pool.query(await readFile(new URL("../migrations/001-kaiten-history.sql",import.meta.url),"utf8"));
 }
-export async function setupEnrichment(pool,{before,after}={}){
+export async function setupEnrichment(pool,options){
+ return applyKaitenMigration(pool,"002-kaiten-enrichment.sql",options);
+}
+export async function setupReliability(pool,options){
+ return applyKaitenMigration(pool,"003-kaiten-reliability.sql",options);
+}
+async function applyKaitenMigration(pool,file,{before,after}={}){
  const client=await pool.connect();
  try {
   await client.query("BEGIN");
   await client.query("SET LOCAL lock_timeout='2s'; SET LOCAL statement_timeout='10s'");
   await before?.(client);
-  await client.query(await readFile(new URL("../migrations/002-kaiten-enrichment.sql",import.meta.url),"utf8"));
+  await client.query(await readFile(new URL("../migrations/"+file,import.meta.url),"utf8"));
   await after?.(client);
   await client.query("COMMIT");
  } catch(error) {

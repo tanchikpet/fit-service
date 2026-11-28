@@ -1,17 +1,19 @@
-BEGIN;
-SET LOCAL lock_timeout = '2s';
-SET LOCAL statement_timeout = '15s';
 ALTER TABLE kaiten_location_events ADD COLUMN IF NOT EXISTS author_checked_at timestamptz;
 ALTER TABLE kaiten_location_events ADD COLUMN IF NOT EXISTS author_field_present boolean;
 CREATE TABLE IF NOT EXISTS kaiten_reliability_runs (
- space_id bigint PRIMARY KEY,
+ space_id bigint NOT NULL,
+ kind text NOT NULL CHECK (kind IN ('daily','urgent','manual','checklists','authors')),
  slot date,
  phase integer NOT NULL DEFAULT 0,
  batches integer NOT NULL DEFAULT 0,
  started_at timestamptz NOT NULL,
  finished_at timestamptz,
  last_success_at timestamptz,
- outcome jsonb NOT NULL DEFAULT '{}'
+ outcome jsonb NOT NULL DEFAULT '{}',
+ database_before bigint NOT NULL,
+ database_after bigint,
+ requests integer NOT NULL DEFAULT 0,
+ PRIMARY KEY (space_id,kind)
 );
 CREATE TABLE IF NOT EXISTS kaiten_observed_snapshots (
  space_id bigint NOT NULL,
@@ -28,4 +30,3 @@ CREATE TABLE IF NOT EXISTS kaiten_observed_changes (
  old_values jsonb NOT NULL,
  new_values jsonb NOT NULL
 );
-COMMIT;

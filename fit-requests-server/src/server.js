@@ -37,11 +37,13 @@ const sync=makeSync({pool,config});
 const auth=telegramAuth({pool});
 const historyAdmin=makeHistoryAdmin({pool,config});
 const diagnostics=makeDiagnostics({pool,config});
-const enrichment=makeEnrichmentAdmin({pool,config,blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichmentMigration.busy()||reliability.busy()});
+const enrichment=makeEnrichmentAdmin({pool,config,blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichmentMigration.busy()||reliability.busy()||reliabilityMigration.busy()});
 const enrichmentMigration=makeEnrichmentMigration({pool,space:config.spaceId,
  blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()});
 const reliability=makeKaitenReliability({pool,config,
- blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()||enrichmentMigration.busy()});
+ blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()||enrichmentMigration.busy()||reliabilityMigration.busy()});
+const reliabilityMigration=makeEnrichmentMigration({pool,space:config.spaceId,reliability:true,
+ blocked:()=>historyAdmin.busy()||diagnostics.status().running||enrichment.busy()||enrichmentMigration.busy()||reliability.busy()});
 const botLogin=makeBotLogin({pool});
 const safeEqual=(a,b)=>{const x=Buffer.from(String(a||"")),y=Buffer.from(String(b||""));return x.length===y.length&&timingSafeEqual(x,y)};
 function send(res,status,value){res.writeHead(status,{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff","Referrer-Policy":"no-referrer"});res.end(JSON.stringify(value))}
@@ -103,13 +105,21 @@ const server=http.createServer(async(req,res)=>{
     if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
     if(req.method!=="POST"){send(res,405,{error:"method_not_allowed"});return}
     const state=await reliability.status();
-    if(!state.available||!state.resourceLimit||reliability.busy()){
+    if(!state.available||!state.resourceLimit||reliability.busy()||reliabilityMigration.busy()){
       send(res,409,{error:"Синхронизация занята или не готова к запуску"});return
     }
-    reliability.start().catch(()=>{});
+    if(!req.headers["content-type"]?.startsWith("application/x-www-form-urlencoded")){
+      send(res,415,{error:"Недопустимый формат запроса"});return
+    }
+    const kind=new URLSearchParams(await collect(req,1024)).get("kind");
+    if(!["manual","checklists","authors"].includes(kind)){send(res,400,{error:"Неизвестная операция"});return}
+    if(state.runs.some(run=>!run.finished_at&&run.kind!==kind)){send(res,409,{error:"Сначала завершите текущую операцию"});return}
+    reliability.start(kind).catch(()=>{});
     res.writeHead(303,{Location:"/app/analytics#kaiten-sync","Cache-Control":"no-store"});res.end();return
   }
-  if(path==="/app/analytics/enrichment-migration"){
+  if(path==="/app/analytics/enrichment-migration"||path==="/app/analytics/kaiten-reliability-migration"){
+    const isReliability=path.endsWith("reliability-migration");
+    const migration=isReliability?reliabilityMigration:enrichmentMigration;
     const access=historyAccess(await auth.user(req),req.method,sameOrigin(req));
     if(access!==200){send(res,access,{error:"Нет доступа или недопустимый запрос"});return}
     if(req.method!=="POST"){send(res,405,{error:"method_not_allowed"});return}
@@ -120,12 +130,12 @@ const server=http.createServer(async(req,res)=>{
     const action=form.get("action");
     if(!["prepare","apply"].includes(action)){send(res,400,{error:"Неизвестное действие"});return}
     try {
-      const result=action==="prepare"?await enrichmentMigration.prepare(req.headers.cookie):
-       await enrichmentMigration.apply(req.headers.cookie,form.get("token"),form.get("confirmed")==="yes");
-      analyticsHtml(res,shell(migrationResult(result,escapeHtml)));
+      const result=action==="prepare"?await migration.prepare(req.headers.cookie):
+       await migration.apply(req.headers.cookie,form.get("token"),form.get("confirmed")==="yes");
+      analyticsHtml(res,shell(migrationResult(result,escapeHtml,isReliability)));
     } catch(error) {
       if(!error.status)throw error;
-      html(res,error.status,shell(`<main><h1>Миграция 002</h1><p>${escapeHtml(error.message)}</p><a href="/app/analytics#kaiten-enrichment">Вернуться к аналитике</a></main>`));
+      html(res,error.status,shell(`<main><h1>Миграция ${isReliability?"003":"002"}</h1><p>${escapeHtml(error.message)}</p><a href="/app/analytics">Вернуться к аналитике</a></main>`));
     }
     return;
   }
@@ -154,7 +164,7 @@ const server=http.createServer(async(req,res)=>{
         send(res,415,{error:"Недопустимый формат запроса"});return
       }
       await collect(req,1024);
-      if(enrichment.busy()||enrichmentMigration.busy()||reliability.busy()||!diagnostics.start()){
+      if(enrichment.busy()||enrichmentMigration.busy()||reliability.busy()||reliabilityMigration.busy()||!diagnostics.start()){
         html(res,409,shell('<main><p>Диагностика уже выполняется или недавно запускалась.</p><a href="/app/analytics#kaiten-diagnostics">Вернуться к аналитике</a></main>'));return
       }
       res.writeHead(303,{Location:"/app/analytics#kaiten-diagnostics","Cache-Control":"no-store"});res.end();return
@@ -178,7 +188,7 @@ const server=http.createServer(async(req,res)=>{
       send(res,415,{error:"Недопустимый формат запроса"});return
     }
     const fields=new URLSearchParams(await collect(req,1024));
-    if((enrichment.busy()||enrichmentMigration.busy()||reliability.busy())&&fields.get("action")!=="stop"){send(res,409,{error:"Выполняется загрузка дополнительных источников"});return}
+    if((enrichment.busy()||enrichmentMigration.busy()||reliability.busy()||reliabilityMigration.busy())&&fields.get("action")!=="stop"){send(res,409,{error:"Выполняется загрузка дополнительных источников"});return}
     try{historyAdmin.start(fields.get("action"),{volumeChecked:fields.get("volumeChecked")==="yes"});}
     catch(error){
       if(!error.status)throw error;

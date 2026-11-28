@@ -1,5 +1,5 @@
 import {createHash,randomBytes} from "node:crypto";
-import {setupEnrichment} from "./db.js";
+import {setupEnrichment,setupReliability} from "./db.js";
 import {HISTORY_LOCK} from "./history.js";
 
 const TTL=5*60*1000;
@@ -35,17 +35,36 @@ async function schema(db){
  FROM objects,added`);
  return row;
 }
+async function reliabilitySchema(db){
+ const preceding=await schema(db);
+ const {rows:[objects]}=await db.query(`WITH added AS (
+  SELECT count(*)::int AS found,count(*) FILTER(WHERE NOT attnotnull AND NOT atthasdef AND
+   ((attname='author_checked_at' AND atttypid='timestamptz'::regtype) OR
+    (attname='author_field_present' AND atttypid='boolean'::regtype)))::int AS compatible
+  FROM pg_attribute WHERE attrelid=to_regclass('kaiten_location_events') AND NOT attisdropped
+   AND attname IN ('author_checked_at','author_field_present')
+ ), tables AS (
+  SELECT count(*)::int AS found FROM unnest(ARRAY[
+   to_regclass('kaiten_reliability_runs'),to_regclass('kaiten_observed_snapshots'),to_regclass('kaiten_observed_changes')
+  ]) name WHERE name IS NOT NULL
+ )
+ SELECT added.found+tables.found AS existing,added.compatible=2 AND tables.found=3 AS applied FROM added,tables`);
+ return {...preceding,...objects,baseReady:preceding.applied};
+}
+
 function requireReady(state){
  if (!state.baseReady) throw reject("Таблицы существующей истории не найдены. Миграция не выполнялась.");
  if (state.existing&&!state.applied) throw reject("Найдена частично изменённая схема. Нужна отдельная проверка.");
  if (!state.applied&&(!state.permission||!state.writable)) throw reject("Подключение PostgreSQL не может применить миграцию.");
 }
-export function makeEnrichmentMigration({pool,space,blocked}){
+export function makeEnrichmentMigration({pool,space,blocked,reliability=false}){
+ const checkSchema=reliability?reliabilitySchema:schema;
+ const setup=reliability?setupReliability:setupEnrichment;
  const confirmations=new Map();
  let active=false;
  async function prepare(cookie){
   if (active||blocked()) throw reject("Сначала дождитесь завершения текущей операции Kaiten.");
-  const state=await schema(pool);
+  const state=await checkSchema(pool);
   requireReady(state);
   const {rows:[counts]}=await pool.query(`SELECT
    (SELECT count(*)::int FROM kaiten_location_events WHERE space_id=$1) AS events,
@@ -72,15 +91,15 @@ export function makeEnrichmentMigration({pool,space,blocked}){
    (SELECT count(*)::int FROM kaiten_location_events WHERE space_id=$1) AS events,
    (SELECT count(*)::int FROM kaiten_history_loads WHERE space_id=$1 AND last_success_at IS NOT NULL) AS histories`,[space])).rows[0];
   try {
-   await setupEnrichment(pool,{
+   await setup(pool,{
     before:async db=>{
      const {rows:[lock]}=await db.query("SELECT pg_try_advisory_xact_lock($1) AS ready",[HISTORY_LOCK]);
      if (!lock.ready) throw reject("Загрузчик истории уже работает. Повторите проверку позже.");
-     requireReady(await schema(db));
+     requireReady(await checkSchema(db));
      counts=await count(db);
     },
     after:async db=>{
-     const state=await schema(db);
+     const state=await checkSchema(db);
      const after=await count(db);
      if (!state.applied||after.events!==counts.events||after.histories!==counts.histories)
       throw reject("Контроль схемы или счётчиков не пройден. Миграция отменена.");
@@ -96,14 +115,17 @@ export function makeEnrichmentMigration({pool,space,blocked}){
  return {prepare,apply,busy:()=>active};
 }
 
-export function migrationResult({applied,counts,token},escape){
- return `<main><h1>Миграция 002</h1>
- <section class="card"><p>${applied?"Миграция 002 применена. Загрузка данных не запускалась.":"Проверка готовности пройдена. Миграция добавляет поля и таблицы загрузки."}</p>
+export function migrationResult({applied,counts,token},escape,reliability=false){
+ const number=reliability?"003":"002";
+ const route=reliability?"kaiten-reliability-migration":"enrichment-migration";
+ const anchor=reliability?"kaiten-sync":"kaiten-enrichment";
+ return `<main><h1>Миграция ${number}</h1>
+ <section class="card"><p>${applied?`Миграция ${number} применена. Загрузка данных не запускалась.`:"Проверка готовности пройдена. Миграция добавляет поля и таблицы загрузки."}</p>
  <p>Событий истории ${escape(counts.events)}. Успешно загруженных историй ${escape(counts.histories)}.</p>
- ${token?`<form action="/app/analytics/enrichment-migration" method="post">
+ ${token?`<form action="/app/analytics/${route}" method="post">
  <input type="hidden" name="token" value="${escape(token)}">
- <p><label><input type="checkbox" name="confirmed" value="yes" required> Подтверждаю применение добавочной миграции 002.</label></p>
- <button class="button" name="action" value="apply">Применить миграцию 002</button>
+ <p><label><input type="checkbox" name="confirmed" value="yes" required> Подтверждаю применение добавочной миграции ${number}.</label></p>
+ <button class="button" name="action" value="apply">Применить миграцию ${number}</button>
  </form><p>Подтверждение действует пять минут.</p>`:""}
- <p><a href="/app/analytics#kaiten-enrichment">Вернуться к аналитике</a></p></section></main>`;
+ <p><a href="/app/analytics${"#"+anchor}">Вернуться к аналитике</a></p></section></main>`;
 }

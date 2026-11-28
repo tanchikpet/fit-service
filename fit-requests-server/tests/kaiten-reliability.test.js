@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
-import {readFile} from "node:fs/promises";
 import {test} from "node:test";
-import {makeDb,setupDb,setupEnrichment} from "../src/db.js";
+import {makeDb,setupDb,setupEnrichment,setupReliability} from "../src/db.js";
 import {runEnrichment} from "../src/enrichment.js";
+import {makeEnrichmentMigration} from "../src/enrichment-migration.js";
 import {loadCardHistory} from "../src/history.js";
 import {dailySlot,makeKaitenReliability} from "../src/kaiten-reliability.js";
 import {readKaitenCoverage} from "../src/kaiten-coverage.js";
@@ -52,9 +52,20 @@ test("additive migration, checklist outcomes, author evidence, and durable guard
   const before=await readKaitenCoverage(pool,15);
   assert.equal(before.fields.priority,1);
   assert.equal(before.priority_by_group[0].year,2026);
-  const migration=await readFile(new URL("../migrations/003-kaiten-reliability.sql",import.meta.url),"utf8");
-  await pool.query(migration);
-  await pool.query(migration);
+  const migration=makeEnrichmentMigration({pool,space:15,reliability:true,blocked:()=>false});
+  const {token}=await migration.prepare("admin session");
+  await assert.rejects(migration.apply("other session",token,true),{status:403});
+  await assert.rejects(migration.apply("admin session",token,false),{status:403});
+  const lock=await pool.connect();
+  try {
+   await lock.query("BEGIN; LOCK TABLE kaiten_location_events IN ACCESS SHARE MODE");
+   await assert.rejects(migration.apply("admin session",token,true),/не освободил таблицы/);
+  } finally {await lock.query("ROLLBACK");lock.release();}
+  assert.equal((await manager().status()).available,false);
+  const approval=await migration.prepare("admin session");
+  assert.deepEqual(await migration.apply("admin session",approval.token,true),{applied:true,counts:{events:0,histories:0}});
+  assert.equal((await migration.prepare("admin session")).applied,true);
+  await setupReliability(pool);
   const counts=await runEnrichment({pool,config,mode:"initial",sources:["checklists"],fetcher,wait});
   assert.equal(counts.empty,1);
   assert.equal(counts.error,2);
@@ -69,24 +80,41 @@ test("additive migration, checklist outcomes, author evidence, and durable guard
   const other=manager();
   const outcomes=await Promise.all([primary.start(),other.start()]);
   assert.equal(outcomes.filter(value=>value==="progress").length,1);
-  assert.equal((await manager().status()).run.phase,1);
+  assert.equal((await manager().status()).run.phase,0);
   await manager().tick();
-  assert.equal((await manager().status()).run.batches,1);
-  for(let i=0;i<12&&(await manager().status()).run.phase<6;i++) await manager().tick();
-  assert.equal((await manager().status()).run.phase,6);
-  assert.equal((await manager().status()).enabled,false);
+  assert.equal((await manager().status()).run.phase,1);
+  for(let i=0;i<12&&(await manager().status()).run.phase<4;i++) await manager().tick();
+  assert.equal((await manager().status()).run.phase,4);
+  const completed=await manager().status();
+  assert.equal(completed.enabled,false);
+  assert.equal(completed.run.kind,"manual");
+  assert.ok(completed.run.requests>0);
+  assert.ok(completed.run.database_after);
+  await manager().start("authors");
+  while (!(await manager().status()).run.finished_at) await manager().tick();
+  assert.equal((await manager().status()).run.kind,"authors");
   assert.equal((await pool.query("SELECT value->>'rr_priority' AS priority FROM kaiten_observed_snapshots WHERE card_id=20")).rows[0].priority,"218940");
   await pool.query(`UPDATE kaiten_cards SET synced_at=now(),updated_at=updated_at+interval '1 second',
    data=jsonb_set(data,'{properties,id_428033}','218941') WHERE id=20`);
   await manager().start();
-  for(let i=0;i<15&&(await manager().status()).run.phase<6;i++) await manager().tick();
+  for(let i=0;i<15&&(await manager().status()).run.phase<4;i++) await manager().tick();
   const {rows}=await pool.query(`SELECT old_values->>'rr_priority' AS old,
    new_values->>'rr_priority' AS new,event_at FROM kaiten_observed_changes WHERE card_id=20`);
   assert.deepEqual(rows,[{old:"218940",new:"218941",event_at:null}]);
   throttled=true;
-  assert.equal(await manager().start(),"429");
+  let result=await manager().start();
+  for(let i=0;i<8&&result!=="429";i++) result=await manager().tick();
+  assert.equal(result,"429");
   assert.equal(await manager().tick(),"deferred");
   assert.ok((await manager().status()).run.outcome.retryAfter>Date.now()+3500000);
+  await pool.query("UPDATE kaiten_reliability_runs SET finished_at=now() WHERE kind='manual'");
+  await pool.query(`INSERT INTO kaiten_reliability_runs(space_id,kind,slot,started_at,finished_at,database_before)
+   VALUES (15,'daily',$1,now()-interval '20 minutes',now()-interval '19 minutes',0)`,[dailySlot().slot]);
+  const automatic=makeKaitenReliability({pool,config,databaseLimit,fetcher,wait,enabled:true});
+  assert.equal(await automatic.tick(),"progress");
+  assert.equal((await automatic.status()).run.kind,"urgent");
+  assert.equal(await automatic.tick(),"finished");
+  assert.equal(await automatic.tick(),undefined);
  } finally {
   await pool.end();
   await admin.query("DROP DATABASE IF EXISTS "+name);

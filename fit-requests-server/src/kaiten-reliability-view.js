@@ -18,10 +18,22 @@ export function reliabilityPanel(state,coverage,escape){
   state.busy?"Выполняется партия":run?.finished_at?"Контрольный проход завершён":run?"Проход ожидает следующую партию":"Ожидает запуска"):"Требуется миграция 003"}</p>
  <p>Последний успешный проход ${format(run?.last_success_at)} · Следующий плановый ${state.enabled?format(state.next):"расписание выключено"}</p>
  ${coverage?`<p>Карточек в базе ${coverage.cards} · Авторов перемещений ${authors.withAuthor} из ${authors.total} · Ошибок источников ${failures} · Поле чек-листов недоступно ${unresolved}</p>`:""}
- ${state.available&&state.resourceLimit?`<form method="post" action="/app/analytics/kaiten-sync"><button class="button">Обновить вручную</button></form>`:""}
+ ${state.available?`<p>В очереди: изменённые и новые карточки — ${state.changed}, истории — ${state.history}. Обновление данных карточек выполняется партиями до ${state.urgentLimit}.</p>`:
+  '<form method="post" action="/app/analytics/kaiten-reliability-migration"><button class="button" name="action" value="prepare">Проверить готовность миграции 003</button></form>'}
+ ${state.available&&state.resourceLimit?`<form method="post" action="/app/analytics/kaiten-sync"><button class="button" name="kind" value="manual">Запустить контрольный проход</button></form>`:""}
  ${!coverage?"<p>Контрольные агрегаты пока недоступны.</p>":""}
  ${state.available&&!state.resourceLimit?"<p>Перед запуском задайте лимит размера базы.</p>":""}
  ${coverage?`<details><summary>Техническая диагностика и полнота данных</summary>
+ ${state.available&&state.resourceLimit?`<form method="post" action="/app/analytics/kaiten-sync">
+  <button class="button" name="kind" value="checklists">Перепроверить ошибки чек-листов</button>
+  <button class="button" name="kind" value="authors">Дополнить авторов перемещений</button>
+ </form>`:""}
+ ${state.runs?.length?`<table><thead><tr><th>Последний проход</th><th>Секунд</th><th>HTTP-запросов</th><th>Изменение базы, КиБ</th><th>Источники и результаты</th></tr></thead><tbody>
+ ${state.runs.filter(row=>row.kind!=="urgent").map(row=>`<tr><td>${escape(({daily:"Суточный",manual:"Контрольный",checklists:"Чек-листы",authors:"Авторы"})[row.kind])}</td>
+ <td>${row.seconds}</td><td>${row.requests}</td><td>${row.database_after==null?"—":((row.database_after-row.database_before)/1024).toFixed(1)}</td>
+ <td>${escape(Object.entries(row.outcome).filter(([,v])=>v&&typeof v==="object").map(([key,value])=>
+  `${key}: ${["selected","ok","empty","loaded","inserted","received","forbidden","not_found","error"].filter(k=>value[k]!=null).map(k=>k+" "+value[k]).join(", ")}`).join(" · "))}</td></tr>`).join("")}
+ </tbody></table>`:""}
  <p>Карточек с HTTP 403 одновременно по семи источникам — ${coverage.common_forbidden}. Из них с HTTP 403 при чтении истории — ${coverage.common_forbidden_with_history}.</p>
  <p>История сохранена у ${coverage.history.cards} карточек. Старым загрузчиком авторов проверено ${coverage.history.legacyAuthorCards} карточек.</p>
  <p>Авторы событий: явно отсутствуют — ${authors.noAuthor}, поле отсутствует в ответе — ${authors.fieldMissing},
