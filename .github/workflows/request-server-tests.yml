@@ -1,0 +1,52 @@
+name: Request server tests
+on:
+  push:
+    paths:
+      - 'fit-requests-server/**'
+      - '.github/workflows/request-server-tests.yml'
+  pull_request:
+    paths:
+      - 'fit-requests-server/**'
+      - '.github/workflows/request-server-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: fit-requests-server
+    services:
+      analytics-postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: test-only
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: npm install --ignore-scripts --no-audit --no-fund
+      - run: npm test
+        env:
+          ANALYTICS_TEST_DATABASE_URL: postgresql://postgres:test-only@127.0.0.1:${{ job.services.analytics-postgres.ports[5432] }}/postgres
+          REQUEST_ACCESS_TEST_DATABASE_URL: postgresql://postgres:test-only@127.0.0.1:${{ job.services.analytics-postgres.ports[5432] }}/postgres
+      - run: |
+          node --check src/server.js
+          node --check public/ui/intake.js
+          node --check public/ui/server-bridge.js
+      - run: pip install playwright==1.56.0
+      - run: python -m playwright install --with-deps chromium
+      - run: python tests/browser_intake.py
+      - run: python tests/browser_form_catalog.py
